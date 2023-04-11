@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "destination": "Tambal Ban John",
+        "created_at": "8 Apr, 18:00",
+        "status": "finish",
+        "distance": 3
+    },
+    {
+        "id": 2,
+        "destination": "Tambal Ban Bulek",
+        "created_at": "10 Apr, 18:00",
+        "status": "cancelled",
+        "distance": 10
+    }
+]
