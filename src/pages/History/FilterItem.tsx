@@ -20,7 +20,7 @@ const FilterItem = ({ label, dialog }: Props) => {
 
     return (
         <>
-            <Chip sx={{ fontWeight: 700, border: '1px solid #E4E4E4' }} label={label} color="default" onClick={onOpen} onDelete={onOpen} deleteIcon={<RxChevronDown size="18px" color="black" />} />;
+            <Chip sx={{ fontWeight: 700, border: '1px solid #E4E4E4' }} label={label} color="default" onClick={onOpen} onDelete={onOpen} deleteIcon={<RxChevronDown size="18px" color="black" />} />
             <DialogComponent title={title} open={open} onOpen={onOpen} content={content} action={action} />
         </>
     );

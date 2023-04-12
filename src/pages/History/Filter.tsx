@@ -18,10 +18,14 @@ const Filter = () => {
                     onOpen: handleOpen,
                     open,
                     action: (
-                        <>
-                            <Button>Proceed</Button>
-                            <Button onClick={handleClose}>Cancel</Button>
-                        </>
+                        <Stack width="100%" direction="row" justifyContent="space-between">
+                            <Button size="small" variant="contained">
+                                Apply
+                            </Button>
+                            <Button size="small" variant="outlined" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                        </Stack>
                     ),
                 }}
             />

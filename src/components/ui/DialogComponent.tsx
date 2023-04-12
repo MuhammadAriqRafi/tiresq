@@ -11,7 +11,9 @@ interface Props {
 const DialogComponent = ({ title, open, onOpen, content, action }: Props) => {
     return (
         <Dialog open={open} onClose={onOpen} aria-labelledby="dialog-title" aria-describedby="aria-description">
-            <DialogTitle id="dialog-title">{title}</DialogTitle>
+            <DialogTitle id="dialog-title" fontWeight={700}>
+                {title}
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText id="dialog-description">{content}</DialogContentText>
             </DialogContent>
