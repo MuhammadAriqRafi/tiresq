@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+	.text-heading {
+		@apply w-fit text-2xl font-semibold;
+	}
+
+	.text-subheading {
+		@apply w-fit text-base font-semibold;
+	}
+
+	.text {
+		@apply w-fit text-sm font-semibold;
+	}
+
+	.text-label {
+		@apply w-fit text-xs font-light;
+	}
+}

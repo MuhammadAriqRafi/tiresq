@@ -21,8 +21,8 @@ export default function HistoryItem({ status, ratingStatus }: Props) {
 					/>
 				</div>
 				<div className="flex flex-col gap-y-1">
-					<h2 className="font-semibold">Tambal ban john</h2>
-					<p className="text-xs">8 Apr, 20:10</p>
+					<h2 className="text-subheading">Tambal ban john</h2>
+					<p className="text-label">8 Apr, 20:10</p>
 				</div>
 				<span className="ml-auto">
 					<Badge variant="secondary">{status}</Badge>

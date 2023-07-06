@@ -10,34 +10,51 @@ import {
 import { Home, History, UserCircle } from "lucide-react";
 import Link from "next/link";
 
+type NavItem = {
+	href: string;
+	icon: React.ReactElement;
+	title: string;
+	isActive: boolean;
+};
+
 export default function navbar() {
+	const navigationItems: NavItem[] = [
+		{
+			href: "/histories",
+			icon: <History size={24} strokeWidth={2} absoluteStrokeWidth />,
+			title: "Riwayat",
+			isActive: false,
+		},
+		{
+			href: "/",
+			icon: <Home size={24} strokeWidth={2} absoluteStrokeWidth />,
+			title: "Beranda",
+			isActive: true,
+		},
+		{
+			href: "/accounts",
+			icon: <UserCircle size={24} strokeWidth={2} absoluteStrokeWidth />,
+			title: "User",
+			isActive: false,
+		},
+	];
+
 	return (
-		<NavigationMenu className="fixed bottom-0 left-1/2 w-full max-w-[375px] -translate-x-1/2 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]">
-			<NavigationMenuList className="w-[375px] max-w-[375px] justify-evenly">
-				<NavigationMenuItem>
-					<Link href="/" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							<Home size={16} />
-							Beranda
-						</NavigationMenuLink>
-					</Link>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<Link href="/histories" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							<History size={16} />
-							Riwayat
-						</NavigationMenuLink>
-					</Link>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<Link href="/accounts" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							<UserCircle size={16} />
-							Akun
-						</NavigationMenuLink>
-					</Link>
-				</NavigationMenuItem>
+		<NavigationMenu className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,.75)]">
+			<NavigationMenuList className="w-screen justify-between px-6">
+				{navigationItems.map(({ href, icon, title, isActive }: NavItem) => (
+					<NavigationMenuItem className="w-[30%]">
+						<Link href={href} legacyBehavior passHref>
+							<NavigationMenuLink
+								active={isActive}
+								className={navigationMenuTriggerStyle()}
+							>
+								{icon}
+								{title}
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+				))}
 			</NavigationMenuList>
 		</NavigationMenu>
 	);
