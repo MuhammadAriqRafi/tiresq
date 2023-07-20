@@ -25,8 +25,8 @@ export default function Ratings() {
 				<section className="mb-8 flex flex-col items-center gap-6 border-b-2 border-b-gray-200 pb-8">
 					<h2 className="text-subheading">Bagaimana pelayanannya?</h2>
 					<div className="flex cursor-pointer justify-between gap-3">
-						{[...Array(5).fill(1)].map(() => (
-							<Star size={24} />
+						{[...Array(5).fill(1)].map((value, index) => (
+							<Star size={24} key={index} />
 						))}
 					</div>
 					<span className="text-subheading">Memuaskan</span>

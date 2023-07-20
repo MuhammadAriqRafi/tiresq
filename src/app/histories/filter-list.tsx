@@ -1,10 +1,17 @@
+"use client";
+
 import FilterItem from "./filter-item";
 import { ChevronDown } from "lucide-react";
 import { Label } from "@components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
 import { Button } from "@components/ui/button";
+import { useState } from "react";
 
 export default function FilterList() {
+	const [status, setStatus] = useState<undefined | string>();
+
+	const handleReset = () => setStatus(undefined);
+
 	return (
 		<div className="flex gap-4">
 			<FilterItem
@@ -13,7 +20,10 @@ export default function FilterList() {
 				sheet={{
 					title: "Status Riwayat",
 					content: (
-						<RadioGroup defaultValue="option-one">
+						<RadioGroup
+							value={status}
+							onValueChange={value => setStatus(value)}
+						>
 							<Label
 								className="flex w-full cursor-pointer items-center justify-between border-b border-b-gray-200 pb-3 text-base"
 								htmlFor="selesai"
@@ -32,7 +42,12 @@ export default function FilterList() {
 					),
 					footer: (
 						<div className="flex justify-between gap-4">
-							<Button variant="outline" className="w-1/2" type="submit">
+							<Button
+								variant="outline"
+								className="w-1/2"
+								type="submit"
+								onClick={handleReset}
+							>
 								Reset
 							</Button>
 							<Button className="w-1/2" type="submit">
