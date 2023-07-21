@@ -9,8 +9,8 @@ export default function loading() {
 			</div>
 
 			<div className="bg-gray-50">
-				{[...Array(3).fill(1)].map(() => (
-					<div className="mb-4 bg-white px-6 py-3 shadow-md">
+				{[...Array(3).fill(1)].map((value, index) => (
+					<div className="mb-4 bg-white px-6 py-3 shadow-md" key={index}>
 						<div className="mb-4 flex gap-4 border-b-2 border-b-gray-200 pb-4">
 							<Skeleton className="h-16 w-16 rounded bg-gray-200" />
 							<div className="mr-auto flex flex-col gap-2">

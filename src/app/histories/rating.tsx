@@ -16,8 +16,8 @@ export default function Rating({ status }: Props) {
 					<>
 						<p className="text">Berikan rating</p>
 						<div className="flex justify-between gap-3">
-							{[...Array(5).fill(1)].map(() => (
-								<Star size={16} />
+							{[...Array(5).fill(1)].map((value, index) => (
+								<Star size={16} key={index} />
 							))}
 						</div>
 					</>

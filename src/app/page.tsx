@@ -4,6 +4,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { useEffect } from "react";
 import mapboxgl, { type LngLatLike } from "mapbox-gl";
+
+// @ts-ignore
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.js";
 
 type Postion = {
@@ -53,8 +55,8 @@ export default function Home() {
 			});
 
 			map.addControl(directions, "top-left");
-			map.addControl(navigationControl);
-			map.addControl(geolocationControl);
+			map.addControl(navigationControl, "bottom-right");
+			map.addControl(geolocationControl, "bottom-right");
 			map.on("load", () => {
 				directions.setOrigin(currentPosition);
 				directions.setDestination([105.21874913194476, -5.380473977304835]);
@@ -64,5 +66,10 @@ export default function Home() {
 		function onError() {}
 	}, []);
 
-	return <div className="h-screen w-screen" id="map"></div>;
+	return (
+		<div
+			className="h-[calc(100vh-40px)] md:h-[calc(100vh-58px)] w-screen"
+			id="map"
+		></div>
+	);
 }

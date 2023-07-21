@@ -17,7 +17,7 @@ type NavItem = {
 	title: string;
 };
 
-export default function navbar() {
+export default function Navbar() {
 	const pathname = usePathname();
 	const navbarBlacklist = ["/ratings", "/login"];
 	const navigationItems: NavItem[] = [
