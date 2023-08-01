@@ -1,16 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import Rating from "./rating";
 import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
+import type { RouterOutputs } from "@/utils/api";
 
-type Props = {
-  status: "Selesai" | "Batal" | "Dalam Proses";
-  ratingStatus: "unrated" | "rated-unreviewed" | "rated-reviewed" | "expired";
-};
+type History = RouterOutputs["trips"]["getTrip"][number];
 
-export default function HistoryItem({ status, ratingStatus }: Props) {
+export default function HistoryItem({ history }: { history: History }) {
+  const { status } = history;
+
   return (
     <article className="mb-4 bg-white px-6 py-3 shadow-md">
-      <div className="mb-4 flex gap-4 border-b-2 border-b-gray-200 pb-4">
+      <div className="flex gap-4">
         <div className="relative h-16 w-16">
           <Image
             src="/assets/default.svg"
@@ -29,7 +30,12 @@ export default function HistoryItem({ status, ratingStatus }: Props) {
         </span>
       </div>
 
-      <Rating status={ratingStatus} />
+      {status === "completed" ? (
+        <>
+          <Separator className="my-4" />
+          <Rating history={history} />
+        </>
+      ) : null}
     </article>
   );
 }

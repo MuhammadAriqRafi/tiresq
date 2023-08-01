@@ -1,18 +1,19 @@
+import type { RouterOutputs } from "@/utils/api";
 import { ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 
-type Props = {
-  status: "unrated" | "rated-unreviewed" | "rated-reviewed" | "expired";
-};
+type History = RouterOutputs["trips"]["getTrip"][number];
 
-export default function Rating({ status }: Props) {
+export default function Rating({ history }: { history: History }) {
+  const { rating, review } = history;
+
   return (
     <Link
-      className={status !== "expired" ? "cursor-pointer" : "cursor-default"}
-      href={status !== "expired" ? "/ratings" : "/histories"}
+      className={rating !== null ? "cursor-pointer" : "cursor-default"}
+      href={rating !== null ? "/ratings" : "/histories"}
     >
       <div className="flex items-center justify-between rounded border-2 border-gray-200 p-4">
-        {status === "unrated" ? (
+        {rating === null ? (
           <>
             <p className="text">Berikan rating</p>
             <div className="flex justify-between gap-3">
@@ -28,30 +29,16 @@ export default function Rating({ status }: Props) {
               <Star size={16} />
             </div>
             <div className="mr-auto flex flex-col gap-y-1">
-              {status !== "expired" ? (
-                <>
-                  <p className="text">
-                    {status === "rated-unreviewed"
-                      ? "Belum ada ulasan"
-                      : status === "rated-reviewed"
-                      ? "Ulasanmu"
-                      : null}
-                  </p>
-                  <p className="text-label">
-                    {status === "rated-unreviewed"
-                      ? "Bagaimana pelayanan tambal bannya?"
-                      : status === "rated-reviewed"
-                      ? "Bagusss bangettt, abangnya ramah..."
-                      : null}
-                  </p>
-                </>
-              ) : (
-                <p className="text text-gray-300">
-                  Periode kasih ulasan sudah berakhir
-                </p>
-              )}
+              <p className="text">
+                {review === null ? "Belum ada ulasan" : "Ulasanmu"}
+              </p>
+              <p className="text-label">
+                {review === null
+                  ? "Bagaimana pelayanan tambal bannya?"
+                  : "Bagusss bangettt, abangnya ramah..."}
+              </p>
             </div>
-            {status !== "expired" ? <ChevronRight size={20} /> : null}
+            <ChevronRight size={20} />
           </>
         )}
       </div>
