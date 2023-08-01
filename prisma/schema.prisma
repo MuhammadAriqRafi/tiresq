@@ -68,14 +68,14 @@ model Trip {
     id            Int        @id @default(autoincrement())
     user_id       Int
     tambal_ban_id Int
-    review_id     Int        @unique
-    rating_id     Int        @unique
+    review_id     Int?       @unique
+    rating_id     Int?       @unique
     status        TripStatus @default(onprogress)
     created_at    DateTime   @default(now())
     User          User       @relation(fields: [user_id], references: [id])
     TambalBan     TambalBan  @relation(fields: [tambal_ban_id], references: [id])
-    Rating        Rating     @relation(fields: [rating_id], references: [id])
-    Review        Review     @relation(fields: [review_id], references: [id])
+    Rating        Rating?    @relation(fields: [rating_id], references: [id])
+    Review        Review?    @relation(fields: [review_id], references: [id])
 
     @@index([user_id])
     @@index([tambal_ban_id])
