@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -11,22 +8,22 @@ datasource db {
     relationMode = "prisma"
 }
 
-model User {
-    id                           Int      @id @default(autoincrement())
-    username                     String?  @unique @db.VarChar(50)
-    password                     String   @db.VarChar(128)
-    email                        String   @unique @db.VarChar(50)
-    image                        String?  @db.TinyText
-    is_admin                     Boolean  @default(false)
-    verify_token                 String?  @db.VarChar(128)
-    verify_token_expiry          DateTime
-    forgot_password_token        String   @db.VarChar(128)
-    forgot_password_token_expiry DateTime
-    created_at                   DateTime @default(now())
-    Trips                        Trip[]
+// model User {
+//     id                           Int      @id @default(autoincrement())
+//     username                     String?  @unique @db.VarChar(50)
+//     password                     String   @db.VarChar(128)
+//     email                        String   @unique @db.VarChar(50)
+//     image                        String?  @db.TinyText
+//     is_admin                     Boolean  @default(false)
+//     verify_token                 String?  @db.VarChar(128)
+//     verify_token_expiry          DateTime
+//     forgot_password_token        String   @db.VarChar(128)
+//     forgot_password_token_expiry DateTime
+//     created_at                   DateTime @default(now())
+//     Trips                        Trip[]
 
-    @@map("users")
-}
+//     @@map("users")
+// }
 
 model TambalBan {
     id         Int      @id @default(autoincrement())
@@ -66,18 +63,18 @@ enum TripStatus {
 
 model Trip {
     id            Int        @id @default(autoincrement())
-    user_id       Int
+    user_id       String     @db.VarChar(50)
     tambal_ban_id Int
     review_id     Int?       @unique
     rating_id     Int?       @unique
     status        TripStatus @default(onprogress)
     created_at    DateTime   @default(now())
-    User          User       @relation(fields: [user_id], references: [id])
     TambalBan     TambalBan  @relation(fields: [tambal_ban_id], references: [id])
-    Rating        Rating?    @relation(fields: [rating_id], references: [id])
-    Review        Review?    @relation(fields: [review_id], references: [id])
+    rating        Rating?    @relation(fields: [rating_id], references: [id])
+    review        Review?    @relation(fields: [review_id], references: [id])
 
-    @@index([user_id])
+    @@index([rating_id])
+    @@index([review_id])
     @@index([tambal_ban_id])
     @@map("trips")
 }
