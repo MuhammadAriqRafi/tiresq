@@ -10,6 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import DefaultLoading from "@/components/loadings/default-loading";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
+import type { ChangeEvent } from "react";
 
 dayjs.extend(relativeTime);
 
@@ -28,7 +29,7 @@ export default function Ratings() {
   const isRated = !!history[0]?.rating?.star;
   const starAmount = isRated ? history[0]?.rating?.star : 5;
 
-  const handleReviewInput = (e: any) => {
+  const handleReviewInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (review.length < 1000) setReview(e.target.value);
   };
 
@@ -69,7 +70,7 @@ export default function Ratings() {
           </h2>
           <Textarea
             placeholder="Masukkan kamu..."
-            onChange={(e: any) => handleReviewInput(e)}
+            onChange={handleReviewInput}
             value={review}
           />
           <div className="flex w-full justify-between">

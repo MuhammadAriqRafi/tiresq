@@ -1,9 +1,10 @@
-import { Badge } from "@/components/ui/badge";
-import Rating, { RatingProps } from "./history-rating";
+import Rating from "./history-rating";
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import type { RatingProps } from "./history-rating";
 
 dayjs.extend(relativeTime);
 
@@ -20,7 +21,8 @@ export default function HistoryItem({
   tambal_ban_name,
   rating,
 }: Props) {
-  const statusColor = new Map();
+  console.log(rating.review);
+  const statusColor: Map<string, string> = new Map();
   statusColor.set("completed", "bg-green-300");
   statusColor.set("cancelled", "bg-red-300");
   statusColor.set("onprogress", "bg-yellow-300");

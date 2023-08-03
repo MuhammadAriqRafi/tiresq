@@ -27,8 +27,8 @@ const HistoryList = ({ histories }: { histories: Histories }) => {
                 rating={{
                   historyId: id,
                   isExpired: false,
-                  star: rating?.star as number,
-                  review: review?.review as string,
+                  star: rating?.star ?? undefined,
+                  review: review?.review ?? undefined,
                 }}
               />
             );

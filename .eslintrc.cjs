@@ -19,6 +19,8 @@ const config = {
       },
     ],
     "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/consistent-generic-constructors": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
   },
 };
