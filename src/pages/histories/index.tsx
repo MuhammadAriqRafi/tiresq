@@ -1,10 +1,10 @@
 import Head from "next/head";
 import Navbar from "@/components/navbar";
 import { api } from "@/utils/api";
-import { Loader2 } from "lucide-react";
 import type { RouterOutputs } from "@/utils/api";
 import HistoryItem from "@/components/histories/history-item";
 import FilterList from "@/components/histories/filter-list";
+import HistoriesLoading from "@/components/loadings/histories-loading";
 
 type Histories = RouterOutputs["trips"]["getTrip"];
 type History = RouterOutputs["trips"]["getTrip"][number];
@@ -13,9 +13,27 @@ const HistoryList = ({ histories }: { histories: Histories }) => {
   return (
     <div className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
       <>
-        {histories.map((history: History, index: number) => (
-          <HistoryItem history={history} key={index} />
-        ))}
+        {histories.map(
+          (
+            { id, status, created_at, tambal_ban, rating, review }: History,
+            index: number
+          ) => {
+            return (
+              <HistoryItem
+                key={index}
+                created_at={created_at}
+                status={status}
+                tambal_ban_name={tambal_ban.name}
+                rating={{
+                  historyId: id,
+                  isExpired: false,
+                  star: rating?.star as number,
+                  review: review?.review as string,
+                }}
+              />
+            );
+          }
+        )}
       </>
     </div>
   );
@@ -24,14 +42,7 @@ const HistoryList = ({ histories }: { histories: Histories }) => {
 export default function Histories() {
   const { data: histories, isLoading } = api.trips.getTrip.useQuery();
 
-  if (isLoading)
-    return (
-      <main className="flex h-screen w-screen items-center justify-center">
-        <Loader2 className="animate-spin" color="#e5e5e5" size={48} />
-      </main>
-    );
-
-  if (!histories)
+  if (!isLoading && !histories)
     return (
       <main className="flex h-screen w-screen items-center justify-center">
         <h1>Something went wrong</h1>
@@ -48,9 +59,14 @@ export default function Histories() {
         <h1 className="text-heading mb-6">Riwayat</h1>
         <FilterList />
       </header>
-      <main>
-        <HistoryList histories={histories} />
-      </main>
+
+      {isLoading ? (
+        <HistoriesLoading />
+      ) : (
+        <main>
+          <HistoryList histories={histories} />
+        </main>
+      )}
 
       <Navbar />
     </>

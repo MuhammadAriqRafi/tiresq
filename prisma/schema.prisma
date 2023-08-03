@@ -69,7 +69,7 @@ model Trip {
     rating_id     Int?       @unique
     status        TripStatus @default(onprogress)
     created_at    DateTime   @default(now())
-    TambalBan     TambalBan  @relation(fields: [tambal_ban_id], references: [id])
+    tambal_ban    TambalBan  @relation(fields: [tambal_ban_id], references: [id])
     rating        Rating?    @relation(fields: [rating_id], references: [id])
     review        Review?    @relation(fields: [review_id], references: [id])
 
