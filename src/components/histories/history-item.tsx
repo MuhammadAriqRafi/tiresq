@@ -21,7 +21,6 @@ export default function HistoryItem({
   tambal_ban_name,
   rating,
 }: Props) {
-  console.log(rating.review);
   const statusColor: Map<string, string> = new Map();
   statusColor.set("completed", "bg-green-300");
   statusColor.set("cancelled", "bg-red-300");
