@@ -1,8 +1,9 @@
-import { type AppType } from "next/app";
-import { ClerkProvider } from "@clerk/nextjs";
+import Head from "next/head";
 import { api } from "@/utils/api";
 import { Inter } from "next/font/google";
-import Head from "next/head";
+import { ClerkProvider } from "@clerk/nextjs";
+import { type AppType } from "next/app";
+import ToasterBase from "@/components/ui/toaster-base";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,6 +21,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
 
       <div className={inter.className}>
+        <ToasterBase />
         <Component {...pageProps} />
       </div>
     </ClerkProvider>

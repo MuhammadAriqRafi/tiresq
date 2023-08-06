@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import Navbar from "@/components/navbar";
 import Map, {
   GeolocateControl,
   NavigationControl,
@@ -7,19 +5,23 @@ import Map, {
   Source,
   Layer,
 } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { TRPCError } from "@trpc/server";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-
-type Coords = {
-  routes: [
-    {
-      geometry: {
-        coordinates: number[][];
-      };
-    }
-  ];
-};
+import { useEffect, useRef, useState } from "react";
+import { Footprints, Hourglass, Info, Search } from "lucide-react";
+import { Separator } from "@radix-ui/react-separator";
+import { api } from "@/utils/api";
+import { toast } from "react-hot-toast";
+import Navbar from "@/components/navbar";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 type Position = {
   coords: {
@@ -36,16 +38,11 @@ type Position = {
 
 export default function Home() {
   const geolocateControlRef = useRef(null);
-  const [start, setStart] = useState<number[]>([
-    -6.175280344843217, 106.82718040418617,
-  ]); // I set the default location to Monas :v
   const [goal, setGoal] = useState<number[]>([]);
+  const [start, setStart] = useState<number[]>([]);
+  const [currentPosition, setCurrentPosition] = useState<number[]>([]);
   const [coords, setCoords] = useState<number[][]>();
-  const [viewState, setViewState] = useState({
-    latitude: start[0],
-    longitude: start[1],
-    zoom: 15,
-  });
+  const [viewState, setViewState] = useState({ zoom: 15 });
   const routeSourceData = {
     type: "FeatureCollection",
     features: [
@@ -64,29 +61,102 @@ export default function Home() {
       },
     ],
   };
+  const { data } = api.trips.startTrip.useQuery({
+    currentLocation: {
+      latitude: start[0] ?? null,
+      longitude: start[1] ?? null,
+    },
+  });
+  const ActiveTrip = ({
+    distance,
+    duration,
+    tambal_ban_name,
+  }: {
+    distance?: number;
+    duration?: number;
+    tambal_ban_name?: string;
+  }) => {
+    return (
+      <section className="border-b-1 absolute top-0 flex h-fit w-screen items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
+        <section className="flex flex-col gap-3">
+          <h1 className="text-subheading">{tambal_ban_name}</h1>
+          <div className="flex gap-3">
+            <p className="text-label flex gap-1 font-medium text-gray-500">
+              <Footprints size={16} /> {distance ?? 0} Km
+            </p>
+            <p className="text-label flex gap-1 font-medium text-gray-500">
+              <Hourglass size={16} /> {duration ?? 0} Min
+            </p>
+          </div>
+        </section>
+        <Separator orientation="vertical" className="h-9 w-[1px] bg-border" />
+        <section className="flex gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-red-500 text-red-500"
+              >
+                Batalin
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="flex flex-col gap-8" side="bottom">
+              <SheetHeader>
+                <SheetTitle className="text-left text-lg font-semibold">
+                  Yakin mau batalin perjalanan ?
+                </SheetTitle>
+              </SheetHeader>
+
+              <SheetFooter className="flex w-full flex-row gap-3">
+                <Button
+                  variant="outline"
+                  className="flex-grow"
+                  onClick={handleCancelFindNearestTambalBan}
+                >
+                  Yakin
+                </Button>
+                <SheetClose asChild>
+                  <Button type="submit" className="flex-grow">
+                    Tidak
+                  </Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          <Button
+            size="sm"
+            className="bg-green-600"
+            onClick={() => {
+              toast("Fiturnya masih dalam tahap pengembangan yaa :)", {
+                icon: <Info />,
+              });
+            }}
+          >
+            Sampai
+          </Button>
+        </section>
+      </section>
+    );
+  };
 
   function handleFindNearestTambalBan() {
-    setGoal([105.26457301928066, -5.3800448416065025]);
+    const latitude = parseFloat(data!.latitude);
+    const longitude = parseFloat(data!.longitude);
+    setGoal([longitude, latitude]);
+    setCoords(data!.coords);
+
     // @ts-ignore
     (geolocateControlRef.current as { trigger: void }).trigger();
   }
-
   function handleCancelFindNearestTambalBan() {
     setCoords([]);
     setGoal([]);
+
+    // @ts-ignore
+    (geolocateControlRef.current as { trigger: void }).trigger();
   }
-
-  const getRoute = useCallback(async () => {
-    if (goal?.length !== 0) {
-      const mapboxDirectionsAPI = `https://api.mapbox.com/directions/v5/mapbox/walking/${start[1]},${start[0]};${goal[0]},${goal[1]}?steps=true&geometries=geojson&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-      const response = await fetch(mapboxDirectionsAPI);
-      if (!response.ok) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const data = (await response.json()) as Coords;
-      const coords = data?.routes[0]?.geometry?.coordinates;
-      setCoords(coords);
-    }
-  }, [goal, start]);
-
   function getUserLocation() {
     function onSuccess({ coords }: Position) {
       setStart([coords.latitude, coords.longitude]);
@@ -110,8 +180,35 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (goal?.length !== 0) void getRoute();
-  }, [goal, getRoute]);
+    let watchId = 4;
+
+    if (navigator.geolocation) {
+      const options = {
+        maximumAge: 0, // Don't use a cached position
+        timeout: 5000, // Set a timeout for the request (in milliseconds)
+        enableHighAccuracy: true, // Use high accuracy if available
+      };
+
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          // Use the latitude and longitude to update the geolocation on the map
+          setCurrentPosition([latitude, longitude]);
+        },
+        (error) => {
+          console.error("Error watching user location:", error);
+        },
+        options
+      );
+    } else console.error("Geolocation is not supported by this browser.");
+
+    console.log(currentPosition);
+
+    return navigator.geolocation.clearWatch(watchId);
+  }, [currentPosition]);
+
+  if (!data) return <h1>Something went wrong</h1>;
 
   return (
     <main className="flex h-screen items-center justify-center">
@@ -156,29 +253,37 @@ export default function Home() {
           position="bottom-right"
           trackUserLocation={true}
           showAccuracyCircle={false}
-          style={{ marginBottom: 56 }}
+          style={{ position: "absolute", bottom: 184 }}
           positionOptions={{ enableHighAccuracy: true }}
-          fitBoundsOptions={{ zoom: 15, duration: 2000 }}
+          fitBoundsOptions={{ zoom: 15 }}
           onGeolocate={(e) => setStart([e.coords.latitude, e.coords.longitude])}
         />
 
-        <NavigationControl position="bottom-right" />
-        <Marker longitude={start[1]!} latitude={start[0]!} />
+        <NavigationControl
+          position="bottom-right"
+          style={{ position: "absolute", bottom: 88 }}
+        />
+
+        {start.length !== 0 ? (
+          <Marker longitude={start[1]!} latitude={start[0]!} />
+        ) : null}
       </Map>
 
       {goal?.length !== 0 ? (
-        <Button
-          variant="destructive"
-          className="absolute bottom-24"
-          onClick={handleCancelFindNearestTambalBan}
-        >
-          Batal
-        </Button>
+        <>
+          <ActiveTrip
+            tambal_ban_name={data.name}
+            distance={data.distance}
+            duration={data.duration}
+          />
+        </>
       ) : (
         <Button
-          className="absolute bottom-24"
+          className="absolute bottom-24 flex gap-2"
           onClick={handleFindNearestTambalBan}
+          size="lg"
         >
+          <Search size={20} />
           Cari Tambal Ban
         </Button>
       )}
