@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { type AppType } from "next/app";
 import ToasterBase from "@/components/ui/toaster-base";
 import NextTopLoader from "nextjs-toploader";
+import { Analytics } from "@vercel/analytics/react";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,6 +25,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <div className={inter.className}>
         <NextTopLoader showSpinner={false} />
         <ToasterBase />
+        <Analytics />
         <Component {...pageProps} />
       </div>
     </ClerkProvider>
