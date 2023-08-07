@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { type AppType } from "next/app";
 import ToasterBase from "@/components/ui/toaster-base";
+import NextTopLoader from "nextjs-toploader";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,6 +22,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
 
       <div className={inter.className}>
+        <NextTopLoader showSpinner={false} />
         <ToasterBase />
         <Component {...pageProps} />
       </div>

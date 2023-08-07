@@ -36,12 +36,18 @@ type Position = {
   timestamp: number;
 };
 
+type ActiveTrip = {
+  distance?: number;
+  duration?: number;
+  tambal_ban_name?: string;
+};
+
 export default function Home() {
   const geolocateControlRef = useRef(null);
   const [goal, setGoal] = useState<number[]>([]);
   const [start, setStart] = useState<number[]>([]);
-  const [currentPosition, setCurrentPosition] = useState<number[]>([]);
   const [coords, setCoords] = useState<number[][]>();
+  const [currentPosition, setCurrentPosition] = useState<number[]>([]);
   const [viewState, setViewState] = useState({ zoom: 15 });
   const routeSourceData = {
     type: "FeatureCollection",
@@ -67,19 +73,11 @@ export default function Home() {
       longitude: start[1] ?? null,
     },
   });
-  const ActiveTrip = ({
-    distance,
-    duration,
-    tambal_ban_name,
-  }: {
-    distance?: number;
-    duration?: number;
-    tambal_ban_name?: string;
-  }) => {
+  const ActiveTrip = ({ distance, duration, tambal_ban_name }: ActiveTrip) => {
     return (
       <section className="border-b-1 absolute top-0 flex h-fit w-screen items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
         <section className="flex flex-col gap-3">
-          <h1 className="text-subheading">{tambal_ban_name}</h1>
+          <h1 className="text-subheading">{tambal_ban_name ?? "Unknown"}</h1>
           <div className="flex gap-3">
             <p className="text-label flex gap-1 font-medium text-gray-500">
               <Footprints size={16} /> {distance ?? 0} Km
@@ -97,6 +95,9 @@ export default function Home() {
                 size="sm"
                 variant="outline"
                 className="border-red-500 text-red-500"
+                onClick={() => {
+                  toast.dismiss();
+                }}
               >
                 Batalin
               </Button>
@@ -142,14 +143,16 @@ export default function Home() {
   };
 
   function handleFindNearestTambalBan() {
-    const latitude = parseFloat(data!.latitude);
-    const longitude = parseFloat(data!.longitude);
+    if (!data) return;
+    const latitude = parseFloat(data.latitude);
+    const longitude = parseFloat(data.longitude);
     setGoal([longitude, latitude]);
-    setCoords(data!.coords);
+    setCoords(data.coords);
 
     // @ts-ignore
     (geolocateControlRef.current as { trigger: void }).trigger();
   }
+
   function handleCancelFindNearestTambalBan() {
     setCoords([]);
     setGoal([]);
@@ -157,6 +160,7 @@ export default function Home() {
     // @ts-ignore
     (geolocateControlRef.current as { trigger: void }).trigger();
   }
+
   function getUserLocation() {
     function onSuccess({ coords }: Position) {
       setStart([coords.latitude, coords.longitude]);
@@ -166,8 +170,19 @@ export default function Home() {
         longitude: coords.longitude,
       }));
     }
+
     function onError() {
       console.error("Error getting user location");
+      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
+        position: "top-center",
+        duration: 5000,
+      });
+      setViewState((prevState) => ({
+        ...prevState,
+        zoom: 10,
+        longitude: 105.31483876684943,
+        latitude: -5.358125429208756,
+      })); // I set the default location to Insitute Technology of Sumatera
     }
 
     if (navigator.geolocation) {
@@ -208,78 +223,76 @@ export default function Home() {
     return navigator.geolocation.clearWatch(watchId);
   }, [currentPosition]);
 
-  if (!data) return <h1>Something went wrong</h1>;
-
   return (
-    <main className="flex h-screen items-center justify-center">
+    <main className="flex h-screen items-center justify-center overflow-hidden">
       <Map
         {...viewState}
         reuseMaps={true}
         onMove={(e) => setViewState(e.viewState)}
+        style={{ height: "100vh", width: "100vw" }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        style={{ height: "100vh", width: "100vw" }}
       >
-        <Source id="routeSource" type="geojson" data={routeSourceData}>
-          <Layer
-            id="routeLayer"
-            type="line"
-            layout={{ "line-join": "round", "line-cap": "round" }}
-            paint={{
-              "line-color": "#0D1282",
-              "line-width": 7,
-              "line-opacity": 1,
-            }}
-          />
-        </Source>
-
-        <Source id="goalSource" type="geojson" data={goalSourceData}>
-          <Layer
-            id="goalLayer"
-            type="circle"
-            paint={{
-              "circle-radius": 13,
-              "circle-color": "#0D1282",
-              "circle-opacity": 1,
-              "circle-stroke-color": "#EAEAEA",
-              "circle-stroke-opacity": 1,
-              "circle-stroke-width": 3,
-            }}
-          />
-        </Source>
-
         <GeolocateControl
           ref={geolocateControlRef}
           position="bottom-right"
           trackUserLocation={true}
           showAccuracyCircle={false}
-          style={{ position: "absolute", bottom: 184 }}
-          positionOptions={{ enableHighAccuracy: true }}
           fitBoundsOptions={{ zoom: 15 }}
+          style={{ position: "fixed", bottom: 184 }}
+          positionOptions={{ enableHighAccuracy: true }}
           onGeolocate={(e) => setStart([e.coords.latitude, e.coords.longitude])}
         />
 
         <NavigationControl
           position="bottom-right"
-          style={{ position: "absolute", bottom: 88 }}
+          style={{ position: "fixed", bottom: 88 }}
         />
 
         {start.length !== 0 ? (
-          <Marker longitude={start[1]!} latitude={start[0]!} />
+          <>
+            <Source id="routeSource" type="geojson" data={routeSourceData}>
+              <Layer
+                id="routeLayer"
+                type="line"
+                layout={{ "line-join": "round", "line-cap": "round" }}
+                paint={{
+                  "line-color": "#0D1282",
+                  "line-width": 7,
+                  "line-opacity": 1,
+                }}
+              />
+            </Source>
+            <Source id="goalSource" type="geojson" data={goalSourceData}>
+              <Layer
+                id="goalLayer"
+                type="circle"
+                paint={{
+                  "circle-radius": 13,
+                  "circle-color": "#0D1282",
+                  "circle-opacity": 1,
+                  "circle-stroke-color": "#EAEAEA",
+                  "circle-stroke-opacity": 1,
+                  "circle-stroke-width": 3,
+                }}
+              />
+            </Source>
+            <Marker longitude={start[1]!} latitude={start[0]!} />
+          </>
         ) : null}
       </Map>
 
       {goal?.length !== 0 ? (
         <>
           <ActiveTrip
-            tambal_ban_name={data.name}
-            distance={data.distance}
-            duration={data.duration}
+            tambal_ban_name={data!.name}
+            distance={data!.distance}
+            duration={data!.duration}
           />
         </>
       ) : (
         <Button
-          className="absolute bottom-24 flex gap-2"
+          className="fixed bottom-24 flex gap-2"
           onClick={handleFindNearestTambalBan}
           size="lg"
         >
