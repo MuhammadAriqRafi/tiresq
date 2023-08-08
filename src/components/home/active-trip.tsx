@@ -13,19 +13,14 @@ import { Footprints, Hourglass, Info } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "react-hot-toast";
 
-type ActiveTrip = {
+type Trip = {
   distance?: number;
   duration?: number;
   tambalBanName?: string;
   onCancel: () => void;
 };
 
-const ActiveTrips = ({
-  distance,
-  duration,
-  tambalBanName,
-  onCancel,
-}: ActiveTrip) => {
+const ActiveTrip = ({ distance, duration, tambalBanName, onCancel }: Trip) => {
   return (
     <section className="border-b-1 absolute top-0 flex h-fit w-screen items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
       <section className="flex flex-col gap-3">
@@ -94,4 +89,4 @@ const ActiveTrips = ({
   );
 };
 
-export default memo(ActiveTrips);
+export default memo(ActiveTrip);

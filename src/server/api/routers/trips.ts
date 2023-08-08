@@ -34,7 +34,7 @@ export const tripsRouter = createTRPCRouter({
         .object({
           historyId: z.number(),
         })
-        .optional()
+        .nullable()
     )
     .query(async ({ ctx, input }) => {
       if (input) {

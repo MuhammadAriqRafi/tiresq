@@ -4,27 +4,32 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { RatingProps } from "./history-rating";
+import { historyStore } from "@/lib/store/history-store";
+import { type RouterOutputs } from "@/utils/api";
 
 dayjs.extend(relativeTime);
 
-type Props = {
-  created_at: Date;
-  status: string;
-  tambal_ban_name: string;
-  rating: RatingProps;
-};
+type Props = { historyId: number };
+type History = RouterOutputs["trips"]["getTrip"][number];
 
-export default function HistoryItem({
-  status,
-  created_at,
-  tambal_ban_name,
-  rating,
-}: Props) {
+export default function HistoryItem({ historyId }: Props) {
+  const history = historyStore((state) => state.histories).find(
+    (history) => history.id === historyId
+  ) as unknown as History;
+
   const statusColor: Map<string, string> = new Map();
   statusColor.set("completed", "bg-green-300");
   statusColor.set("cancelled", "bg-red-300");
   statusColor.set("onprogress", "bg-yellow-300");
+
+  if (!history)
+    return (
+      <article className="mb-4 bg-white px-6 py-3 shadow-md">
+        <h1>Something went wrong</h1>
+      </article>
+    );
+
+  const { status, created_at, tambal_ban } = history;
 
   return (
     <article className="mb-4 bg-white px-6 py-3 shadow-md">
@@ -33,13 +38,13 @@ export default function HistoryItem({
           <Image
             src="/assets/default.svg"
             alt="Foto Gerai Tambal Ban"
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: "cover", borderRadius: 4 }}
             sizes="80px"
             fill
           />
         </div>
         <div className="flex flex-col gap-y-1">
-          <h2 className="text-subheading">{tambal_ban_name}</h2>
+          <h2 className="text-subheading">{tambal_ban.name}</h2>
           <p className="text-label">
             {dayjs(created_at).format("D MMM, HH:mm")}
           </p>
@@ -54,7 +59,7 @@ export default function HistoryItem({
       {status === "completed" ? (
         <>
           <Separator className="my-4" />
-          <Rating {...rating} />
+          <Rating historyId={historyId} />
         </>
       ) : null}
     </article>

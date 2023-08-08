@@ -6,7 +6,7 @@ import Map, {
   Layer,
 } from "react-map-gl";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Info, Loader2, Search } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
@@ -61,20 +61,20 @@ export default function Home() {
         longitude: start[1] ?? null,
       },
     },
-    { enabled: onTrip, refetchOnWindowFocus: false }
+    { enabled: onTrip }
   );
 
-  function handleFindNearestTambalBan() {
-    setOnTrip(true);
-
-    // @ts-ignore
-    (geolocateControlRef.current as { trigger: void }).trigger();
-  }
-
-  function handleCancelFindNearestTambalBan() {
+  const handleCancelFindNearestTambalBan = useCallback(() => {
     setOnTrip(false);
     setCoords([]);
     setGoal([]);
+
+    // @ts-ignore
+    (geolocateControlRef.current as { trigger: void }).trigger();
+  }, []);
+
+  function handleFindNearestTambalBan() {
+    setOnTrip(true);
 
     // @ts-ignore
     (geolocateControlRef.current as { trigger: void }).trigger();
@@ -114,7 +114,7 @@ export default function Home() {
             } pointer-events-auto flex w-full max-w-md items-center gap-4 rounded-lg bg-white py-4 pl-4 shadow-lg ring-1 ring-black ring-opacity-5`}
           >
             <Info className="self-start" size={24} />
-            <p className="text-label font-medium">
+            <p className="text-label font-semibold">
               Yah... kita gak dapet izin akses lokasi kamu :(, coba ganti izin
               akses lokasi browser kamu{" "}
               <a
@@ -149,13 +149,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (data) {
+    if (data && onTrip) {
       const latitude = parseFloat(data.latitude);
       const longitude = parseFloat(data.longitude);
       setGoal([longitude, latitude]);
       setCoords(data.coords);
     }
-  }, [isFetching, data]);
+  }, [isFetching, data, onTrip]);
 
   if (isError && error.data?.httpStatus === 500)
     toast.error("Yah, lagi ada gangguan :(, coba lagi nanti yaa", {
@@ -222,7 +222,7 @@ export default function Home() {
         ) : null}
       </Map>
 
-      {onTrip ? (
+      {onTrip && !isFetching ? (
         <ActiveTrip
           tambalBanName={data?.name}
           distance={data?.distance}
@@ -243,6 +243,12 @@ export default function Home() {
             <Search size={20} />
           )}
           Cari Tambal Ban
+        </Button>
+      ) : null}
+
+      {onTrip && isFetching ? (
+        <Button className="fixed bottom-24" variant="outline" size="icon">
+          <Loader2 className="animate-spin" size={20} />
         </Button>
       ) : null}
 

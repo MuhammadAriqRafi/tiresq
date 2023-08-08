@@ -1,16 +1,24 @@
 import Head from "next/head";
-import { api } from "@/utils/api";
-import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
-import { type AppType } from "next/app";
-import ToasterBase from "@/components/ui/toaster-base";
 import NextTopLoader from "nextjs-toploader";
+import ToasterBase from "@/components/ui/toaster-base";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from "next/font/google";
+import { type AppType } from "next/app";
+import { api } from "@/utils/api";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const TiresQ: AppType = ({ Component, pageProps }) => {
   return (
     <ClerkProvider {...pageProps}>
       <Head>
@@ -26,10 +34,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <NextTopLoader showSpinner={false} />
         <ToasterBase />
         <Analytics />
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
       </div>
     </ClerkProvider>
   );
 };
 
-export default api.withTRPC(MyApp);
+export default api.withTRPC(TiresQ);

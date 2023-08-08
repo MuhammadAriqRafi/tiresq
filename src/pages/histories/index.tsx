@@ -1,48 +1,34 @@
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import { api } from "@/utils/api";
-import type { RouterOutputs } from "@/utils/api";
-import HistoryItem from "@/components/histories/history-item";
 import FilterList from "@/components/histories/filter-list";
+import HistoryItem from "@/components/histories/history-item";
 import HistoriesLoading from "@/components/loadings/histories-loading";
+import { api, type RouterOutputs } from "@/utils/api";
+import { historyStore } from "@/lib/store/history-store";
+import { useEffect } from "react";
 
 type Histories = RouterOutputs["trips"]["getTrip"];
 type History = RouterOutputs["trips"]["getTrip"][number];
 
 const HistoryList = ({ histories }: { histories: Histories }) => {
   return (
-    <div className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
-      <>
-        {histories.map(
-          (
-            { id, status, created_at, tambal_ban, rating, review }: History,
-            index: number
-          ) => {
-            return (
-              <HistoryItem
-                key={index}
-                created_at={created_at}
-                status={status}
-                tambal_ban_name={tambal_ban.name}
-                rating={{
-                  historyId: id,
-                  isExpired: false,
-                  star: rating?.star ?? undefined,
-                  review: review?.review ?? undefined,
-                }}
-              />
-            );
-          }
-        )}
-      </>
-    </div>
+    <main className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
+      {histories.map(({ id }: History, index: number) => {
+        return <HistoryItem key={index} historyId={id} />;
+      })}
+    </main>
   );
 };
 
 export default function Histories() {
-  const { data: histories, isLoading } = api.trips.getTrip.useQuery();
+  const { data, isLoading, isError } = api.trips.getTrip.useQuery(null);
+  const setHistories = historyStore((state) => state.setHistories);
 
-  if (!isLoading && !histories)
+  useEffect(() => {
+    if (data) setHistories(data);
+  }, [data, setHistories]);
+
+  if (isError)
     return (
       <main className="flex h-screen w-screen items-center justify-center">
         <h1>Something went wrong</h1>
@@ -60,13 +46,7 @@ export default function Histories() {
         <FilterList />
       </header>
 
-      {isLoading ? (
-        <HistoriesLoading />
-      ) : (
-        <main>
-          <HistoryList histories={histories} />
-        </main>
-      )}
+      {isLoading ? <HistoriesLoading /> : <HistoryList histories={data} />}
 
       <Navbar />
     </>
