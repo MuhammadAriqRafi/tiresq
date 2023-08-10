@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
-import { type AppType } from "next/app";
+import { type AppType, type AppProps } from "next/app";
 import { api } from "@/utils/api";
 import "@/styles/globals.css";
 
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const TiresQ: AppType = ({ Component, pageProps }) => {
+const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <ClerkProvider {...pageProps}>
       <Head>

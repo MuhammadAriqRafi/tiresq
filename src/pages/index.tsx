@@ -5,14 +5,15 @@ import Map, {
   Source,
   Layer,
 } from "react-map-gl";
+import Navbar from "@/components/navbar";
+import ActiveTrip from "@/components/home/active-trip";
 import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Info, Loader2, Search } from "lucide-react";
-import { api } from "@/utils/api";
+import { tripStore } from "@/lib/store/trip-store";
 import { toast } from "react-hot-toast";
-import Navbar from "@/components/navbar";
+import { api } from "@/utils/api";
 import "mapbox-gl/dist/mapbox-gl.css";
-import ActiveTrip from "@/components/home/active-trip";
 
 type Position = {
   coords: {
@@ -29,31 +30,15 @@ type Position = {
 
 export default function Home() {
   const geolocateControlRef = useRef(null);
-  const [goal, setGoal] = useState<number[]>([]);
   const [start, setStart] = useState<number[]>([]);
-  const [coords, setCoords] = useState<number[][]>([]);
-  const [onTrip, setOnTrip] = useState<boolean>(false);
-  const [isGeolocationPermitted, setIsGeolocationPermitted] =
-    useState<boolean>(false);
   const [viewState, setViewState] = useState({ zoom: 15 });
-  const routeSourceData = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "feature",
-        geometry: { type: "LineString", coordinates: coords },
-      },
-    ],
-  };
-  const goalSourceData = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "feature",
-        geometry: { type: "Point", coordinates: goal },
-      },
-    ],
-  };
+  const [isGeolocationPermitted, setIsGeolocationPermitted] = useState(false);
+  const [trip, onTrip, setTrip, setOnTrip] = tripStore((state) => [
+    state.trip,
+    state.onTrip,
+    state.setTrip,
+    state.setOnTrip,
+  ]);
   const { data, isFetching, isError, error } = api.trips.startTrip.useQuery(
     {
       currentLocation: {
@@ -64,23 +49,47 @@ export default function Home() {
     { enabled: onTrip }
   );
 
-  const handleCancelFindNearestTambalBan = useCallback(() => {
-    setOnTrip(false);
-    setCoords([]);
-    setGoal([]);
+  const goalSourceData = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "feature",
+        geometry: {
+          type: "Point",
+          coordinates: onTrip && data ? [trip?.longitude, trip?.latitude] : [],
+        },
+      },
+    ],
+  };
+  const routeSourceData = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "feature",
+        geometry: {
+          type: "LineString",
+          coordinates:
+            onTrip && trip?.coords && !isFetching ? trip?.coords : [],
+        },
+      },
+    ],
+  };
 
-    // @ts-ignore
-    (geolocateControlRef.current as { trigger: void }).trigger();
-  }, []);
-
-  function handleFindNearestTambalBan() {
+  const handleFindNearestTambalBan = () => {
     setOnTrip(true);
 
     // @ts-ignore
     (geolocateControlRef.current as { trigger: void }).trigger();
-  }
+  };
 
-  function getUserLocation() {
+  const handleCancelFindNearestTambalBan = useCallback(() => {
+    setOnTrip(false);
+
+    // @ts-ignore
+    (geolocateControlRef.current as { trigger: void }).trigger();
+  }, [setOnTrip]);
+
+  const getUserLocation = () => {
     function onSuccess({ coords }: Position) {
       setIsGeolocationPermitted(true);
       setStart([coords.latitude, coords.longitude]);
@@ -107,31 +116,33 @@ export default function Home() {
 
       console.error("Error getting user location");
       toast.custom(
-        (t) => (
-          <div
-            className={`${
-              t.visible ? "animate-enter" : "animate-leave"
-            } pointer-events-auto flex w-full max-w-md items-center gap-4 rounded-lg bg-white py-4 pl-4 shadow-lg ring-1 ring-black ring-opacity-5`}
-          >
-            <Info className="self-start" size={24} />
-            <p className="text-label font-semibold">
-              Yah... kita gak dapet izin akses lokasi kamu :(, coba ganti izin
-              akses lokasi browser kamu{" "}
-              <a
-                target="_blank"
-                className="text-blue-400 underline"
-                href="https://support.google.com/chrome/answer/114662?hl=en"
-              >
-                disini
-              </a>
-            </p>
-            <div className="ml-auto flex border-l border-gray-200">
-              <Button variant="link" onClick={() => toast.dismiss(t.id)}>
-                Close
-              </Button>
+        (t) => {
+          return (
+            <div
+              className={`${
+                t.visible ? "animate-enter" : "animate-leave"
+              } pointer-events-auto flex w-full max-w-md items-center gap-4 rounded-lg bg-white py-4 pl-4 shadow-lg ring-1 ring-black ring-opacity-5`}
+            >
+              <Info className="self-start" size={24} />
+              <p className="text-label font-semibold">
+                Yah... kita gak dapet izin akses lokasi kamu :(, coba ganti izin
+                akses lokasi browser kamu{" "}
+                <a
+                  target="_blank"
+                  className="text-blue-400 underline"
+                  href="https://support.google.com/chrome/answer/114662?hl=en"
+                >
+                  disini
+                </a>
+              </p>
+              <div className="ml-auto flex border-l border-gray-200">
+                <Button variant="link" onClick={() => toast.dismiss(t.id)}>
+                  Close
+                </Button>
+              </div>
             </div>
-          </div>
-        ),
+          );
+        },
         {
           position: "top-center",
           duration: Infinity,
@@ -139,23 +150,18 @@ export default function Home() {
       );
     }
 
-    if (navigator.geolocation) {
+    if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    } else console.error("Geolocation is not supported by this browser.");
-  }
+    else console.error("Geolocation is not supported by this browser.");
+  };
 
   useEffect(() => {
     getUserLocation();
   }, []);
 
   useEffect(() => {
-    if (data && onTrip) {
-      const latitude = parseFloat(data.latitude);
-      const longitude = parseFloat(data.longitude);
-      setGoal([longitude, latitude]);
-      setCoords(data.coords);
-    }
-  }, [isFetching, data, onTrip]);
+    if (data && onTrip) setTrip(data);
+  }, [data, onTrip, setTrip]);
 
   if (isError && error.data?.httpStatus === 500)
     toast.error("Yah, lagi ada gangguan :(, coba lagi nanti yaa", {
@@ -171,9 +177,7 @@ export default function Home() {
         style={{ height: "100vh", width: "100vw" }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        onMove={(e) => {
-          if (!isError) setViewState(e.viewState);
-        }}
+        onMove={(e) => setViewState(e.viewState)}
       >
         <Source id="routeSource" type="geojson" data={routeSourceData}>
           <Layer
@@ -205,7 +209,7 @@ export default function Home() {
         <GeolocateControl
           ref={geolocateControlRef}
           position="bottom-right"
-          trackUserLocation={true}
+          trackUserLocation={false}
           showAccuracyCircle={false}
           fitBoundsOptions={{ zoom: 15 }}
           style={{ position: "fixed", bottom: 184 }}
@@ -252,7 +256,9 @@ export default function Home() {
         </Button>
       ) : null}
 
-      <Navbar />
+      <section onClick={() => toast.dismiss()}>
+        <Navbar />
+      </section>
     </main>
   );
 }
