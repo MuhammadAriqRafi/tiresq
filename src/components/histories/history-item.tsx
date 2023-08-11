@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { historyStore } from "@/lib/store/history-store";
 import { type RouterOutputs } from "@/utils/api";
+import { capitalizeFirstLetter } from "@/utils/utils";
 
 dayjs.extend(relativeTime);
 
@@ -51,7 +52,7 @@ export default function HistoryItem({ historyId }: Props) {
         </div>
         <span className="ml-auto">
           <Badge variant="secondary" className={statusColor.get(status)}>
-            {status}
+            {capitalizeFirstLetter(status)}
           </Badge>
         </span>
       </div>

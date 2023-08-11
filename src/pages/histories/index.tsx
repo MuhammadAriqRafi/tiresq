@@ -11,10 +11,15 @@ type Histories = RouterOutputs["trips"]["getTrip"];
 type History = RouterOutputs["trips"]["getTrip"][number];
 
 const HistoryList = ({ histories }: { histories: Histories }) => {
+  const filterStatusBy = historyStore((state) => state.filterStatusBy);
+
   return (
     <main className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
-      {histories.map(({ id }: History, index: number) => {
-        return <HistoryItem key={index} historyId={id} />;
+      {histories.map(({ id, status }: History, index: number) => {
+        if (filterStatusBy === "none")
+          return <HistoryItem key={index} historyId={id} />;
+        if (filterStatusBy === status)
+          return <HistoryItem key={index} historyId={id} />;
       })}
     </main>
   );
