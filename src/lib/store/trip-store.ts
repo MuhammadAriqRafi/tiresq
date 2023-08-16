@@ -1,21 +1,21 @@
 import { type RouterOutputs } from "@/utils/api";
 import { create } from "zustand";
 
-type Trip = RouterOutputs["trips"]["startTrip"];
+type Destination = RouterOutputs["trips"]["findNearestTambalBan"];
 
 type Store = {
-  trip?: Trip;
-  onTrip: boolean;
+  destination?: Destination;
+  isOnTrip: boolean;
 };
 
 type Actions = {
-  setTrip: (trip: Trip) => void;
-  setOnTrip: (onTrip: boolean) => void;
+  setIsOnTrip: (isOnTrip: boolean) => void;
+  setDestination: (destination: Destination) => void;
 };
 
 export const tripStore = create<Store & Actions>((set) => ({
-  onTrip: false,
-  trip: undefined,
-  setTrip: (trip: Trip) => set(() => ({ trip })),
-  setOnTrip: (onTrip: boolean) => set(() => ({ onTrip })),
+  isOnTrip: false,
+  destination: undefined,
+  setIsOnTrip: (isOnTrip: boolean) => set(() => ({ isOnTrip })),
+  setDestination: (destination: Destination) => set(() => ({ destination })),
 }));
