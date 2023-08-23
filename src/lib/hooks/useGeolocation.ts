@@ -14,16 +14,25 @@ type Position = {
   timestamp: number;
 };
 
+export type LatLng = {
+  latitude: number;
+  longitude: number;
+};
+
 export default function useGeolocation() {
   const [isGeolocationError, setIsGeolocationError] = useState<boolean>(true);
   const [isGeolocationPermitted, setIsGeolocationPermitted] = useState(false);
-  const [userCurrentCoordinate, setUserCurrentCoordinate] = useState<number[]>([
-    -5.358125429208756, 105.31483876684943,
-  ]); // I set the default location to Insitute Technology of Sumatera
+  const [userCurrentCoordinate, setUserCurrentCoordinate] = useState({
+    latitude: -5.358125429208756,
+    longitude: 105.31483876684943,
+  }); // I set the default location to Insitute Technology of Sumatera
 
   const getUserLocation = () => {
     function onSuccess({ coords }: Position) {
-      setUserCurrentCoordinate([coords.latitude, coords.longitude]);
+      setUserCurrentCoordinate({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
       setIsGeolocationPermitted(true);
       setIsGeolocationError(false);
     }

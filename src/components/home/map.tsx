@@ -6,19 +6,20 @@ import Mapbox, {
   Layer,
 } from "react-map-gl";
 import { useEffect, useRef, useState } from "react";
+import { type LatLng } from "@/lib/hooks/useGeolocation";
 
 type Props = {
   isGeolocationError: boolean;
   isGeolocationPermitted: boolean;
-  userCurrentCoordinate: number[];
   isFetchingDestination: boolean;
+  userCurrentCoordinate: LatLng;
   isOnTrip: boolean;
   destination?: {
     latitude?: string;
     longitude?: string;
     coords?: number[][];
   };
-  onGeolocate: (coord: number[]) => void;
+  onGeolocate: (coord: LatLng) => void;
 };
 
 export default function HomeMap({
@@ -27,14 +28,14 @@ export default function HomeMap({
   isFetchingDestination,
   isGeolocationError,
   onGeolocate,
-  isOnTrip,
   destination,
+  isOnTrip,
 }: Props) {
   const geolocateControlRef = useRef(null);
   const [viewState, setViewState] = useState({
     zoom: 10,
-    latitude: userCurrentCoordinate[0],
-    longitude: userCurrentCoordinate[1],
+    latitude: userCurrentCoordinate.latitude,
+    longitude: userCurrentCoordinate.longitude,
   });
   const goalSourceData = {
     type: "FeatureCollection",
@@ -68,12 +69,17 @@ export default function HomeMap({
   };
 
   useEffect(() => {
+    if (geolocateControlRef.current !== null)
+      (geolocateControlRef.current as { trigger: () => void }).trigger();
+  }, [isOnTrip, geolocateControlRef.current]);
+
+  useEffect(() => {
     if (!isGeolocationError)
       setViewState((prevState) => ({
         ...prevState,
         zoom: 15,
-        latitude: userCurrentCoordinate[0],
-        longitude: userCurrentCoordinate[1],
+        latitude: userCurrentCoordinate.latitude,
+        longitude: userCurrentCoordinate.longitude,
       }));
   }, [userCurrentCoordinate, isGeolocationError]);
 
@@ -122,7 +128,10 @@ export default function HomeMap({
         style={{ position: "fixed", bottom: 184 }}
         positionOptions={{ enableHighAccuracy: true }}
         onGeolocate={(e) =>
-          onGeolocate([e.coords.latitude, e.coords.longitude])
+          onGeolocate({
+            latitude: e.coords.latitude,
+            longitude: e.coords.longitude,
+          })
         }
       />
       <NavigationControl
@@ -132,8 +141,8 @@ export default function HomeMap({
 
       {isGeolocationPermitted ? (
         <Marker
-          longitude={userCurrentCoordinate[1]!}
-          latitude={userCurrentCoordinate[0]!}
+          latitude={userCurrentCoordinate.latitude}
+          longitude={userCurrentCoordinate.longitude}
         />
       ) : null}
     </Mapbox>
