@@ -5,13 +5,13 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { historyStore } from "@/lib/store/history-store";
-import { type RouterOutputs } from "@/utils/api";
 import { capitalizeFirstLetter } from "@/utils/utils";
+import { type RouterOutputs } from "@/utils/api";
 
 dayjs.extend(relativeTime);
 
 type Props = { historyId: number };
-type History = RouterOutputs["trips"]["getTrip"][number];
+type History = RouterOutputs["trips"]["index"][number];
 
 export default function HistoryItem({ historyId }: Props) {
   const history = historyStore((state) => state.histories).find(
@@ -30,7 +30,7 @@ export default function HistoryItem({ historyId }: Props) {
       </article>
     );
 
-  const { status, created_at, tambal_ban } = history;
+  const { status, created_at, destination } = history;
 
   return (
     <article className="mb-4 bg-white px-6 py-3 shadow-md">
@@ -45,7 +45,7 @@ export default function HistoryItem({ historyId }: Props) {
           />
         </div>
         <div className="flex flex-col gap-y-1">
-          <h2 className="text-subheading">{tambal_ban.name}</h2>
+          <h2 className="text-subheading">{destination.name}</h2>
           <p className="text-label">
             {dayjs(created_at).format("D MMM, HH:mm")}
           </p>

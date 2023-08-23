@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { type RouterOutputs } from "@/utils/api";
 
-type Histories = RouterOutputs["trips"]["getTrip"];
+type Histories = RouterOutputs["trips"]["index"];
 type TripStatus = "completed" | "cancelled" | "onprogress" | "none";
 
 type Store = {
@@ -11,13 +11,13 @@ type Store = {
 
 type Actions = {
   setHistories: (histories: Histories) => void;
-  setFilteredStatusBy: (status: TripStatus) => void;
+  setFilterStatusBy: (status: TripStatus) => void;
 };
 
 export const historyStore = create<Store & Actions>((set) => ({
   histories: [],
   filterStatusBy: "none",
   setHistories: (histories: Histories) => set(() => ({ histories })),
-  setFilteredStatusBy: (filterStatusBy: TripStatus) =>
+  setFilterStatusBy: (filterStatusBy: TripStatus) =>
     set(() => ({ filterStatusBy })),
 }));

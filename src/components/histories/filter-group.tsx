@@ -10,15 +10,17 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { type TripStatus } from "@prisma/client";
 import { historyStore } from "@/lib/store/history-store";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { type TripStatus } from "@prisma/client";
 
-export default function FilterList() {
-  const [filterStatusBy, setFilteredStatusBy] = historyStore((state) => [
-    state.filterStatusBy,
-    state.setFilteredStatusBy,
-  ]);
+export default function FilterGroup() {
+  const [filterStatusBy, setFilterStatusBy] = historyStore(
+    ({ filterStatusBy, setFilterStatusBy }) => [
+      filterStatusBy,
+      setFilterStatusBy,
+    ]
+  );
 
   return (
     <div className="flex gap-4">
@@ -41,7 +43,7 @@ export default function FilterList() {
           </SheetHeader>
           <RadioGroup
             value={filterStatusBy}
-            onValueChange={(value: TripStatus) => setFilteredStatusBy(value)}
+            onValueChange={(value: TripStatus) => setFilterStatusBy(value)}
           >
             <Label
               className="flex w-full cursor-pointer items-center justify-between border-b border-b-gray-200 pb-3 text-base"
@@ -69,7 +71,7 @@ export default function FilterList() {
             <Button
               variant="outline"
               className="w-1/2"
-              onClick={() => setFilteredStatusBy("none")}
+              onClick={() => setFilterStatusBy("none")}
             >
               Reset
             </Button>

@@ -32,7 +32,7 @@ model TambalBan {
     latitude   String   @unique @db.VarChar(25)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
-    Trips      Trip[]
+    visits     Trip[]
 
     @@map("tambal_ban")
 }
@@ -41,7 +41,7 @@ model Rating {
     id         Int      @id @default(autoincrement())
     star       Int?     @db.TinyInt
     created_at DateTime @default(now())
-    Trips      Trip?
+    trips      Trip?
 
     @@map("ratings")
 }
@@ -50,7 +50,7 @@ model Review {
     id         Int      @id @default(autoincrement())
     review     String?  @db.Text
     created_at DateTime @default(now())
-    Trips      Trip?
+    trips      Trip?
 
     @@map("reviews")
 }
@@ -69,7 +69,7 @@ model Trip {
     rating_id     Int?       @unique
     status        TripStatus @default(onprogress)
     created_at    DateTime   @default(now())
-    tambal_ban    TambalBan  @relation(fields: [tambal_ban_id], references: [id])
+    destination   TambalBan  @relation(fields: [tambal_ban_id], references: [id])
     rating        Rating?    @relation(fields: [rating_id], references: [id])
     review        Review?    @relation(fields: [review_id], references: [id])
 

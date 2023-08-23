@@ -21,7 +21,7 @@ dayjs.extend(relativeTime);
 
 type Props = { historyId: number };
 type Rated = { star: number; review?: string };
-type History = RouterOutputs["trips"]["getTrip"][number];
+type History = RouterOutputs["trips"]["index"][number];
 
 const Rated = ({ star, review }: Rated) => {
   return (
@@ -59,7 +59,7 @@ const Unrated = () => {
 };
 
 export default function Rating({ historyId }: Props) {
-  const { created_at, tambal_ban, review, rating } = historyStore(
+  const { created_at, destination, review, rating } = historyStore(
     (state) => state.histories
   ).find((history) => history.id === historyId) as unknown as History;
 
@@ -89,7 +89,7 @@ export default function Rating({ historyId }: Props) {
                   />
                 </div>
                 <div className="flex flex-col gap-2 text-left">
-                  <p className="text">{tambal_ban.name}</p>
+                  <p className="text">{destination.name}</p>
                   <div className="flex items-center gap-2">
                     <p className="text-label">
                       {dayjs(created_at).format("D MMM, HH:mm")}

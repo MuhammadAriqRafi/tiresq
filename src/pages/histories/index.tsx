@@ -1,37 +1,32 @@
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import FilterList from "@/components/histories/filter-list";
+import useHistory from "@/lib/hooks/useHistory";
+import FilterGroup from "@/components/histories/filter-group";
 import HistoryItem from "@/components/histories/history-item";
 import HistoriesLoading from "@/components/loadings/histories-loading";
-import { api, type RouterOutputs } from "@/utils/api";
+import { type RouterOutputs } from "@/utils/api";
 import { historyStore } from "@/lib/store/history-store";
-import { useEffect } from "react";
 
-type Histories = RouterOutputs["trips"]["getTrip"];
-type History = RouterOutputs["trips"]["getTrip"][number];
+type HistoryGroupProps = { histories: RouterOutputs["trips"]["index"] };
+type History = RouterOutputs["trips"]["index"][number];
 
-const HistoryList = ({ histories }: { histories: Histories }) => {
+const HistoryGroup = ({ histories }: HistoryGroupProps) => {
   const filterStatusBy = historyStore((state) => state.filterStatusBy);
 
   return (
     <main className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
-      {histories.map(({ id, status }: History, index: number) => {
+      {histories.map(({ id, status }: History) => {
         if (filterStatusBy === "none")
-          return <HistoryItem key={index} historyId={id} />;
+          return <HistoryItem key={id} historyId={id} />;
         if (filterStatusBy === status)
-          return <HistoryItem key={index} historyId={id} />;
+          return <HistoryItem key={id} historyId={id} />;
       })}
     </main>
   );
 };
 
 export default function Histories() {
-  const { data, isLoading, isError } = api.trips.getTrip.useQuery(null);
-  const setHistories = historyStore((state) => state.setHistories);
-
-  useEffect(() => {
-    if (data) setHistories(data);
-  }, [data, setHistories]);
+  const { data, isError, isLoading } = useHistory();
 
   if (isError)
     return (
@@ -48,10 +43,10 @@ export default function Histories() {
 
       <header className="fixed z-10 w-full bg-white p-6 pb-3 shadow">
         <h1 className="text-heading mb-6">Riwayat</h1>
-        <FilterList />
+        <FilterGroup />
       </header>
 
-      {isLoading ? <HistoriesLoading /> : <HistoryList histories={data} />}
+      {isLoading ? <HistoriesLoading /> : <HistoryGroup histories={data!} />}
 
       <Navbar />
     </>
