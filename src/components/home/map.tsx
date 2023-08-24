@@ -71,7 +71,7 @@ export default function HomeMap({
   useEffect(() => {
     if (geolocateControlRef.current !== null)
       (geolocateControlRef.current as { trigger: () => void }).trigger();
-  }, [isOnTrip, geolocateControlRef.current]);
+  }, [isOnTrip]);
 
   useEffect(() => {
     if (!isGeolocationError)

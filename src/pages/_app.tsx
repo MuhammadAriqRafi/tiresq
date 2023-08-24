@@ -1,7 +1,6 @@
 import Head from "next/head";
 import NextTopLoader from "nextjs-toploader";
 import ToasterBase from "@/components/ui/toaster-base";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
@@ -10,13 +9,6 @@ import { api } from "@/utils/api";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
   return (
@@ -34,9 +26,7 @@ const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
         <NextTopLoader showSpinner={false} />
         <ToasterBase />
         <Analytics />
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-        </QueryClientProvider>
+        <Component {...pageProps} />
       </div>
     </ClerkProvider>
   );

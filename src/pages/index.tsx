@@ -17,19 +17,21 @@ export default function Home() {
     setUserCurrentCoordinate,
   } = useGeolocation();
   const {
-    isOnTrip,
+    cancelTrip,
     setIsOnTrip,
     destination,
     destinationError,
+    isOnTrip,
+    isCancelling,
     isFetchingDestination,
     isErrorFetchingDestination,
   } = useTrip(userCurrentCoordinate);
 
   const handleFindNearestTambalBan = () => setIsOnTrip(true);
-  const handleCancelFindNearestTambalBan = useCallback(
-    () => setIsOnTrip(false),
-    [setIsOnTrip]
-  );
+  const handleCancelFindNearestTambalBan = useCallback(() => {
+    cancelTrip();
+    setIsOnTrip(false);
+  }, [setIsOnTrip, cancelTrip]);
 
   if (isErrorFetchingDestination && destinationError?.data?.httpStatus === 500)
     toast.error("Yah, lagi ada gangguan :(, coba lagi nanti yaa", {
@@ -66,7 +68,7 @@ export default function Home() {
         />
       ) : null}
 
-      {!isOnTrip && isGeolocationPermitted ? (
+      {!isOnTrip && isGeolocationPermitted && !isCancelling ? (
         <Button
           className="fixed bottom-24 flex gap-2"
           onClick={handleFindNearestTambalBan}
@@ -81,7 +83,7 @@ export default function Home() {
         </Button>
       ) : null}
 
-      {isOnTrip && isFetchingDestination ? (
+      {(isOnTrip && isFetchingDestination) || isCancelling ? (
         <Button className="fixed bottom-24" variant="outline" size="icon">
           <Loader2 className="animate-spin" size={20} />
         </Button>

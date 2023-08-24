@@ -18,7 +18,7 @@ export default function Ratings() {
   const router = useRouter();
   const { historyId } = router.query;
   const [review, setReview] = useState("");
-  const { data: history, isLoading } = api.trips.getTrip.useQuery({
+  const { data: history, isLoading } = api.trips.index.useQuery({
     historyId: parseInt(historyId as string),
   });
 
@@ -38,7 +38,7 @@ export default function Ratings() {
       <header className="mb-14 flex items-center gap-4 p-6 pb-0">
         <X className="cursor-pointer" onClick={router.back} />
         <div className="flex flex-col gap-1">
-          <h1 className="text-subheading">{history[0]?.tambal_ban.name}</h1>
+          <h1 className="text-subheading">{history[0]?.destination.name}</h1>
           <p className="text-label">
             {dayjs(history[0]?.created_at).format("dddd, D MMM YYYY, HH:mm")}
           </p>
@@ -50,10 +50,10 @@ export default function Ratings() {
           <h2 className="text-subheading">Bagaimana pelayanannya?</h2>
           <div className="flex cursor-pointer justify-between gap-3">
             {[...(Array(starAmount).fill(1) as number[])].map(
-              (_value, index: number) => (
+              (value: number) => (
                 <Star
                   size={24}
-                  key={index}
+                  key={value}
                   className={isRated ? "fill-yellow-300" : ""}
                 />
               )

@@ -1,11 +1,11 @@
 import Rating from "./history-rating";
 import Image from "next/image";
+import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { historyStore } from "@/lib/store/history-store";
-import { capitalizeFirstLetter } from "@/utils/utils";
 import { type RouterOutputs } from "@/utils/api";
 
 dayjs.extend(relativeTime);
@@ -18,11 +18,6 @@ export default function HistoryItem({ historyId }: Props) {
     (history) => history.id === historyId
   ) as unknown as History;
 
-  const statusColor: Map<string, string> = new Map();
-  statusColor.set("completed", "bg-green-300");
-  statusColor.set("cancelled", "bg-red-300");
-  statusColor.set("onprogress", "bg-yellow-300");
-
   if (!history)
     return (
       <article className="mb-4 bg-white px-6 py-3 shadow-md">
@@ -31,9 +26,17 @@ export default function HistoryItem({ historyId }: Props) {
     );
 
   const { status, created_at, destination } = history;
+  const statusColor: Map<string, string> = new Map();
+  const statusTranslated: Map<string, string> = new Map();
+  statusColor.set("completed", "bg-green-300");
+  statusColor.set("cancelled", "bg-red-300");
+  statusColor.set("onprogress", "bg-yellow-300");
+  statusTranslated.set("completed", "Selesai");
+  statusTranslated.set("cancelled", "Batal");
+  statusTranslated.set("onprogress", "Aktif");
 
-  return (
-    <article className="mb-4 bg-white px-6 py-3 shadow-md">
+  const page = (
+    <article className="mb-3 bg-white px-6 py-3 shadow-md">
       <div className="flex gap-4">
         <div className="relative h-16 w-16">
           <Image
@@ -51,8 +54,11 @@ export default function HistoryItem({ historyId }: Props) {
           </p>
         </div>
         <span className="ml-auto">
-          <Badge variant="secondary" className={statusColor.get(status)}>
-            {capitalizeFirstLetter(status)}
+          <Badge
+            variant="secondary"
+            className={`px-3 py-1 ${statusColor.get(status)}`}
+          >
+            {statusTranslated.get(status)}
           </Badge>
         </span>
       </div>
@@ -65,4 +71,6 @@ export default function HistoryItem({ historyId }: Props) {
       ) : null}
     </article>
   );
+
+  return status === "onprogress" ? <Link href="/">{page}</Link> : page;
 }

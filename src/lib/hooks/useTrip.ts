@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { tripStore } from "../store/trip-store";
+import { toast } from "react-hot-toast";
 import { api } from "@/utils/api";
 import { type LatLng } from "./useGeolocation";
 
@@ -12,6 +13,7 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
       setIsOnTrip,
     ]
   );
+
   const {
     data,
     isFetching: isFetchingDestination,
@@ -27,18 +29,34 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
     { enabled: isOnTrip }
   );
 
+  const {
+    mutate: cancelTrip,
+    isLoading: isCancelling,
+    isSuccess: isCancellingSuccess,
+  } = api.trips.cancelTrip.useMutation();
+
   useEffect(() => {
     const handleOnDataChange = () => setDestination(data!);
     if (isOnTrip && data) handleOnDataChange();
   }, [data, isOnTrip, setDestination]);
 
+  useEffect(() => {
+    if (isCancellingSuccess)
+      toast.success("Perjalanan kamu berhasil dibatalin", {
+        position: "top-center",
+        duration: 5000,
+      });
+  }, [isCancellingSuccess]);
+
   return {
     data,
-    isOnTrip,
-    setIsOnTrip,
-    setDestination,
+    cancelTrip,
     destination,
     destinationError,
+    setIsOnTrip,
+    setDestination,
+    isOnTrip,
+    isCancelling,
     isFetchingDestination,
     isErrorFetchingDestination,
   };
