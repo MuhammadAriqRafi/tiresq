@@ -4,7 +4,6 @@ import ActiveTrip from "@/components/home/active-trip";
 import useGeolocation from "@/lib/hooks/useGeolocation";
 import HomeMap from "@/components/home/map";
 import { Button } from "@/components/ui/button";
-import { useCallback } from "react";
 import { Loader2, Search } from "lucide-react";
 import { toast } from "react-hot-toast";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -18,20 +17,26 @@ export default function Home() {
   } = useGeolocation();
   const {
     cancelTrip,
+    completeTrip,
     setIsOnTrip,
     destination,
     destinationError,
     isOnTrip,
     isCancelling,
+    isCompleting,
     isFetchingDestination,
     isErrorFetchingDestination,
   } = useTrip(userCurrentCoordinate);
 
   const handleFindNearestTambalBan = () => setIsOnTrip(true);
-  const handleCancelFindNearestTambalBan = useCallback(() => {
+  const handleCancelTrip = () => {
     cancelTrip();
     setIsOnTrip(false);
-  }, [setIsOnTrip, cancelTrip]);
+  };
+  const handleCompleteTrip = () => {
+    completeTrip();
+    setIsOnTrip(false);
+  };
 
   if (isErrorFetchingDestination && destinationError?.data?.httpStatus === 500)
     toast.error("Yah, lagi ada gangguan :(, coba lagi nanti yaa", {
@@ -64,11 +69,12 @@ export default function Home() {
           tambalBanName={destination?.name}
           distance={destination?.distance}
           duration={destination?.duration}
-          onCancel={handleCancelFindNearestTambalBan}
+          onComplete={handleCompleteTrip}
+          onCancel={handleCancelTrip}
         />
       ) : null}
 
-      {!isOnTrip && isGeolocationPermitted && !isCancelling ? (
+      {!isOnTrip && isGeolocationPermitted && !isCancelling && !isCompleting ? (
         <Button
           className="fixed bottom-24 flex gap-2"
           onClick={handleFindNearestTambalBan}
@@ -83,7 +89,7 @@ export default function Home() {
         </Button>
       ) : null}
 
-      {(isOnTrip && isFetchingDestination) || isCancelling ? (
+      {(isOnTrip && isFetchingDestination) || isCancelling || isCompleting ? (
         <Button className="fixed bottom-24" variant="outline" size="icon">
           <Loader2 className="animate-spin" size={20} />
         </Button>

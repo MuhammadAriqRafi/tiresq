@@ -146,14 +146,32 @@ const findNearestTambalBan = privateProcedure
   });
 
 const cancelTrip = privateProcedure.mutation(async ({ ctx }) => {
-  await ctx.prisma.trip.updateMany({
+  return ctx.prisma.trip.updateMany({
     where: { user_id: ctx.currentUser, status: "onprogress" },
     data: { status: "cancelled" },
+  });
+});
+
+const completeTrip = privateProcedure.mutation(async ({ ctx }) => {
+  const { id: newRatingId } = await ctx.prisma.rating.create({
+    select: { id: true },
+  });
+  const { id: newReviewId } = await ctx.prisma.review.create({
+    select: { id: true },
+  });
+  await ctx.prisma.trip.updateMany({
+    where: { user_id: ctx.currentUser, status: "onprogress" },
+    data: {
+      rating_id: newRatingId,
+      review_id: newReviewId,
+      status: "completed",
+    },
   });
 });
 
 export const tripsRouter = createTRPCRouter({
   index,
   findNearestTambalBan,
+  completeTrip,
   cancelTrip,
 });

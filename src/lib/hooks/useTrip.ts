@@ -35,6 +35,12 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
     isSuccess: isCancellingSuccess,
   } = api.trips.cancelTrip.useMutation();
 
+  const {
+    mutate: completeTrip,
+    isLoading: isCompleting,
+    isSuccess: isCompletingSuccess,
+  } = api.trips.completeTrip.useMutation();
+
   useEffect(() => {
     const handleOnDataChange = () => setDestination(data!);
     if (isOnTrip && data) handleOnDataChange();
@@ -48,15 +54,25 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
       });
   }, [isCancellingSuccess]);
 
+  useEffect(() => {
+    if (isCompletingSuccess)
+      toast.success("Yay!, kamu sudah sampai ditujuan", {
+        position: "top-center",
+        duration: 5000,
+      });
+  }, [isCompletingSuccess]);
+
   return {
     data,
     cancelTrip,
+    completeTrip,
     destination,
     destinationError,
     setIsOnTrip,
     setDestination,
     isOnTrip,
     isCancelling,
+    isCompleting,
     isFetchingDestination,
     isErrorFetchingDestination,
   };
