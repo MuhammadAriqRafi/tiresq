@@ -15,13 +15,19 @@ import { type ChangeEvent, useState, useEffect } from "react";
 
 dayjs.extend(relativeTime);
 
+export type RatingFeedback = { text: string; color: string };
+
 export default function Ratings() {
   const router = useRouter();
   const headerHeight = "h-[calc(100vh-124px)]";
   const historyId = parseInt(router.query.historyId as string);
-  const [rating, setRating] = useState<number | null>(null);
   const [review, setReview] = useState<string>("");
+  const [rating, setRating] = useState<number | null>(null);
   const { mutate, isLoading: isCreatingExperience } = useExperience();
+  const [ratingFeedback, setRatingFeedback] = useState<RatingFeedback>({
+    text: "",
+    color: "",
+  });
   const {
     histories,
     isError,
@@ -59,8 +65,14 @@ export default function Ratings() {
       <main className={`flex ${headerHeight} flex-col items-stretch px-6`}>
         <section className="flex flex-col items-center gap-6">
           <h2 className="text-subheading">Bagaimana pelayanannya?</h2>
-          <Stars amount={rating} onAmountChange={setRating} />
-          <span className="text-subheading">Memuaskan</span>
+          <Stars
+            amount={rating}
+            onAmountChange={setRating}
+            setRatingFeedback={setRatingFeedback}
+          />
+          <span className={`text-subheading ${ratingFeedback.color}`}>
+            {ratingFeedback.text}
+          </span>
         </section>
 
         <Separator className="my-8" />

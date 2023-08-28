@@ -25,34 +25,38 @@ type History = RouterOutputs["trips"]["index"][number];
 
 const Rated = ({ star, review }: RatedProps) => {
   return (
-    <section className="flex items-center justify-between rounded border-2 border-gray-200 p-4">
-      <div className="mr-6 flex items-center gap-2 border-r border-r-gray-200 py-1 pr-4">
-        <p className="text">{star}</p>
-        <Star size={16} />
+    <section className="flex w-full items-center justify-between rounded border-2 border-gray-200 p-4">
+      <div className="mr-4 flex items-center gap-1 border-r border-r-gray-200 py-1 pr-4">
+        <p className="text-subheading">{star}</p>
+        <Star size={14} className="fill-yellow-300 stroke-yellow-600" />
       </div>
 
-      <div className="mr-auto flex flex-col gap-y-1">
-        <p className={`text ${review === null ? "text-red-500" : null}`}>
+      <div className="mr-auto flex flex-col gap-y-1 overflow-hidden">
+        <p className={`text ${review === null ? "text-red-600" : null}`}>
           {review !== null ? "Ulasanmu" : "Belum ada ulasan"}
         </p>
-        <p className="text-label">
+        <p className="text-label w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {review ?? "Bagaimana pelayanan tambal bannya?"}
         </p>
       </div>
 
-      <ChevronRight size={20} />
+      <ChevronRight size={20} className="ml-2" />
     </section>
   );
 };
 
 const Unrated = () => {
   return (
-    <section className="flex items-center justify-between rounded border-2 border-gray-200 p-4">
+    <section className="flex w-full items-center justify-between rounded border-2 border-gray-200 p-4">
       <p className="text">Berikan rating</p>
       <div className="flex justify-between gap-3">
         {Array.from({ length: 5 }, (_, index) => index + 1).map(
           (value: number) => (
-            <Star size={16} key={`star-${value}`} />
+            <Star
+              size={18}
+              key={`star-${value}`}
+              className="fill-slate-300 stroke-slate-300"
+            />
           )
         )}
       </div>
@@ -70,7 +74,7 @@ export default function Rating({ historyId }: RatingProps) {
       {review?.review !== null ? (
         <Sheet>
           <SheetTrigger asChild>
-            <section>
+            <section className="w-full">
               <Rated star={rating!.star!} review={review!.review} />
             </section>
           </SheetTrigger>
