@@ -6,12 +6,21 @@ import HistoryItem from "@/components/histories/history-item";
 import HistoriesLoading from "@/components/loadings/histories-loading";
 import { type RouterOutputs } from "@/utils/api";
 import { historyStore } from "@/lib/store/history-store";
-
-type HistoryGroupProps = { histories: RouterOutputs["trips"]["index"] };
 type History = RouterOutputs["trips"]["index"][number];
 
-const HistoryGroup = ({ histories }: HistoryGroupProps) => {
-  const filterStatusBy = historyStore((state) => state.filterStatusBy);
+const HistoryGroup = () => {
+  const { isError, isLoading } = useHistory();
+  const { histories, filterStatusBy } = historyStore(
+    ({ histories, filterStatusBy }) => ({ histories, filterStatusBy })
+  );
+
+  if (isLoading) return <HistoriesLoading />;
+  if (isError)
+    return (
+      <main className="flex h-screen w-screen items-center justify-center">
+        <h1>Something went wrong</h1>
+      </main>
+    );
 
   return (
     <main className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
@@ -26,15 +35,6 @@ const HistoryGroup = ({ histories }: HistoryGroupProps) => {
 };
 
 export default function Histories() {
-  const { data, isError, isLoading } = useHistory();
-
-  if (isError)
-    return (
-      <main className="flex h-screen w-screen items-center justify-center">
-        <h1>Something went wrong</h1>
-      </main>
-    );
-
   return (
     <>
       <Head>
@@ -46,7 +46,7 @@ export default function Histories() {
         <FilterGroup />
       </header>
 
-      {isLoading ? <HistoriesLoading /> : <HistoryGroup histories={data!} />}
+      <HistoryGroup />
 
       <Navbar />
     </>

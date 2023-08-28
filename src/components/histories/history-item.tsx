@@ -10,22 +10,15 @@ import { type RouterOutputs } from "@/utils/api";
 
 dayjs.extend(relativeTime);
 
-type Props = { historyId: number };
+type HistoryItemProps = { historyId: number };
 type History = RouterOutputs["trips"]["index"][number];
 
-export default function HistoryItem({ historyId }: Props) {
+export default function HistoryItem({ historyId }: HistoryItemProps) {
   const history = historyStore((state) => state.histories).find(
     (history) => history.id === historyId
   ) as unknown as History;
 
-  if (!history)
-    return (
-      <article className="mb-4 bg-white px-6 py-3 shadow-md">
-        <h1>Something went wrong</h1>
-      </article>
-    );
-
-  const { status, created_at, destination } = history;
+  const { destination, status, created_at } = history;
   const statusColor: Map<string, string> = new Map();
   const statusTranslated: Map<string, string> = new Map();
   statusColor.set("completed", "bg-green-300");

@@ -49,21 +49,21 @@ export default function FilterGroup() {
               className="flex w-full cursor-pointer items-center justify-between border-b border-b-gray-200 pb-3 text-base"
               htmlFor="completed"
             >
-              <p className="text-subheading font-medium">Completed</p>
+              <p className="text-subheading font-medium">Selesai</p>
               <RadioGroupItem value="completed" id="completed" />
             </Label>
             <Label
               className="flex w-full cursor-pointer items-center justify-between border-b border-b-gray-200 pb-3 text-base"
               htmlFor="onprogress"
             >
-              <p className="text-subheading font-medium">Onprogress</p>
+              <p className="text-subheading font-medium">Aktif</p>
               <RadioGroupItem value="onprogress" id="onprogress" />
             </Label>
             <Label
               className="flex w-full cursor-pointer items-center justify-between border-b border-b-gray-200 pb-3 text-base"
               htmlFor="cancelled"
             >
-              <p className="text-subheading font-medium">Cancelled</p>
+              <p className="text-subheading font-medium">Batal</p>
               <RadioGroupItem value="cancelled" id="cancelled" />
             </Label>
           </RadioGroup>
