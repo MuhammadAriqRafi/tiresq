@@ -19,7 +19,7 @@ const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
           name="description"
           content="Having a flat tire? TiresQ to the rescue!, TiresQ is a web based nearest tambal ban finder app to ease your life when having flat tire"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link type="image/png" sizes="32x32" rel="icon" href="/favicon.png" />
       </Head>
 
       <div className={inter.className}>
