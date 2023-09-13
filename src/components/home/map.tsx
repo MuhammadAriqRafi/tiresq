@@ -90,7 +90,7 @@ export default function HomeMap({
       style={{ height: "100vh", width: "100vw" }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-      onMove={(e) => setViewState(e.viewState)}
+      onMove={(event) => setViewState(event.viewState)}
     >
       <Source id="routeSource" type="geojson" data={routeSourceData}>
         <Layer
@@ -125,18 +125,18 @@ export default function HomeMap({
         trackUserLocation={false}
         showAccuracyCircle={false}
         fitBoundsOptions={{ zoom: 15 }}
-        style={{ position: "fixed", bottom: 184 }}
+        style={{ position: "fixed", bottom: 184, right: 8 }}
         positionOptions={{ enableHighAccuracy: true }}
-        onGeolocate={(e) =>
+        onGeolocate={(event) =>
           onGeolocate({
-            latitude: e.coords.latitude,
-            longitude: e.coords.longitude,
+            latitude: event.coords.latitude,
+            longitude: event.coords.longitude,
           })
         }
       />
       <NavigationControl
         position="bottom-right"
-        style={{ position: "fixed", bottom: 88 }}
+        style={{ position: "fixed", bottom: 88, right: 8 }}
       />
 
       {isGeolocationPermitted ? (

@@ -66,12 +66,11 @@
 
     --ring: 217.2 32.6% 17.5%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background tracking-tight text-foreground;
     font-family: "Inter", sans-serif;
@@ -80,11 +79,11 @@
 
 @layer components {
   .text-heading {
-    @apply w-fit text-2xl font-semibold;
+    @apply w-fit text-2xl font-extrabold;
   }
 
   .text-subheading {
-    @apply w-fit text-base font-semibold;
+    @apply w-fit text-base font-bold;
   }
 
   .text {

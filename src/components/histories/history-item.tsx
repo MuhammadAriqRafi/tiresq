@@ -5,20 +5,26 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { historyStore } from "@/lib/store/history-store";
-import { type RouterOutputs } from "@/utils/api";
 
 dayjs.extend(relativeTime);
 
-type HistoryItemProps = { historyId: number };
-type History = RouterOutputs["trips"]["index"][number];
+export interface HistoryItemProps {
+  status: string;
+  historyId: number;
+  created_at: Date;
+  destination: string;
+  review: string | null;
+  star: number | null;
+}
 
-export default function HistoryItem({ historyId }: HistoryItemProps) {
-  const history = historyStore((state) => state.histories).find(
-    (history) => history.id === historyId
-  ) as unknown as History;
-
-  const { destination, status, created_at } = history;
+export default function HistoryItem({
+  status,
+  historyId,
+  created_at,
+  destination,
+  review,
+  star,
+}: HistoryItemProps) {
   const statusColor: Map<string, string> = new Map();
   const statusTranslated: Map<string, string> = new Map();
   statusColor.set("completed", "bg-green-300");
@@ -41,7 +47,7 @@ export default function HistoryItem({ historyId }: HistoryItemProps) {
           />
         </div>
         <div className="flex flex-col gap-y-1">
-          <h2 className="text-subheading">{destination.name}</h2>
+          <h2 className="text-subheading">{destination}</h2>
           <p className="text-label">
             {dayjs(created_at).format("D MMM, HH:mm")}
           </p>
@@ -59,7 +65,14 @@ export default function HistoryItem({ historyId }: HistoryItemProps) {
       {status === "completed" ? (
         <>
           <Separator className="my-4" />
-          <Rating historyId={historyId} />
+          <Rating
+            status={status}
+            historyId={historyId}
+            created_at={created_at}
+            destination={destination}
+            review={review}
+            star={star}
+          />
         </>
       ) : null}
     </article>

@@ -44,7 +44,7 @@ export default function Navbar() {
     <>
       {!navbarBlacklist.includes(pathname) ? (
         <NavigationMenu className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,.75)]">
-          <NavigationMenuList className="w-screen justify-between px-6">
+          <NavigationMenuList className="w-screen max-w-screen-md justify-between px-6">
             {navigationItems.map(({ href, icon, title }: NavItem) => (
               <NavigationMenuItem className="w-[30%]" key={title}>
                 <Link href={href} legacyBehavior passHref>

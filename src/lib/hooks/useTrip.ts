@@ -47,6 +47,14 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
   }, [data, isOnTrip, setDestination]);
 
   useEffect(() => {
+    if (isErrorFetchingDestination && destinationError !== null)
+      toast.error(destinationError.message, {
+        duration: Infinity,
+        position: "top-center",
+      });
+  }, [isErrorFetchingDestination, destinationError]);
+
+  useEffect(() => {
     if (isCancellingSuccess)
       toast.success("Perjalanan kamu berhasil dibatalin", {
         position: "top-center",
@@ -67,7 +75,6 @@ export default function useTrip(userCurrentCoordinate: LatLng) {
     cancelTrip,
     completeTrip,
     destination,
-    destinationError,
     setIsOnTrip,
     setDestination,
     isOnTrip,

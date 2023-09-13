@@ -22,7 +22,7 @@ const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
         <link type="image/png" sizes="32x32" rel="icon" href="/favicon.png" />
       </Head>
 
-      <div className={inter.className}>
+      <div className={`${inter.className} mx-auto max-w-screen-md`}>
         <NextTopLoader showSpinner={false} />
         <ToasterBase />
         <Analytics />

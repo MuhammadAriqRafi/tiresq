@@ -15,9 +15,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { type TripStatus } from "@prisma/client";
 
 export default function FilterGroup() {
-  const [filterStatusBy, setFilterStatusBy] = historyStore(
-    ({ filterStatusBy, setFilterStatusBy }) => [
-      filterStatusBy,
+  const [filterHistoryStatusBy, setFilterStatusBy] = historyStore(
+    ({ filterHistoryStatusBy, setFilterStatusBy }) => [
+      filterHistoryStatusBy,
       setFilterStatusBy,
     ]
   );
@@ -42,7 +42,7 @@ export default function FilterGroup() {
             </SheetTitle>
           </SheetHeader>
           <RadioGroup
-            value={filterStatusBy}
+            value={filterHistoryStatusBy}
             onValueChange={(value: TripStatus) => setFilterStatusBy(value)}
           >
             <Label

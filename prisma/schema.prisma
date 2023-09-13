@@ -73,6 +73,7 @@ model Trip {
     rating        Rating?    @relation(fields: [rating_id], references: [id])
     review        Review?    @relation(fields: [review_id], references: [id])
 
+    @@index([user_id])
     @@index([rating_id])
     @@index([review_id])
     @@index([tambal_ban_id])

@@ -39,7 +39,7 @@ export default function useGeolocation() {
 
     function onError() {
       console.error("Error getting user location");
-      toast.error("Geolocation is not permitted", {
+      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
         position: "top-center",
         duration: Infinity,
       });

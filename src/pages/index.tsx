@@ -4,8 +4,9 @@ import ActiveTrip from "@/components/home/active-trip";
 import useGeolocation from "@/lib/hooks/useGeolocation";
 import HomeMap from "@/components/home/map";
 import { Button } from "@/components/ui/button";
-import { Loader2, Search } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
+import { Loader2, Search } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 export default function Home() {
@@ -20,7 +21,6 @@ export default function Home() {
     completeTrip,
     setIsOnTrip,
     destination,
-    destinationError,
     isOnTrip,
     isCancelling,
     isCompleting,
@@ -38,11 +38,9 @@ export default function Home() {
     setIsOnTrip(false);
   };
 
-  if (isErrorFetchingDestination && destinationError?.data?.httpStatus === 500)
-    toast.error("Yah, lagi ada gangguan :(, coba lagi nanti yaa", {
-      duration: Infinity,
-      position: "top-center",
-    });
+  useEffect(() => {
+    if (isErrorFetchingDestination) setIsOnTrip(false);
+  }, [isErrorFetchingDestination, setIsOnTrip]);
 
   return (
     <main className="flex h-screen items-center justify-center overflow-hidden">
@@ -64,7 +62,7 @@ export default function Home() {
         }
       />
 
-      {isOnTrip && !isFetchingDestination ? (
+      {isOnTrip && !isFetchingDestination && !isErrorFetchingDestination ? (
         <ActiveTrip
           tambalBanName={destination?.name}
           distance={destination?.distance}

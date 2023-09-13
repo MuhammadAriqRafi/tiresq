@@ -1,52 +1,55 @@
 import dayjs from "dayjs";
 import Stars from "@/components/ui/stars";
+import superjson from "superjson";
 import useHistory from "@/lib/hooks/useHistory";
 import relativeTime from "dayjs/plugin/relativeTime";
 import useExperience from "@/lib/hooks/useExperience";
-import DefaultLoading from "@/components/loadings/default-loading";
-import { Loader2, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { prisma } from "@/server/db";
 import { Button } from "@/components/ui/button";
+import { getAuth } from "@clerk/nextjs/server";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { appRouter } from "@/server/api/root";
 import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
+import { Loader2, X } from "lucide-react";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import { type ChangeEvent, useState, useEffect } from "react";
 
 dayjs.extend(relativeTime);
 
 export type RatingFeedback = { text: string; color: string };
 
-export default function Ratings() {
+export default function Ratings({
+  historyId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const headerHeight = "h-[calc(100vh-124px)]";
-  const historyId = parseInt(router.query.historyId as string);
+
+  const { histories, isLoading, isError } = useHistory({ historyId });
+  const { mutate, isLoading: isCreatingExperience } = useExperience();
+
   const [review, setReview] = useState<string>("");
   const [rating, setRating] = useState<number | null>(null);
-  const { mutate, isLoading: isCreatingExperience } = useExperience();
   const [ratingFeedback, setRatingFeedback] = useState<RatingFeedback>({
     text: "",
     color: "",
   });
-  const {
-    histories,
-    isError,
-    isLoading: isLoadingHistory,
-  } = useHistory({ historyId });
 
-  const handleOnSubmit = () =>
-    mutate({ tripId: historyId, rating, review: review });
-
-  const handleReviewInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    if (review.length < 1000) setReview(e.target.value);
-  };
+  const handleOnSubmit = () => mutate({ tripId: historyId, rating, review });
+  const handleReviewInput = (event: ChangeEvent<HTMLTextAreaElement>) =>
+    setReview(event.target.value);
 
   useEffect(() => {
-    if (histories) setRating(histories[0]!.rating!.star);
+    if (histories) setRating(histories[0]?.rating?.star ?? null);
   }, [histories, setRating]);
 
-  if (isLoadingHistory) return <DefaultLoading />;
-  if (isError) return <h1>something went wrong</h1>;
+  if (isError || isLoading) return <h1>Something went wrong</h1>;
 
   const { destination, created_at } = histories![0]!;
 
@@ -85,13 +88,14 @@ export default function Ratings() {
             placeholder="Masukkan kamu..."
             onChange={handleReviewInput}
             value={review}
+            maxLength={1000}
           />
           <div className="flex w-full justify-between">
             <p className="text-label">{review.length}/1000</p>
             <div className="flex items-center gap-2">
-              <Checkbox id="terms" />
+              <Checkbox id="anonymous" />
               <Label
-                htmlFor="terms"
+                htmlFor="anonymous"
                 className="cursor-pointer text-xs leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Sembunyikan nama
@@ -110,4 +114,24 @@ export default function Ratings() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { userId } = getAuth(context.req);
+  const historyId = Number(context.params?.historyId);
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: { prisma, currentUser: userId },
+  });
+
+  await helpers.trips.index.prefetch({ historyId });
+
+  return {
+    props: {
+      historyId,
+      trpcState: helpers.dehydrate(),
+    },
+  };
 }

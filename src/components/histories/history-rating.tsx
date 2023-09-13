@@ -13,15 +13,13 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { type RouterOutputs } from "@/utils/api";
 import { ChevronRight, Star } from "lucide-react";
-import { historyStore } from "@/lib/store/history-store";
+import { type HistoryItemProps } from "./history-item";
 
 dayjs.extend(relativeTime);
 
-type RatingProps = { historyId: number };
-type RatedProps = { star: number; review: string | null };
-type History = RouterOutputs["trips"]["index"][number];
+interface RatingProps extends HistoryItemProps {}
+type RatedProps = Pick<RatingProps, "star" | "review">;
 
 const Rated = ({ star, review }: RatedProps) => {
   return (
@@ -64,20 +62,24 @@ const Unrated = () => {
   );
 };
 
-export default function Rating({ historyId }: RatingProps) {
-  const { created_at, destination, review, rating } = historyStore(
-    (state) => state.histories
-  ).find((history) => history.id === historyId) as unknown as History;
-
+export default function Rating({
+  star,
+  status,
+  review,
+  historyId,
+  created_at,
+  destination,
+}: RatingProps) {
   return (
     <>
-      {review?.review !== null ? (
+      {review !== null ? (
         <Sheet>
           <SheetTrigger asChild>
             <section className="w-full">
-              <Rated star={rating!.star!} review={review!.review} />
+              <Rated star={star} review={review} />
             </section>
           </SheetTrigger>
+
           <SheetContent className="flex flex-col gap-8" side="bottom">
             <SheetHeader>
               <div className="flex w-full gap-4">
@@ -91,7 +93,7 @@ export default function Rating({ historyId }: RatingProps) {
                   />
                 </div>
                 <div className="flex flex-col gap-2 text-left">
-                  <p className="text">{destination.name}</p>
+                  <p className="text">{destination}</p>
                   <div className="flex items-center gap-2">
                     <p className="text-label">
                       {dayjs(created_at).format("D MMM, HH:mm")}
@@ -101,7 +103,7 @@ export default function Rating({ historyId }: RatingProps) {
                       variant="outline"
                       className="border-green-300 text-green-500"
                     >
-                      Completed
+                      {status}
                     </Badge>
                   </div>
                 </div>
@@ -110,7 +112,7 @@ export default function Rating({ historyId }: RatingProps) {
 
             <div className="flex flex-col">
               <p className="text-label">Ulasanmu</p>
-              <p className="text">{review!.review}</p>
+              <p className="text">{review}</p>
             </div>
 
             <SheetFooter className="w-full">
@@ -122,11 +124,7 @@ export default function Rating({ historyId }: RatingProps) {
         </Sheet>
       ) : (
         <Link href={`histories/${historyId}/rating`}>
-          {rating!.star === null ? (
-            <Unrated />
-          ) : (
-            <Rated star={rating!.star} review={null} />
-          )}
+          {star === null ? <Unrated /> : <Rated star={star} review={null} />}
         </Link>
       )}
     </>

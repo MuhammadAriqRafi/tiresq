@@ -21,6 +21,8 @@ import { getAuth } from "@clerk/nextjs/server";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
+type CreateContextOptions = Record<string, never>;
+
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
  * it from here.
@@ -31,6 +33,12 @@ import { getAuth } from "@clerk/nextjs/server";
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
+export const createInnerTRPCContext = (_opts: CreateContextOptions) => {
+  return {
+    prisma,
+    currentUser: null,
+  };
+};
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -60,14 +68,16 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
-    return {
-      ...shape,
+    const errorOutput = {
+      code: shape.data.httpStatus,
+      message: shape.message,
       data: {
-        ...shape.data,
-        zodError:
+        validationError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
       },
     };
+
+    return errorOutput;
   },
 });
 

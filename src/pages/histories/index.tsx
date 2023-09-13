@@ -1,38 +1,13 @@
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import useHistory from "@/lib/hooks/useHistory";
+import superjson from "superjson";
 import FilterGroup from "@/components/histories/filter-group";
-import HistoryItem from "@/components/histories/history-item";
-import HistoriesLoading from "@/components/loadings/histories-loading";
-import { type RouterOutputs } from "@/utils/api";
-import { historyStore } from "@/lib/store/history-store";
-type History = RouterOutputs["trips"]["index"][number];
-
-const HistoryGroup = () => {
-  const { isError, isLoading } = useHistory();
-  const { histories, filterStatusBy } = historyStore(
-    ({ histories, filterStatusBy }) => ({ histories, filterStatusBy })
-  );
-
-  if (isLoading) return <HistoriesLoading />;
-  if (isError)
-    return (
-      <main className="flex h-screen w-screen items-center justify-center">
-        <h1>Something went wrong</h1>
-      </main>
-    );
-
-  return (
-    <main className="min-h-screen bg-gray-50 pb-14 pt-[132px]">
-      {histories.map(({ id, status }: History) => {
-        if (filterStatusBy === "none")
-          return <HistoryItem key={id} historyId={id} />;
-        if (filterStatusBy === status)
-          return <HistoryItem key={id} historyId={id} />;
-      })}
-    </main>
-  );
-};
+import HistoryGroup from "@/components/histories/history-group";
+import { prisma } from "@/server/db";
+import { getAuth } from "@clerk/nextjs/server";
+import { appRouter } from "@/server/api/root";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { type GetServerSidePropsContext } from "next";
 
 export default function Histories() {
   return (
@@ -51,4 +26,20 @@ export default function Histories() {
       <Navbar />
     </>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { userId } = getAuth(context.req);
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: { prisma, currentUser: userId },
+  });
+
+  await helpers.trips.index.prefetch(null);
+
+  return {
+    props: { trpcState: helpers.dehydrate() },
+  };
 }

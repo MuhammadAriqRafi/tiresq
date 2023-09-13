@@ -12,6 +12,8 @@ type ClosestTambalBan = {
   coords: number[][];
 };
 
+const MAX_DISTANCE = 5;
+
 const indexInputSchema = z.object({ historyId: z.number() }).nullable();
 const index = privateProcedure
   .input(indexInputSchema)
@@ -22,7 +24,6 @@ const index = privateProcedure
         include: { rating: true, review: true, destination: true },
       });
     }
-
     return ctx.prisma.trip.findMany({
       where: { user_id: ctx.currentUser },
       orderBy: { created_at: "desc" },
@@ -38,7 +39,7 @@ const findNearestTambalBanInputSchema = z.object({
 });
 const findNearestTambalBan = privateProcedure
   .input(findNearestTambalBanInputSchema)
-  .query(async ({ ctx, input }) => {
+  .query(async ({ ctx: { prisma, currentUser }, input }) => {
     const userLatitude = input.currentLocation.latitude;
     const userLongitude = input.currentLocation.longitude;
 
@@ -48,10 +49,6 @@ const findNearestTambalBan = privateProcedure
         message: "Lokasi user tidak boleh kosong",
       });
 
-    const onprogressTripDestination = await ctx.prisma.trip.findFirst({
-      where: { user_id: ctx.currentUser, status: "onprogress" },
-      select: { destination: true },
-    });
     let closest: ClosestTambalBan = {
       name: "",
       latitude: "",
@@ -60,6 +57,11 @@ const findNearestTambalBan = privateProcedure
       duration: Infinity,
       coords: [],
     };
+
+    const onprogressTripDestination = await prisma.trip.findFirst({
+      where: { user_id: currentUser, status: "onprogress" },
+      select: { destination: true },
+    });
 
     if (onprogressTripDestination !== null) {
       const { destination } = onprogressTripDestination;
@@ -85,7 +87,7 @@ const findNearestTambalBan = privateProcedure
     }
 
     let choosenTambalBanId: number | undefined = undefined;
-    const allTambalBan = await ctx.prisma.tambalBan.findMany({
+    const allTambalBan = await prisma.tambalBan.findMany({
       select: {
         id: true,
         name: true,
@@ -108,15 +110,18 @@ const findNearestTambalBan = privateProcedure
           goalLongitude: longitude,
           goalLatitude: latitude,
         });
-        const distance = data?.routes[0]?.distance;
+        const distance = parseFloat(
+          (data?.routes[0]?.distance / 1000).toFixed(2)
+        );
 
+        if (distance >= MAX_DISTANCE) continue;
         if (distance < closest.distance) {
           choosenTambalBanId = id;
           closest = {
             name,
             latitude,
             longitude,
-            distance: data.routes[0].distance,
+            distance,
             duration: data.routes[0].duration,
             coords: data.routes[0].geometry.coordinates,
           };
@@ -124,25 +129,30 @@ const findNearestTambalBan = privateProcedure
       } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Error fetching data",
+          message: "Yah, lagi ada gangguan :(, coba lagi nanti yaa",
         });
       }
     }
 
-    if (closest.coords.length !== 0) {
-      await ctx.prisma.trip.create({
+    if (choosenTambalBanId) {
+      await prisma.trip.create({
         data: {
-          user_id: ctx.currentUser,
-          tambal_ban_id: choosenTambalBanId!,
+          user_id: currentUser,
+          tambal_ban_id: choosenTambalBanId,
         },
       });
+
+      return {
+        ...closest,
+        duration: Math.floor(closest.duration / 60),
+      };
     }
 
-    return {
-      ...closest,
-      duration: Math.floor(closest.duration / 60),
-      distance: parseFloat((closest.distance / 1000).toFixed(2)),
-    };
+    throw new TRPCError({
+      code: "UNPROCESSABLE_CONTENT",
+      message:
+        "Maaf, kita belum bisa nemuin tambal ban dalam radius 5 kilometer dari lokasi kamu",
+    });
   });
 
 const cancelTrip = privateProcedure.mutation(async ({ ctx }) => {
@@ -159,12 +169,13 @@ const completeTrip = privateProcedure.mutation(async ({ ctx }) => {
   const { id: newReviewId } = await ctx.prisma.review.create({
     select: { id: true },
   });
+
   await ctx.prisma.trip.updateMany({
     where: { user_id: ctx.currentUser, status: "onprogress" },
     data: {
+      status: "completed",
       rating_id: newRatingId,
       review_id: newReviewId,
-      status: "completed",
     },
   });
 });
