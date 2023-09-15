@@ -36,7 +36,7 @@ type CreateContextOptions = Record<string, never>;
 export const createInnerTRPCContext = (_opts: CreateContextOptions) => {
   return {
     prisma,
-    currentUser: null,
+    currentUserId: null,
   };
 };
 
@@ -49,12 +49,9 @@ export const createInnerTRPCContext = (_opts: CreateContextOptions) => {
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const { req } = opts;
   const session = getAuth(req);
-  const user = session.userId;
+  const currentUserId = session.userId;
 
-  return {
-    prisma,
-    currentUser: user,
-  };
+  return { prisma, currentUserId };
 };
 
 /**
@@ -104,14 +101,15 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
-const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.currentUser) throw new TRPCError({ code: "UNAUTHORIZED" });
-
-  return next({
-    ctx: {
-      currentUser: ctx.currentUser,
-    },
-  });
-});
+const enforceUserIsAuthed = t.middleware(
+  async ({ ctx: { currentUserId }, next }) => {
+    if (currentUserId === null)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Kamu harus login terlebih dahulu ya",
+      });
+    return next({ ctx: { currentUserId } });
+  }
+);
 
 export const privateProcedure = t.procedure.use(enforceUserIsAuthed);

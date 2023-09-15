@@ -25,9 +25,33 @@ dayjs.extend(relativeTime);
 
 export type RatingFeedback = { text: string; color: string };
 
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { userId } = getAuth(context.req);
+  const historyId = Number(context.params?.historyId);
+
+  console.log({ typeofwindow: typeof window }, "Server");
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: { prisma, currentUserId: userId },
+  });
+
+  await helpers.trips.index.prefetch({ historyId });
+
+  return {
+    props: {
+      historyId,
+      trpcState: helpers.dehydrate(),
+    },
+  };
+}
+
 export default function Ratings({
   historyId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  console.log({ typeofwindow: typeof window }, "Client");
+
   const router = useRouter();
   const headerHeight = "h-[calc(100vh-124px)]";
 
@@ -114,24 +138,4 @@ export default function Ratings({
       </main>
     </>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { userId } = getAuth(context.req);
-  const historyId = Number(context.params?.historyId);
-
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    transformer: superjson,
-    ctx: { prisma, currentUser: userId },
-  });
-
-  await helpers.trips.index.prefetch({ historyId });
-
-  return {
-    props: {
-      historyId,
-      trpcState: helpers.dehydrate(),
-    },
-  };
 }

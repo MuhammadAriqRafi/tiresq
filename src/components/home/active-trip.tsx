@@ -28,7 +28,7 @@ const ActiveTrip = ({
   >();
 
   return (
-    <section className="border-b-1 absolute top-0 flex h-fit w-screen items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
+    <section className="border-b-1 absolute top-0 flex h-fit w-screen max-w-screen-md items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
       <section className="flex flex-col gap-3">
         <h1 className="text-subheading">{tambalBanName ?? "Unknown"}</h1>
         <div className="flex gap-3">

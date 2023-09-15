@@ -1,18 +1,20 @@
 import Head from "next/head";
-import NextTopLoader from "nextjs-toploader";
 import ToasterBase from "@/components/ui/toaster-base";
+import NextTopLoader from "nextjs-toploader";
+import { cn } from "@/utils/utils";
+import { api } from "@/utils/api";
+import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Inter } from "next/font/google";
+export { useReportWebVitals } from "next-axiom";
 import { type AppType, type AppProps } from "next/app";
-import { api } from "@/utils/api";
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider>
       <Head>
         <title>TiresQ</title>
         <meta
@@ -22,10 +24,11 @@ const TiresQ: AppType = ({ Component, pageProps }: AppProps) => {
         <link type="image/png" sizes="32x32" rel="icon" href="/favicon.png" />
       </Head>
 
-      <div className={`${inter.className} mx-auto max-w-screen-md`}>
-        <NextTopLoader showSpinner={false} />
+      <Analytics />
+
+      <div className={cn(inter.className, "mx-auto max-w-screen-md")}>
         <ToasterBase />
-        <Analytics />
+        <NextTopLoader showSpinner={false} />
         <Component {...pageProps} />
       </div>
     </ClerkProvider>

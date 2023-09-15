@@ -9,7 +9,27 @@ import { appRouter } from "@/server/api/root";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { type GetServerSidePropsContext } from "next";
 
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { userId } = getAuth(context.req);
+
+  console.log({ typeofwindow: typeof window }, "Server");
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: { prisma, currentUserId: userId },
+  });
+
+  await helpers.trips.index.prefetch(null);
+
+  return {
+    props: { trpcState: helpers.dehydrate() },
+  };
+}
+
 export default function Histories() {
+  console.log({ typeofwindow: typeof window }, "Client");
+
   return (
     <>
       <Head>
@@ -26,20 +46,4 @@ export default function Histories() {
       <Navbar />
     </>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { userId } = getAuth(context.req);
-
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    transformer: superjson,
-    ctx: { prisma, currentUser: userId },
-  });
-
-  await helpers.trips.index.prefetch(null);
-
-  return {
-    props: { trpcState: helpers.dehydrate() },
-  };
 }

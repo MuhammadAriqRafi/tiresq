@@ -1,31 +1,26 @@
+import { api } from "@/utils/api";
+import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 import { tripStore } from "../store/trip-store";
-import { toast } from "react-hot-toast";
-import { api } from "@/utils/api";
 import { type LatLng } from "./useGeolocation";
 
 export default function useTrip(userCurrentCoordinate: LatLng) {
-  const [destination, isOnTrip, setDestination, setIsOnTrip] = tripStore(
-    ({ destination, isOnTrip, setIsOnTrip, setDestination }) => [
+  const { destination, isOnTrip, setDestination, setIsOnTrip } = tripStore(
+    ({ destination, isOnTrip, setIsOnTrip, setDestination }) => ({
       destination,
       isOnTrip,
-      setDestination,
       setIsOnTrip,
-    ]
+      setDestination,
+    })
   );
 
   const {
     data,
+    error: destinationError,
     isFetching: isFetchingDestination,
     isError: isErrorFetchingDestination,
-    error: destinationError,
   } = api.trips.findNearestTambalBan.useQuery(
-    {
-      currentLocation: {
-        latitude: userCurrentCoordinate.latitude,
-        longitude: userCurrentCoordinate.longitude,
-      },
-    },
+    { userCurrentCoordinate },
     { enabled: isOnTrip }
   );
 
