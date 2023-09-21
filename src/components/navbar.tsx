@@ -1,86 +1,56 @@
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+"use client";
+
 import Link from "next/link";
-import { Home, History } from "lucide-react";
+import { Home, History, UserCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { UserButton, useUser } from "@clerk/nextjs";
 
 type NavItem = {
-  href?: string;
+  href: string;
   icon: React.ReactElement;
   title: string;
 };
 
 export default function Navbar() {
-  const { user } = useUser();
-  const pathname = usePathname();
-  const blacklistedRoute = ["/ratings"];
+  const currentPath = usePathname();
+  const blacklistedPath = ["/rating"];
+
   const navigationItems: NavItem[] = [
     {
       href: "/histories",
-      icon: <History size={24} strokeWidth={2} absoluteStrokeWidth />,
       title: "Riwayat",
+      icon: <History size={24} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       href: "/",
-      icon: <Home size={24} strokeWidth={2} absoluteStrokeWidth />,
       title: "Beranda",
+      icon: <Home size={24} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      icon: (
-        <UserButton
-          afterSignOutUrl="http://localhost:3000"
-          appearance={{
-            elements: {
-              avatarBox: { width: 24, height: 24 },
-              userButtonPopoverCard: {
-                marginLeft: 16,
-                marginTop: -20,
-              },
-            },
-          }}
-        />
-      ),
+      href: "/accounts",
       title: "Akun",
+      icon: <UserCircle size={24} strokeWidth={2} absoluteStrokeWidth />,
     },
   ];
 
   return (
     <>
-      {!blacklistedRoute.includes(pathname) ? (
-        <NavigationMenu className="fixed bottom-0 left-1/2 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,.75)]">
-          <NavigationMenuList className="w-full justify-between">
-            {navigationItems.map(({ href, icon, title }: NavItem) => {
-              if (title === "Akun" && !user) return;
-
-              return (
-                <NavigationMenuItem className="w-full" key={title}>
-                  {title === "Akun" ? (
-                    <div className={navigationMenuTriggerStyle()}>
-                      {icon}
-                      <p className="text-label">{title}</p>
-                    </div>
-                  ) : (
-                    <Link href={href!} legacyBehavior passHref>
-                      <NavigationMenuLink
-                        active={href === pathname}
-                        className={navigationMenuTriggerStyle()}
-                      >
-                        {icon}
-                        <p className="text-label">{title}</p>
-                      </NavigationMenuLink>
-                    </Link>
-                  )}
-                </NavigationMenuItem>
-              );
-            })}
-          </NavigationMenuList>
-        </NavigationMenu>
+      {!blacklistedPath.includes(`/${currentPath.split("/").at(-1)}`) ? (
+        <nav className="fixed bottom-0 left-1/2 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_-3px_25px_rgba(0,0,0,.15)]">
+          <ul className="flex w-full justify-between">
+            {navigationItems.map(({ href, icon, title }) => (
+              <Link className="flex-grow" key={title} href={href}>
+                <li
+                  className={`${
+                    href === currentPath ? "active" : null
+                  } flex flex-col items-center justify-center gap-2 py-3 hover:bg-slate-100`}
+                >
+                  {icon}
+                  <span>{title}</span>
+                </li>
+              </Link>
+            ))}
+          </ul>
+        </nav>
       ) : null}
     </>
   );
