@@ -1,26 +1,34 @@
-# TiresQ
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-TiresQ is a web application built using the T3 Stack ([TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com), and [tRPC](https://trpc.io)) that helps users find the nearest tire repair shops ("tambal ban" in Indonesian). This app provides a convenient way to locate the nearest tire repair shops when users are in need of tire repair services.
+## Getting Started
 
-## Features
+First, run the development server:
 
-- Geolocation: The app utilizes the user's device geolocation to determine their current location.
-- Search: Users can search for the nearest tire repair shops based on their location.
-- Results: The app displays a list of nearby tire repair shops with relevant information.
-- Map Integration: Users can view the locations of the tire repair shops on an interactive map.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-## Installation
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- Clone this repository.
-- Install the required dependencies using `npm install`.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## Usage
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-- Run the app using `npm start`.
-- Open a web browser and navigate to the provided URL.
+## Learn More
 
-## Tech Stack
+To learn more about Next.js, take a look at the following resources:
 
-- **TypeScript:** The primary programming language for both frontend and backend development.
-- **Tailwind CSS:** Used for responsive and stylish user interface design.
-- **tRPC:** An RPC framework that simplifies communication between the front end and the back end.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
