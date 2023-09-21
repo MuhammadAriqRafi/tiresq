@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1 {
+  @apply w-fit text-2xl font-extrabold;
+}
+
+h2 {
+  @apply w-fit text-base font-bold;
+}
+
+p {
+  @apply w-fit text-sm font-semibold;
+}
+
+span {
+  @apply w-fit text-xs font-light tracking-tight;
+}
+
+.active {
+  @apply border-t-2 border-t-blue-400 bg-slate-200 shadow-inner;
+}
+
+.badge-text {
+  @apply w-fit text-xs font-bold tracking-wide;
+}
