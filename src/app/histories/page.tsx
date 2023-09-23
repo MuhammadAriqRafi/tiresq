@@ -9,7 +9,7 @@ export default async function Histories() {
 
   return (
     <>
-      <header className="fixed z-10 w-full bg-white p-6 pb-3 shadow">
+      <header className="fixed z-10 w-full max-w-screen-md bg-white p-6 pb-3 shadow">
         <h1 className="mb-6">Riwayat</h1>
         <FilterGroup />
       </header>

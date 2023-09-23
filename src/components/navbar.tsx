@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Home, History, UserCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Home, History, UserCircle } from "lucide-react";
 
 type NavItem = {
   href: string;
@@ -26,7 +26,7 @@ export default function Navbar() {
       icon: <Home size={24} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      href: "/accounts",
+      href: "/account",
       title: "Akun",
       icon: <UserCircle size={24} strokeWidth={2} absoluteStrokeWidth />,
     },
@@ -35,7 +35,7 @@ export default function Navbar() {
   return (
     <>
       {!blacklistedPath.includes(`/${currentPath.split("/").at(-1)}`) ? (
-        <nav className="fixed bottom-0 left-1/2 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_-3px_25px_rgba(0,0,0,.15)]">
+        <nav className="fixed bottom-0 left-1/2 z-10 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_-3px_25px_rgba(0,0,0,.15)]">
           <ul className="flex w-full justify-between">
             {navigationItems.map(({ href, icon, title }) => (
               <Link className="flex-grow" key={title} href={href}>

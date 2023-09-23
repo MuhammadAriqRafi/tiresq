@@ -2,12 +2,12 @@
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useState } from "react";
 
 // Components
 import Stars from "./rating-stars";
-import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,7 +40,7 @@ export default function Rating({ destination, star, created_at }: RatingType) {
   return (
     <>
       <header className="mb-14 flex items-center gap-4 p-6 pb-0">
-        <X className="cursor-pointer" onClick={router.back} />
+        <X className="cursor-pointer" onClick={() => void router.back} />
         <div className="flex flex-col gap-1">
           <h2>{destination}</h2>
           <span>{dayjs(created_at).format("dddd, D MMM YYYY, HH:mm")}</span>
@@ -48,9 +48,9 @@ export default function Rating({ destination, star, created_at }: RatingType) {
       </header>
 
       <main
-        className={`flex ${mainContainerHeight} flex-col items-stretch px-6`}
+        className={`${mainContainerHeight} flex flex-col items-stretch px-6`}
       >
-        <section className="flex flex-col items-center gap-6">
+        <section className="flex flex-col items-center gap-5">
           <p className="text-subheading">Bagaimana pelayanannya?</p>
           <Stars
             amount={rating}
@@ -68,7 +68,7 @@ export default function Rating({ destination, star, created_at }: RatingType) {
           </p>
           <Textarea
             placeholder="Masukkan kamu..."
-            className="min-h-full"
+            className="min-h-[100px]"
             maxLength={1000}
             onChange={handleReviewInput}
             value={review}

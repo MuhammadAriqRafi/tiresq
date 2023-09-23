@@ -1,8 +1,8 @@
 "use client";
 
 import HistoryItem from "./histories-item";
-import { RouterOutputs } from "../_trpc/client";
 import { historyStore } from "@/lib/store/histories-store";
+import { type RouterOutputs } from "../_trpc/client";
 
 type HistoriesGroupProps = { histories: RouterOutputs["histories"]["index"] };
 

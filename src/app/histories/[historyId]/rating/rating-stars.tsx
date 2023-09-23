@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { type RatingFeedback } from "./rating";
 
 type StarsProps = {
@@ -14,12 +14,16 @@ export default function Stars({
   setRatingFeedback,
 }: StarsProps) {
   const [starAmount, setStarAmount] = useState(0);
-  const ratingFeedback = new Map<number, RatingFeedback>();
-  ratingFeedback.set(1, { text: "Kecewa.", color: "text-red-600" });
-  ratingFeedback.set(2, { text: "Kurang Memuaskan.", color: "text-red-600" });
-  ratingFeedback.set(3, { text: "Biasa.", color: "" });
-  ratingFeedback.set(4, { text: "Puaaas!", color: "text-green-600" });
-  ratingFeedback.set(5, { text: "Puas Banget!", color: "text-green-600" });
+  const ratingFeedback = useMemo(() => {
+    const ratingFeedback = new Map<number, RatingFeedback>();
+    ratingFeedback.set(1, { text: "Kecewa.", color: "text-red-600" });
+    ratingFeedback.set(2, { text: "Kurang Memuaskan.", color: "text-red-600" });
+    ratingFeedback.set(3, { text: "Biasa.", color: "" });
+    ratingFeedback.set(4, { text: "Puaaas!", color: "text-green-600" });
+    ratingFeedback.set(5, { text: "Puas Banget!", color: "text-green-600" });
+
+    return ratingFeedback;
+  }, []);
 
   const handleOnClick = (starIndex: number) => setStarAmount(starIndex);
   const fillStars = (starIndex: number): string | undefined => {
@@ -28,8 +32,11 @@ export default function Stars({
   };
 
   useEffect(() => {
-    if (amount !== null) setStarAmount(amount);
-  }, [amount]);
+    if (amount !== null) {
+      setStarAmount(amount);
+      setRatingFeedback(ratingFeedback.get(amount)!);
+    }
+  }, [amount, setRatingFeedback, ratingFeedback]);
 
   return (
     <div className="flex cursor-pointer justify-between gap-3">

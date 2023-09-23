@@ -11,7 +11,7 @@ h2 {
 }
 
 p {
-  @apply w-fit text-sm font-semibold;
+  @apply w-fit text-sm font-semibold tracking-tight;
 }
 
 span {

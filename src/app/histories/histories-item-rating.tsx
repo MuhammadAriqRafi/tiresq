@@ -3,6 +3,8 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ChevronRight, Star } from "lucide-react";
+import { capitalizeFirstLetter } from "@/lib/utils/utils";
+import { type HistoryItemProps } from "./histories-item";
 
 // Components
 import {
@@ -16,7 +18,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { HistoryItemProps } from "./histories-item";
 
 dayjs.extend(relativeTime);
 
@@ -91,28 +92,30 @@ export default function Rating({
                   <Image
                     src="/assets/default.svg"
                     alt="Foto Gerai Tambal Ban"
-                    style={{ objectFit: "cover", borderRadius: 4 }}
+                    className="rounded-md object-cover"
                     sizes="80px"
                     fill
                   />
                 </div>
                 <div className="flex flex-col gap-2 text-left">
                   <p className="text">{destination}</p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <span>{dayjs(created_at).format("D MMM, HH:mm")}</span>
                     <Separator orientation="vertical" />
                     <Badge
                       variant="outline"
                       className="border-green-300 text-green-500"
                     >
-                      <p className="badge-text">{status}</p>
+                      <p className="badge-text">
+                        {capitalizeFirstLetter(status)}
+                      </p>
                     </Badge>
                   </div>
                 </div>
               </div>
             </SheetHeader>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-1">
               <span>Ulasanmu</span>
               <p>{review}</p>
             </div>
