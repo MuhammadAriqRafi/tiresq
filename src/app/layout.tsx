@@ -1,10 +1,10 @@
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import ToasterBase from "@/components/ui/toaster-base";
 import TRPCProvider from "@/app/_trpc/TRPCProvider";
 import NextTopLoader from "nextjs-toploader";
 import { cn } from "@/lib/utils/utils";
 import { Inter } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 
@@ -34,7 +34,7 @@ export default function RootLayout({
       <Analytics />
 
       <body className={cn(inter.className, "mx-auto max-w-screen-md")}>
-        <Toaster />
+        <ToasterBase />
         <NextTopLoader showSpinner={false} />
         <TRPCProvider>{children}</TRPCProvider>
         <Navbar />
