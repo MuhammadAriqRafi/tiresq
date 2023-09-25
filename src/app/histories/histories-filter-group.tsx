@@ -17,8 +17,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { historyStore } from "@/lib/store/histories-store";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { statusTranslated } from "@/lib/utils/utils";
 
 export default function FilterGroup() {
+  const activeStyle = "border border-slate-300 text-white bg-green-600";
   const [filterHistoryStatusBy, setFilterStatusBy] = historyStore(
     ({ filterHistoryStatusBy, setFilterStatusBy }) => [
       filterHistoryStatusBy,
@@ -33,9 +35,11 @@ export default function FilterGroup() {
           <Button
             size="sm"
             variant="outline"
-            className="flex justify-between gap-1 font-semibold"
+            className={`${
+              filterHistoryStatusBy !== "none" ? activeStyle : null
+            } flex justify-between gap-1 font-medium`}
           >
-            Status
+            {statusTranslated.get(filterHistoryStatusBy) ?? "Status"}
             <ChevronDown size={18} />
           </Button>
         </SheetTrigger>

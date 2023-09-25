@@ -1,28 +1,29 @@
 import useGeolocation from "./useGeolocation";
 import { api } from "@/app/_trpc/client";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { tripStore } from "../store/trip-store";
 import { useCallback, useEffect } from "react";
 import { type ClosestTambalBan } from "@/server/api/services/trip-service";
 
-export default function useTrip(isOnTrip = false) {
-  const apiUtils = api.useContext();
+export default function useTrip() {
+  const router = useRouter();
 
   const { userCurrentCoordinate } = useGeolocation();
   const {
-    setIsOnTrip,
-    isFetchingTrip,
     findNearestTambalBanRoute,
+    isOnTrip,
+    isFetchingTrip,
     isErrorFetchingTrip,
+    setIsOnTrip,
     setDestination,
     setIsFetchingTrip,
     setIsErrorFetchingTrip,
     setFindNearestTambalBanRoute,
   } = tripStore(
     ({
-      isOnTrip,
-      destination,
       findNearestTambalBanRoute,
+      isOnTrip,
       isFetchingTrip,
       isErrorFetchingTrip,
       setIsOnTrip,
@@ -31,9 +32,8 @@ export default function useTrip(isOnTrip = false) {
       setIsErrorFetchingTrip,
       setFindNearestTambalBanRoute,
     }) => ({
-      isOnTrip,
-      destination,
       findNearestTambalBanRoute,
+      isOnTrip,
       isFetchingTrip,
       isErrorFetchingTrip,
       setIsOnTrip,
@@ -54,7 +54,7 @@ export default function useTrip(isOnTrip = false) {
     {
       userCurrentCoordinate,
     },
-    { enabled: isOnTrip ?? false },
+    { enabled: isOnTrip && !findNearestTambalBanRoute, retry: 1 },
   );
 
   const {
@@ -77,13 +77,9 @@ export default function useTrip(isOnTrip = false) {
         });
       },
       onSettled: () => {
-        setIsOnTrip(false);
         setDestination(undefined);
         setIsOnTrip(false);
-        void apiUtils.trips.getOnProgressTripRoute.invalidate();
-        void apiUtils.trips.getOnProgressTripRoute.cancel();
-        void apiUtils.trips.findNearestTambalBanRoute.invalidate();
-        void apiUtils.trips.findNearestTambalBanRoute.cancel();
+        void router.refresh();
       },
     });
 
@@ -96,13 +92,9 @@ export default function useTrip(isOnTrip = false) {
         });
       },
       onSettled: () => {
-        setIsOnTrip(false);
         setDestination(undefined);
         setIsOnTrip(false);
-        void apiUtils.trips.getOnProgressTripRoute.invalidate();
-        void apiUtils.trips.getOnProgressTripRoute.cancel();
-        void apiUtils.trips.findNearestTambalBanRoute.invalidate();
-        void apiUtils.trips.findNearestTambalBanRoute.cancel();
+        void router.refresh();
       },
     });
 
@@ -113,8 +105,6 @@ export default function useTrip(isOnTrip = false) {
     [setDestination],
   );
 
-  useEffect(() => setIsOnTrip(isOnTrip), [setIsOnTrip, isOnTrip]);
-
   useEffect(() => {
     setIsFetchingTrip(isFetchingNearestTambalBanRoute);
   }, [isFetchingNearestTambalBanRoute, setIsFetchingTrip]);
@@ -124,29 +114,28 @@ export default function useTrip(isOnTrip = false) {
   }, [isFetchingOnProgressTripRoute, setIsFetchingTrip]);
 
   useEffect(() => {
-    if (isSuccessFetchingNearestTambalBanRoute) {
-      handleOnDataChange(nearestTambalBanRoute);
+    if (isSuccessFetchingNearestTambalBanRoute && findNearestTambalBanRoute) {
       setIsOnTrip(true);
       setFindNearestTambalBanRoute(false);
+      handleOnDataChange(nearestTambalBanRoute);
     }
   }, [
     setIsOnTrip,
-    setFindNearestTambalBanRoute,
-    nearestTambalBanRoute,
-    isSuccessFetchingNearestTambalBanRoute,
     handleOnDataChange,
+    nearestTambalBanRoute,
+    findNearestTambalBanRoute,
+    setFindNearestTambalBanRoute,
+    isSuccessFetchingNearestTambalBanRoute,
   ]);
 
   useEffect(() => {
-    if (isSuccessFetchingOnProgressTripRoute) {
+    if (isSuccessFetchingOnProgressTripRoute && isOnTrip)
       handleOnDataChange(onProgressTripRoute);
-      setIsOnTrip(true);
-    }
   }, [
-    setIsOnTrip,
+    isOnTrip,
+    handleOnDataChange,
     onProgressTripRoute,
     isSuccessFetchingOnProgressTripRoute,
-    handleOnDataChange,
   ]);
 
   useEffect(() => {
@@ -165,30 +154,21 @@ export default function useTrip(isOnTrip = false) {
     }
   }, [
     setIsOnTrip,
+    setIsErrorFetchingTrip,
+    nearestTambalBanRouteError,
     setFindNearestTambalBanRoute,
     isErrorFetchingNearestTambalBanRoute,
-    nearestTambalBanRouteError,
-    setIsErrorFetchingTrip,
   ]);
 
   useEffect(() => {
     setIsErrorFetchingTrip(isErrorFetchingOnProgressTripRoute);
-
-    if (
-      isErrorFetchingOnProgressTripRoute &&
-      onProgressTripRouteError !== null
-    ) {
+    if (isErrorFetchingOnProgressTripRoute && onProgressTripRouteError !== null)
       setIsOnTrip(false);
-      toast.error(onProgressTripRouteError.message, {
-        duration: Infinity,
-        position: "top-center",
-      });
-    }
   }, [
     setIsOnTrip,
-    isErrorFetchingOnProgressTripRoute,
-    onProgressTripRouteError,
     setIsErrorFetchingTrip,
+    onProgressTripRouteError,
+    isErrorFetchingOnProgressTripRoute,
   ]);
 
   return {

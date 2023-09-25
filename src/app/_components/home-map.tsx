@@ -7,14 +7,12 @@ import Mapbox, {
   GeolocateControl,
   NavigationControl,
 } from "react-map-gl";
-import { tripStore } from "@/lib/store/trip-store";
-import { useEffect, useState, useRef } from "react";
-import useGeolocation from "@/lib/hooks/useGeolocation";
 import useTrip from "@/lib/hooks/useTrip";
+import useGeolocation from "@/lib/hooks/useGeolocation";
+import { useEffect, useState, useRef } from "react";
+import { tripStore } from "@/lib/store/trip-store";
 
-type HomeMapProps = { isOnTrip: boolean };
-
-export default function HomeMap({ isOnTrip }: HomeMapProps) {
+export default function HomeMap() {
   const { destination, isOnTrip: isOnTripFromStore } = tripStore(
     ({ destination, isOnTrip }) => ({
       destination,
@@ -28,7 +26,7 @@ export default function HomeMap({ isOnTrip }: HomeMapProps) {
     setUserCurrentCoordinate,
     userCurrentCoordinate,
   } = useGeolocation();
-  useTrip(isOnTrip);
+  useTrip();
 
   const geolocateControlRef = useRef(null);
   const [viewState, setViewState] = useState({

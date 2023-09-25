@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { statusTranslated } from "@/lib/utils/utils";
 
 // Components
 import { Badge } from "@/components/ui/badge";
@@ -28,14 +29,9 @@ export default function HistoryItem({
   star,
 }: HistoryItemProps) {
   const statusColor: Map<string, string> = new Map();
-  const statusTranslated: Map<string, string> = new Map();
-
   statusColor.set("completed", "bg-green-300 text-green-700");
   statusColor.set("onprogress", "bg-yellow-300 text-yellow-700");
   statusColor.set("cancelled", "bg-red-300 text-red-700");
-  statusTranslated.set("completed", "Selesai");
-  statusTranslated.set("onprogress", "Aktif");
-  statusTranslated.set("cancelled", "Batal");
 
   const page = (
     <article className="mb-3 bg-white px-6 py-3 shadow-md">
