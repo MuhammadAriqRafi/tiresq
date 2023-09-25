@@ -1,14 +1,11 @@
 import useGeolocation from "./useGeolocation";
 import { api } from "@/app/_trpc/client";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { tripStore } from "../store/trip-store";
 import { useCallback, useEffect } from "react";
 import { type ClosestTambalBan } from "@/server/api/services/trip-service";
 
 export default function useTrip() {
-  const router = useRouter();
-
   const { userCurrentCoordinate } = useGeolocation();
   const {
     findNearestTambalBanRoute,
@@ -73,13 +70,11 @@ export default function useTrip() {
       onSuccess: () => {
         toast.success("Perjalanan kamu berhasil dibatalin", {
           position: "top-center",
-          duration: 5000,
         });
       },
       onSettled: () => {
         setDestination(undefined);
         setIsOnTrip(false);
-        void router.refresh();
       },
     });
 
@@ -88,13 +83,11 @@ export default function useTrip() {
       onSuccess: () => {
         toast.success("Yay!, kamu sudah sampai ditujuan", {
           position: "top-center",
-          duration: 5000,
         });
       },
       onSettled: () => {
         setDestination(undefined);
         setIsOnTrip(false);
-        void router.refresh();
       },
     });
 
@@ -148,7 +141,6 @@ export default function useTrip() {
       setIsOnTrip(false);
       setFindNearestTambalBanRoute(false);
       toast.error(nearestTambalBanRouteError.message, {
-        duration: Infinity,
         position: "top-center",
       });
     }

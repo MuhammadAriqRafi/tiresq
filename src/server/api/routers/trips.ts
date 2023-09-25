@@ -8,7 +8,7 @@ import {
 } from "../services/trip-service";
 import { TRPCError } from "@trpc/server";
 
-const currentUserId = "user_2TEYMQ96bJgvNNki3rQPQQzKV9t";
+export const currentUserId = "user_2TEYMQ96bJgvNNki3rQPQQzKV9t";
 
 const isOnTrip = publicProcedure.query(async () => {
   const onprogressTrip = await getOnProgressTrip({

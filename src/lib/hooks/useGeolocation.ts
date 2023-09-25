@@ -20,7 +20,9 @@ export type LatLng = {
 };
 
 export default function useGeolocation() {
-  const [isGeolocationError, setIsGeolocationError] = useState<boolean>(true);
+  const [isGeolocationError, setIsGeolocationError] = useState<
+    boolean | undefined
+  >();
   const [isGeolocationPermitted, setIsGeolocationPermitted] = useState(false);
   const [userCurrentCoordinate, setUserCurrentCoordinate] = useState<LatLng>({
     latitude: -5.358125429208756,
@@ -38,11 +40,7 @@ export default function useGeolocation() {
     }
 
     function onError() {
-      console.error("Error getting user location");
-      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
-        position: "top-center",
-        duration: Infinity,
-      });
+      setIsGeolocationError(true);
     }
 
     if (navigator.geolocation)
@@ -53,7 +51,6 @@ export default function useGeolocation() {
         "Yah, fitur geolokasi gak disupport di browser ini, coba pakai browser lain",
         {
           position: "top-center",
-          duration: Infinity,
         },
       );
     }

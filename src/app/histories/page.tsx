@@ -1,11 +1,17 @@
 import FilterGroup from "./histories-filter-group";
-import { serverClient } from "../_trpc/server";
 
 // Components
 import HistoryGroup from "./histories-group";
+import { cache } from "react";
+import { prisma } from "@/server/db";
+import { getHistories } from "@/server/api/services/histories-service";
+import { currentUserId } from "@/server/api/routers/trips";
 
 export default async function Histories() {
-  const histories = await serverClient.histories.index(null);
+  const cachedHistories = cache(
+    async () => await getHistories({ prisma, currentUserId }),
+  );
+  const histories = await cachedHistories();
 
   return (
     <>

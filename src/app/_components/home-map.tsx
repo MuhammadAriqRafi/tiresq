@@ -7,12 +7,15 @@ import Mapbox, {
   GeolocateControl,
   NavigationControl,
 } from "react-map-gl";
+import toast from "react-hot-toast";
 import useTrip from "@/lib/hooks/useTrip";
 import useGeolocation from "@/lib/hooks/useGeolocation";
 import { useEffect, useState, useRef } from "react";
 import { tripStore } from "@/lib/store/trip-store";
 
-export default function HomeMap() {
+type HomeMapProps = { isOnTrip: boolean };
+
+export default function HomeMap({ isOnTrip }: HomeMapProps) {
   const { destination, isOnTrip: isOnTripFromStore } = tripStore(
     ({ destination, isOnTrip }) => ({
       destination,
@@ -26,7 +29,7 @@ export default function HomeMap() {
     setUserCurrentCoordinate,
     userCurrentCoordinate,
   } = useGeolocation();
-  useTrip();
+  useTrip({ isOnTrip });
 
   const geolocateControlRef = useRef(null);
   const [viewState, setViewState] = useState({
@@ -48,6 +51,12 @@ export default function HomeMap() {
         latitude: userCurrentCoordinate.latitude,
         longitude: userCurrentCoordinate.longitude,
       }));
+    else {
+      console.error("Error getting user location");
+      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
+        position: "top-center",
+      });
+    }
   }, [userCurrentCoordinate, isGeolocationError]);
 
   return (

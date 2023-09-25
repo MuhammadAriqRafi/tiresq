@@ -36,7 +36,6 @@ type Destination = {
   latitude: string;
 };
 
-type GetTripProps = { prisma: Prisma; historyId: number };
 type GetOnProgressTripProps = { prisma: Prisma; currentUserId: string };
 type FindRouteProps = {
   startLatitude: number;
@@ -148,13 +147,6 @@ export const findClosestDestination = async (
     });
 
   return { choosenDestination, choosenDestinationId };
-};
-
-export const getTrip = async ({ prisma, historyId }: GetTripProps) => {
-  return await prisma.trip.findMany({
-    where: { id: historyId },
-    include: { rating: true, review: true, destination: true },
-  });
 };
 
 export const getOnProgressTrip = async ({
