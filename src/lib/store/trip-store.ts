@@ -20,7 +20,7 @@ type Actions = {
 };
 
 export const tripStore = create<Store & Actions>((set) => ({
-  isOnTrip: true,
+  isOnTrip: false,
   isFetchingTrip: false,
   isErrorFetchingTrip: false,
   findNearestTambalBanRoute: false,

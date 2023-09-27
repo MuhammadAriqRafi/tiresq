@@ -2,16 +2,17 @@
 
 import useTrip from "@/lib/hooks/useTrip";
 import useGeolocation from "@/lib/hooks/useGeolocation";
-import { Button } from "@/components/ui/button";
-import { tripStore } from "@/lib/store/trip-store";
 import { Loader2, Search } from "lucide-react";
+import { tripStore } from "@/lib/store/trip-store";
+import { Button } from "@/components/ui/button";
 
 export default function FindButton() {
   const { isGeolocationPermitted } = useGeolocation();
-  const { isFetchingTrip, isCancellingTrip, isCompletingTrip } = useTrip();
-  const { isOnTrip, setFindNearestTambalBanRoute } = tripStore(
-    ({ isOnTrip, setFindNearestTambalBanRoute }) => ({
+  const { isCancellingTrip, isCompletingTrip } = useTrip();
+  const { isOnTrip, isFetchingTrip, setFindNearestTambalBanRoute } = tripStore(
+    ({ isOnTrip, isFetchingTrip, setFindNearestTambalBanRoute }) => ({
       isOnTrip,
+      isFetchingTrip,
       setFindNearestTambalBanRoute,
     }),
   );

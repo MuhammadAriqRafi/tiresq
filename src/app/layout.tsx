@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { cn } from "@/lib/utils/utils";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,24 +22,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          rel="icon"
-          href="/icon?<generated>"
-          type="image/png"
-          sizes="32x32"
-        />
-      </head>
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <link
+            rel="icon"
+            href="/icon?<generated>"
+            type="image/png"
+            sizes="32x32"
+          />
+        </head>
 
-      <Analytics />
+        <Analytics />
 
-      <body className={cn(inter.className, "mx-auto max-w-screen-md")}>
-        <ToasterBase />
-        <NextTopLoader showSpinner={false} />
-        <TRPCProvider>{children}</TRPCProvider>
-        <Navbar />
-      </body>
-    </html>
+        <body className={cn(inter.className, "mx-auto max-w-screen-md")}>
+          <ToasterBase />
+          <NextTopLoader showSpinner={false} />
+          <TRPCProvider>{children}</TRPCProvider>
+          <Navbar />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

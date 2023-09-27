@@ -8,20 +8,17 @@ import Mapbox, {
   NavigationControl,
 } from "react-map-gl";
 import toast from "react-hot-toast";
-import useTrip from "@/lib/hooks/useTrip";
 import useGeolocation from "@/lib/hooks/useGeolocation";
 import { useEffect, useState, useRef } from "react";
 import { tripStore } from "@/lib/store/trip-store";
+import useOnProgressTrip from "@/lib/hooks/useOnProgressTrip";
+import useStartTrip from "@/lib/hooks/useStartTrip";
 
-type HomeMapProps = { isOnTrip: boolean };
-
-export default function HomeMap({ isOnTrip }: HomeMapProps) {
-  const { destination, isOnTrip: isOnTripFromStore } = tripStore(
-    ({ destination, isOnTrip }) => ({
-      destination,
-      isOnTrip,
-    }),
-  );
+export default function HomeMap() {
+  const { destination, isOnTrip } = tripStore(({ destination, isOnTrip }) => ({
+    destination,
+    isOnTrip,
+  }));
 
   const {
     isGeolocationError,
@@ -29,7 +26,8 @@ export default function HomeMap({ isOnTrip }: HomeMapProps) {
     setUserCurrentCoordinate,
     userCurrentCoordinate,
   } = useGeolocation();
-  useTrip({ isOnTrip });
+  useOnProgressTrip();
+  useStartTrip();
 
   const geolocateControlRef = useRef(null);
   const [viewState, setViewState] = useState({
@@ -41,7 +39,7 @@ export default function HomeMap({ isOnTrip }: HomeMapProps) {
   useEffect(() => {
     if (geolocateControlRef.current !== null)
       (geolocateControlRef.current as { trigger: () => void }).trigger();
-  }, [isOnTripFromStore]);
+  }, [isOnTrip]);
 
   useEffect(() => {
     if (!isGeolocationError)
