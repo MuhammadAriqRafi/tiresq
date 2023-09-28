@@ -66,8 +66,14 @@ export default function useOnProgressTrip() {
   );
 
   useEffect(() => {
-    if (isUserLoaded && isUserSignedIn && !isSuccessLoadingOnProgressTripRoute)
+    if (
+      isUserLoaded &&
+      isUserSignedIn &&
+      !isSuccessLoadingOnProgressTripRoute
+    ) {
+      localStorage.removeItem("tiresq.publicUserDestination");
       setIsOnTrip(true);
+    }
   }, [
     setIsOnTrip,
     isUserLoaded,
@@ -76,11 +82,11 @@ export default function useOnProgressTrip() {
   ]);
 
   useEffect(() => {
-    if (publicUserDestination !== null) {
+    if (publicUserDestination !== null && !isUserSignedIn) {
       setIsOnTrip(true);
       setDestination(publicUserDestination);
     }
-  }, [publicUserDestination, setIsOnTrip, setDestination]);
+  }, [publicUserDestination, setIsOnTrip, setDestination, isUserSignedIn]);
 
   useEffect(
     () => setIsFetchingTrip(isFetchingOnProgressTripRoute),

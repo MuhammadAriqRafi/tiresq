@@ -22,7 +22,7 @@ export const getHistories = async ({
 };
 
 export const getHistory = async ({ prisma, historyId }: GetHistoryProps) => {
-  return await prisma.trip.findMany({
+  return await prisma.trip.findFirst({
     where: { id: Number(historyId) },
     select: {
       id: true,

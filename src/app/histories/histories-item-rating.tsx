@@ -85,7 +85,7 @@ export default function Rating({
             </section>
           </SheetTrigger>
 
-          <SheetContent className="flex flex-col gap-8" side="bottom">
+          <SheetContent className="flex flex-col gap-6" side="bottom">
             <SheetHeader>
               <div className="flex w-full gap-4">
                 <div className="relative h-20 w-20">
@@ -115,7 +115,7 @@ export default function Rating({
               </div>
             </SheetHeader>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 rounded-md border border-slate-200 px-4 py-6">
               <span>Ulasanmu</span>
               <p>{review}</p>
             </div>
@@ -128,7 +128,7 @@ export default function Rating({
           </SheetContent>
         </Sheet>
       ) : (
-        <Link href={`histories/${historyId}/rating`}>
+        <Link href={`histories/${historyId}/experience`}>
           {star === null ? <Unrated /> : <Rated star={star} review={null} />}
         </Link>
       )}

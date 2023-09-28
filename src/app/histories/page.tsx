@@ -1,13 +1,16 @@
-import FilterGroup from "./histories-filter-group";
-
-// Components
-import HistoryGroup from "./histories-group";
+import { auth } from "@clerk/nextjs";
 import { cache } from "react";
 import { prisma } from "@/server/db";
 import { getHistories } from "@/server/api/services/histories-service";
-import { currentUserId } from "@/server/api/routers/trips";
+
+// Components
+import FilterGroup from "./histories-filter-group";
+import HistoryGroup from "./histories-group";
 
 export default async function Histories() {
+  const { userId: currentUserId } = auth();
+  if (currentUserId === null) return <p>Not Authorized</p>;
+
   const cachedHistories = cache(
     async () => await getHistories({ prisma, currentUserId }),
   );

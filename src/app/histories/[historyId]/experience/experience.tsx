@@ -1,13 +1,15 @@
 "use client";
 
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { X } from "lucide-react";
+import useExperience from "@/lib/hooks/useExperience";
+import { Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useState } from "react";
 
 // Components
-import Stars from "./rating-stars";
+import Stars from "./experience-stars";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,19 +18,26 @@ import { Separator } from "@/components/ui/separator";
 
 dayjs.extend(relativeTime);
 
-type RatingType = {
-  destination: string;
+type ExperienceProps = {
+  historyId: number;
   created_at: Date;
+  destination: string;
   star: number | null;
 };
 export type RatingFeedback = { text: string; color: string };
 
-export default function Rating({ destination, star, created_at }: RatingType) {
+export default function Experience({
+  historyId,
+  destination,
+  created_at,
+  star,
+}: ExperienceProps) {
   const router = useRouter();
   const mainContainerHeight = "h-[calc(100vh-124px)]";
 
   const [review, setReview] = useState<string>("");
   const [rating, setRating] = useState<number | null>(star);
+  const { createExperience, isCreatingExperience } = useExperience();
   const [ratingFeedback, setRatingFeedback] = useState<RatingFeedback>({
     text: "",
     color: "",
@@ -37,10 +46,15 @@ export default function Rating({ destination, star, created_at }: RatingType) {
   const handleReviewInput = (event: ChangeEvent<HTMLTextAreaElement>) =>
     setReview(event.target.value);
 
+  const handleCreateExperience = () => {
+    if (rating === null) return toast.error("Kasih bintang dulu ya");
+    createExperience({ rating, review, historyId });
+  };
+
   return (
     <>
       <header className="mb-14 flex items-center gap-4 p-6 pb-0">
-        <X className="cursor-pointer" onClick={() => void router.back} />
+        <X className="cursor-pointer" onClick={() => router.back()} />
         <div className="flex flex-col gap-1">
           <h2>{destination}</h2>
           <span>{dayjs(created_at).format("dddd, D MMM YYYY, HH:mm")}</span>
@@ -87,12 +101,15 @@ export default function Rating({ destination, star, created_at }: RatingType) {
           </div>
         </section>
 
-        <Button className="mb-10 mt-auto">
-          {/* {isCreatingExperience ? (
-          <Loader2 size={18} className="animate-spin" />
-        ) : ( */}
-          Kirim
-          {/* )} */}
+        <Button
+          onClick={() => handleCreateExperience()}
+          className="mb-10 mt-auto"
+        >
+          {isCreatingExperience ? (
+            <Loader2 size={18} className="animate-spin" />
+          ) : (
+            "Kirim"
+          )}
         </Button>
       </main>
     </>

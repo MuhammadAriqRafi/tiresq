@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, History, UserCircle } from "lucide-react";
+import { Home, History } from "lucide-react";
 import { UserButton, useAuth } from "@clerk/nextjs";
 
 type NavItem = {
@@ -14,7 +14,7 @@ type NavItem = {
 export default function Navbar() {
   const { isSignedIn } = useAuth();
   const currentPath = usePathname();
-  const blacklistedPath = ["/rating"];
+  const blacklistedPath = ["/experience"];
 
   const navigationItems: NavItem[] = [
     {

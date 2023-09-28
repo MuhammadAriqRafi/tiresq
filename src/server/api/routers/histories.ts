@@ -1,14 +1,22 @@
 import { z } from "zod";
 import { prisma } from "@/server/db";
-import { publicProcedure, router } from "../trpc";
-import { getHistory, getHistories } from "../services/histories-service";
+import { privateProcedure, router } from "../trpc";
+import {
+  getHistory as getHistoryService,
+  getHistories as getHistoriesService,
+} from "../services/histories-service";
 
-const currentUserId = "user_2TEYMQ96bJgvNNki3rQPQQzKV9t";
+const getHistories = privateProcedure.query(
+  async ({ ctx: { currentUserId } }) => {
+    return await getHistoriesService({ prisma, currentUserId });
+  },
+);
 
-const indexInputSchema = z.object({ historyId: z.string() }).nullable();
-const index = publicProcedure.input(indexInputSchema).query(({ input }) => {
-  if (input !== null) return getHistory({ prisma, historyId: input.historyId });
-  return getHistories({ prisma, currentUserId });
-});
+const getHistoryInputSchema = z.object({ historyId: z.string() });
+const getHistory = privateProcedure
+  .input(getHistoryInputSchema)
+  .query(async ({ input: { historyId } }) => {
+    return await getHistoryService({ prisma, historyId });
+  });
 
-export const historiesRouter = router({ index });
+export const historiesRouter = router({ getHistories, getHistory });

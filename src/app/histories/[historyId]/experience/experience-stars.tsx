@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { type RatingFeedback } from "./rating";
+import { type RatingFeedback } from "./experience";
 
 type StarsProps = {
   amount: number | null;
@@ -15,14 +15,12 @@ export default function Stars({
 }: StarsProps) {
   const [starAmount, setStarAmount] = useState(0);
   const ratingFeedback = useMemo(() => {
-    const ratingFeedback = new Map<number, RatingFeedback>();
-    ratingFeedback.set(1, { text: "Kecewa.", color: "text-red-600" });
-    ratingFeedback.set(2, { text: "Kurang Memuaskan.", color: "text-red-600" });
-    ratingFeedback.set(3, { text: "Biasa.", color: "" });
-    ratingFeedback.set(4, { text: "Puaaas!", color: "text-green-600" });
-    ratingFeedback.set(5, { text: "Puas Banget!", color: "text-green-600" });
-
-    return ratingFeedback;
+    return new Map<number, RatingFeedback>()
+      .set(1, { text: "Kecewa.", color: "text-red-600" })
+      .set(2, { text: "Kurang Memuaskan.", color: "text-red-600" })
+      .set(3, { text: "Biasa.", color: "" })
+      .set(4, { text: "Puaaas!", color: "text-green-600" })
+      .set(5, { text: "Puas Banget!", color: "text-green-600" });
   }, []);
 
   const handleOnClick = (starIndex: number) => setStarAmount(starIndex);
