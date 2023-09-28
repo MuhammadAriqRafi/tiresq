@@ -1,29 +1,35 @@
 import { z } from "zod";
-import { createTRPCRouter, privateProcedure } from "../trpc";
+import { prisma } from "@/server/db";
+import { privateProcedure, router } from "../trpc";
 
 const createInputSchema = z.object({
-  tripId: z.number(),
-  review: z.string().trim(),
-  rating: z.number().min(1).max(5).nullable(),
+  historyId: z.number(),
+  review: z.string().trim().optional(),
+  rating: z.number().min(1).max(5),
 });
 const create = privateProcedure
   .input(createInputSchema)
-  .mutation(async ({ ctx, input: { tripId, rating, review } }) => {
-    const { rating_id, review_id } = await ctx.prisma.trip.findFirstOrThrow({
-      where: { id: tripId },
+  .mutation(async ({ input: { historyId, rating, review } }) => {
+    const trip = await prisma.trip.findFirst({
+      where: { id: historyId },
       select: { rating_id: true, review_id: true },
     });
 
-    await ctx.prisma.rating.update({
-      where: { id: rating_id! },
-      data: { star: rating },
-    });
+    if (trip !== null) {
+      const { rating_id, review_id } = trip;
 
-    if (review.length > 0)
-      await ctx.prisma.review.update({
-        where: { id: review_id! },
-        data: { review },
-      });
+      if (rating_id !== null)
+        await prisma.rating.update({
+          where: { id: rating_id },
+          data: { star: rating },
+        });
+
+      if (review && review_id !== null)
+        await prisma.review.update({
+          where: { id: review_id },
+          data: { review },
+        });
+    }
   });
 
-export const experienceRouter = createTRPCRouter({ create });
+export const experiencesRouter = router({ create });

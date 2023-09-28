@@ -1,61 +1,57 @@
 import { z } from "zod";
+import { prisma } from "@/server/db";
+import { router, publicProcedure, privateProcedure } from "@/server/api/trpc";
 import {
-  createTRPCRouter,
-  privateProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
-import { findClosestDestination } from "../services/trip-service";
+  findRoute,
+  getOnProgressTrip,
+  findClosestDestination,
+} from "../services/trip-service";
+import { TRPCError } from "@trpc/server";
 
-const indexInputSchema = z.object({ historyId: z.number() }).nullable();
-const index = privateProcedure
-  .input(indexInputSchema)
-  .query(({ ctx, input }) => {
-    if (input) {
-      return ctx.prisma.trip.findMany({
-        where: { id: input.historyId },
-        include: { rating: true, review: true, destination: true },
+const getOnProgressTripRouteInputSchema = z.object({
+  userCurrentCoordinate: z.object({
+    longitude: z.number(),
+    latitude: z.number(),
+  }),
+});
+const getOnProgressTripRoute = privateProcedure
+  .input(getOnProgressTripRouteInputSchema)
+  .query(
+    async ({ ctx: { currentUserId }, input: { userCurrentCoordinate } }) => {
+      const onprogressTrip = await getOnProgressTrip({
+        currentUserId,
+        prisma,
       });
-    }
-    return ctx.prisma.trip.findMany({
-      where: { user_id: ctx.currentUserId },
-      orderBy: { created_at: "desc" },
-      include: { rating: true, review: true, destination: true },
-    });
-  });
 
-const findNearestTambalBanInputSchema = z.object({
+      if (onprogressTrip !== null) {
+        const route = await findRoute({
+          destinationName: onprogressTrip?.destination.name,
+          destinationLongitude: Number(onprogressTrip?.destination.longitude),
+          destinationLatitude: Number(onprogressTrip?.destination.latitude),
+          startLongitude: userCurrentCoordinate.longitude,
+          startLatitude: userCurrentCoordinate.latitude,
+        });
+
+        return route;
+      }
+
+      throw new TRPCError({
+        code: "UNPROCESSABLE_CONTENT",
+        message: "Kamu sedang tidak mencari tambal ban",
+      });
+    },
+  );
+
+const findNearestTambalBanRouteInputSchema = z.object({
   userCurrentCoordinate: z.object({
     latitude: z.number(),
     longitude: z.number(),
   }),
 });
-const findNearestTambalBan = publicProcedure
-  .input(findNearestTambalBanInputSchema)
+const findNearestTambalBanRoute = publicProcedure
+  .input(findNearestTambalBanRouteInputSchema)
   .query(
-    async ({
-      ctx: { prisma, currentUserId },
-      input: { userCurrentCoordinate },
-    }) => {
-      if (currentUserId !== null) {
-        const onprogressTrip = await prisma.trip.findFirst({
-          where: { user_id: currentUserId, status: "onprogress" },
-          select: { destination: true },
-        });
-
-        if (onprogressTrip !== null) {
-          const { destination } = onprogressTrip;
-          const { id, name, longitude, latitude } = destination;
-          const onprogressTripDestination = { id, name, longitude, latitude };
-
-          const { choosenDestination } = await findClosestDestination(
-            [onprogressTripDestination],
-            userCurrentCoordinate
-          );
-
-          return choosenDestination;
-        }
-      }
-
+    async ({ ctx: { currentUserId }, input: { userCurrentCoordinate } }) => {
       const allTambalBan = await prisma.tambalBan.findMany({
         select: {
           id: true,
@@ -82,22 +78,22 @@ const findNearestTambalBan = publicProcedure
         });
 
       return choosenDestination;
-    }
+    },
   );
 
 const cancelTrip = publicProcedure.mutation(
-  async ({ ctx: { prisma, currentUserId } }) => {
+  async ({ ctx: { currentUserId } }) => {
     if (currentUserId === null) return;
 
     return prisma.trip.updateMany({
       where: { user_id: currentUserId, status: "onprogress" },
       data: { status: "cancelled" },
     });
-  }
+  },
 );
 
 const completeTrip = publicProcedure.mutation(
-  async ({ ctx: { prisma, currentUserId } }) => {
+  async ({ ctx: { currentUserId } }) => {
     if (currentUserId === null) return;
 
     const { id: newRatingId } = await prisma.rating.create({
@@ -115,12 +111,12 @@ const completeTrip = publicProcedure.mutation(
         review_id: newReviewId,
       },
     });
-  }
+  },
 );
 
-export const tripsRouter = createTRPCRouter({
-  index,
-  findNearestTambalBan,
-  completeTrip,
+export const tripsRouter = router({
   cancelTrip,
+  completeTrip,
+  getOnProgressTripRoute,
+  findNearestTambalBanRoute,
 });

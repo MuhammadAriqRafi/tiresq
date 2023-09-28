@@ -1,13 +1,14 @@
-import React from "react";
-import { ToastBar, Toaster, toast } from "react-hot-toast";
+"use client";
+
 import { X } from "lucide-react";
+import toast, { ToastBar, Toaster } from "react-hot-toast";
 
 export default function ToasterBase() {
   return (
     <Toaster
       position="bottom-center"
       toastOptions={{
-        duration: 2500,
+        duration: Infinity,
         style: {
           width: "100%",
           boxShadow: "none",
@@ -23,7 +24,7 @@ export default function ToasterBase() {
           {({ icon, message }) => (
             <>
               {icon}
-              <div className="text text-left">{message}</div>
+              <p>{message}</p>
               {t.type !== "loading" && (
                 <button className="ml-auto" onClick={() => toast.dismiss(t.id)}>
                   <X size={16} />

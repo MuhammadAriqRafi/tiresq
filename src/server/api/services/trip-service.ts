@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { type Prisma } from "@/server/db";
 
 type Coords = {
   routes: [
@@ -8,22 +9,22 @@ type Coords = {
       geometry: {
         coordinates: number[][];
       };
-    }
+    },
   ];
 };
 
 type SearchDirectionsParams = {
   startLongitude: number;
   startLatitude: number;
-  goalLongitude: string;
-  goalLatitude: string;
+  destinationLongitude: number;
+  destinationLatitude: number;
 };
 
-type ClosestTambalBan = {
+export type ClosestTambalBan = {
   name: string;
-  latitude: string;
-  longitude: string;
-  distance: number;
+  latitude: number;
+  longitude: number;
+  distance: string;
   duration: number;
   coords: number[][];
 };
@@ -35,29 +36,71 @@ type Destination = {
   latitude: string;
 };
 
+type GetOnProgressTripProps = { prisma: Prisma; currentUserId: string };
+type FindRouteProps = {
+  startLatitude: number;
+  startLongitude: number;
+  destinationLongitude: number;
+  destinationLatitude: number;
+  destinationName: string;
+};
+
 export const searchDirections = async ({
   startLongitude,
   startLatitude,
-  goalLongitude,
-  goalLatitude,
+  destinationLongitude,
+  destinationLatitude,
 }: SearchDirectionsParams): Promise<Coords> => {
-  const mapboxDirectionsAPI = `https://api.mapbox.com/directions/v5/mapbox/walking/${startLongitude},${startLatitude};${goalLongitude},${goalLatitude}?steps=true&geometries=geojson&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+  const mapboxDirectionsAPI = `https://api.mapbox.com/directions/v5/mapbox/walking/${startLongitude},${startLatitude};${destinationLongitude},${destinationLatitude}?steps=true&geometries=geojson&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
 
   const response = await fetch(mapboxDirectionsAPI);
   return (await response.json()) as Coords;
 };
 
+export const findRoute = async ({
+  startLongitude,
+  startLatitude,
+  destinationLongitude,
+  destinationLatitude,
+  destinationName,
+}: FindRouteProps): Promise<ClosestTambalBan> => {
+  try {
+    const {
+      routes: [data],
+    } = await searchDirections({
+      startLongitude,
+      startLatitude,
+      destinationLongitude,
+      destinationLatitude,
+    });
+
+    return {
+      name: destinationName,
+      latitude: destinationLatitude,
+      longitude: destinationLongitude,
+      distance: (data.distance / 1000).toFixed(2),
+      duration: Math.floor(data.duration / 60),
+      coords: data.geometry.coordinates,
+    };
+  } catch (error) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Yah, lagi ada gangguan :(, coba lagi nanti yaa",
+    });
+  }
+};
+
 // const MAX_DISTANCE = 5;
 export const findClosestDestination = async (
   allPotentialDestination: Destination[],
-  currentUserCoordinate: { latitude: number; longitude: number }
+  currentUserCoordinate: { latitude: number; longitude: number },
 ) => {
   let choosenDestinationId = Infinity;
   let choosenDestination: ClosestTambalBan = {
     name: "",
-    latitude: "",
-    longitude: "",
-    distance: Infinity,
+    distance: "",
+    latitude: Infinity,
+    longitude: Infinity,
     duration: Infinity,
     coords: [],
   };
@@ -65,26 +108,27 @@ export const findClosestDestination = async (
   for (const destination of allPotentialDestination) {
     try {
       const { id, name, longitude, latitude } = destination;
-      const data = await searchDirections({
-        startLongitude: currentUserCoordinate.longitude,
+      const { distance, duration, coords } = await findRoute({
+        destinationName: name,
         startLatitude: currentUserCoordinate.latitude,
-        goalLongitude: longitude,
-        goalLatitude: latitude,
+        startLongitude: currentUserCoordinate.longitude,
+        destinationLongitude: Number(longitude),
+        destinationLatitude: Number(latitude),
       });
-      const distance = parseFloat(
-        (data?.routes[0]?.distance / 1000).toFixed(2)
-      );
 
       // if (distance >= MAX_DISTANCE) continue;
-      if (distance < choosenDestination.distance) {
+      if (
+        choosenDestination.distance === "" ||
+        Number(distance) < Number(choosenDestination.distance)
+      ) {
         choosenDestinationId = id;
         choosenDestination = {
           name,
-          latitude,
-          longitude,
+          coords,
           distance,
-          duration: Math.floor(data.routes[0].duration / 60),
-          coords: data.routes[0].geometry.coordinates,
+          duration,
+          latitude: Number(latitude),
+          longitude: Number(longitude),
         };
       }
     } catch (error) {
@@ -103,4 +147,18 @@ export const findClosestDestination = async (
     });
 
   return { choosenDestination, choosenDestinationId };
+};
+
+export const getOnProgressTrip = async ({
+  prisma,
+  currentUserId,
+}: GetOnProgressTripProps) => {
+  return await prisma.trip.findFirst({
+    where: { user_id: currentUserId, status: "onprogress" },
+    select: {
+      destination: {
+        select: { id: true, name: true, longitude: true, latitude: true },
+      },
+    },
+  });
 };

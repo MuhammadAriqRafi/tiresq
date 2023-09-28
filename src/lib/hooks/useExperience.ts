@@ -1,24 +1,23 @@
-import { api } from "@/utils/api";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { api } from "@/app/_trpc/client";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function useExperience() {
   const router = useRouter();
-  const { mutate, isLoading, isSuccess } = api.experience.create.useMutation();
+  const { mutate: createExperience, isLoading: isCreatingExperience } =
+    api.experiences.create.useMutation({
+      onSuccess() {
+        router.replace("/histories");
+        setTimeout(
+          () =>
+            toast.success(
+              "Terima kasih udah luangin waktunya buat bagi pengalamannya!",
+              { duration: 2000 },
+            ),
+          1000,
+        );
+      },
+    });
 
-  useEffect(() => {
-    if (isSuccess) {
-      void router.replace("/histories");
-      setTimeout(
-        () =>
-          toast.success(
-            "Terima kasih udah luangin waktunya buat kasih rating!"
-          ),
-        1000
-      );
-    }
-  }, [isSuccess, router]);
-
-  return { mutate, isLoading };
+  return { createExperience, isCreatingExperience };
 }

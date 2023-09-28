@@ -20,39 +20,39 @@ export type LatLng = {
 };
 
 export default function useGeolocation() {
-  const [isGeolocationError, setIsGeolocationError] = useState<boolean>(true);
+  const [isGeolocationError, setIsGeolocationError] = useState<
+    boolean | undefined
+  >();
   const [isGeolocationPermitted, setIsGeolocationPermitted] = useState(false);
-  const [userCurrentCoordinate, setUserCurrentCoordinate] = useState({
+  const [userCurrentCoordinate, setUserCurrentCoordinate] = useState<LatLng>({
     latitude: -5.358125429208756,
     longitude: 105.31483876684943,
   }); // I set the default location to Insitute Technology of Sumatera
 
   const getUserLocation = () => {
     function onSuccess({ coords }: Position) {
+      setIsGeolocationPermitted(true);
+      setIsGeolocationError(false);
       setUserCurrentCoordinate({
         latitude: coords.latitude,
         longitude: coords.longitude,
       });
-      setIsGeolocationPermitted(true);
-      setIsGeolocationError(false);
     }
 
     function onError() {
-      console.error("Error getting user location");
-      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
-        position: "top-center",
-        duration: Infinity,
-      });
+      setIsGeolocationError(true);
     }
 
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
     else {
       console.error("Geolocation is not supported by this browser.");
-      toast.error("Geolocation is not supported by this browser.", {
-        position: "top-center",
-        duration: Infinity,
-      });
+      toast.error(
+        "Yah, fitur geolokasi gak disupport di browser ini, coba pakai browser lain",
+        {
+          position: "top-center",
+        },
+      );
     }
   };
 
