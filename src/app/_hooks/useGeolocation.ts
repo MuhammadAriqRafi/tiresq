@@ -1,33 +1,30 @@
 import { toast } from "react-hot-toast";
-import { useEffect, useState } from "react";
-
-type Position = {
-  coords: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-    altitude: number | null;
-    altitudeAccuracy: number | null;
-    heading: number | null;
-    speed: number | null;
-  };
-  timestamp: number;
-};
-
-export type LatLng = {
-  latitude: number;
-  longitude: number;
-};
+import { useState } from "react";
+import { useEffectOnce } from "usehooks-ts";
+import { geolocationStore } from "../../lib/store/geolocation-store";
 
 export default function useGeolocation() {
+  const {
+    userCurrentCoordinate,
+    isGeolocationPermitted,
+    setUserCurrentCoordinate,
+    setIsGeolocationPermitted,
+  } = geolocationStore(
+    ({
+      userCurrentCoordinate,
+      isGeolocationPermitted,
+      setUserCurrentCoordinate,
+      setIsGeolocationPermitted,
+    }) => ({
+      userCurrentCoordinate,
+      isGeolocationPermitted,
+      setIsGeolocationPermitted,
+      setUserCurrentCoordinate,
+    }),
+  );
   const [isGeolocationError, setIsGeolocationError] = useState<
     boolean | undefined
   >();
-  const [isGeolocationPermitted, setIsGeolocationPermitted] = useState(false);
-  const [userCurrentCoordinate, setUserCurrentCoordinate] = useState<LatLng>({
-    latitude: -5.358125429208756,
-    longitude: 105.31483876684943,
-  }); // I set the default location to Insitute Technology of Sumatera
 
   const getUserLocation = () => {
     function onSuccess({ coords }: Position) {
@@ -41,6 +38,10 @@ export default function useGeolocation() {
 
     function onError() {
       setIsGeolocationError(true);
+      console.error("Error getting user location");
+      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
+        position: "top-center",
+      });
     }
 
     if (navigator.geolocation)
@@ -56,7 +57,7 @@ export default function useGeolocation() {
     }
   };
 
-  useEffect(() => getUserLocation(), []);
+  useEffectOnce(() => getUserLocation());
 
   return {
     userCurrentCoordinate,

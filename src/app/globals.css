@@ -19,9 +19,9 @@ span {
 }
 
 .active {
-  @apply border-t-2 border-t-blue-400 bg-slate-200 shadow-inner;
+  @apply border-t-2 border-t-blue-400 font-bold shadow-[0_0_50px_-15px_rgba(0,0,0,0.25)];
 }
 
 .badge-text {
-  @apply w-fit text-xs font-bold tracking-wide;
+  @apply w-fit cursor-default text-xs font-semibold tracking-wide;
 }

@@ -7,67 +7,31 @@ import Mapbox, {
   GeolocateControl,
   NavigationControl,
 } from "react-map-gl";
-import toast from "react-hot-toast";
-import useGeolocation from "@/lib/hooks/useGeolocation";
-import { useEffect, useState, useRef } from "react";
-import { tripStore } from "@/lib/store/trip-store";
-import useOnProgressTrip from "@/lib/hooks/useOnProgressTrip";
-import useStartTrip from "@/lib/hooks/useStartTrip";
+import { Fragment } from "react";
+import useHomeMap from "../_hooks/useHomeMap";
 
 export default function HomeMap() {
-  const { destination, isOnTrip } = tripStore(({ destination, isOnTrip }) => ({
-    destination,
-    isOnTrip,
-  }));
-
   const {
-    isGeolocationError,
+    destination,
+    mapViewState,
+    setMapViewState,
+    geolocateControlRef,
+    userCurrentCoordinate,
     isGeolocationPermitted,
     setUserCurrentCoordinate,
-    userCurrentCoordinate,
-  } = useGeolocation();
-  useOnProgressTrip();
-  useStartTrip();
-
-  const geolocateControlRef = useRef(null);
-  const [viewState, setViewState] = useState({
-    zoom: 10,
-    latitude: userCurrentCoordinate.latitude,
-    longitude: userCurrentCoordinate.longitude,
-  });
-
-  useEffect(() => {
-    if (geolocateControlRef.current !== null)
-      (geolocateControlRef.current as { trigger: () => void }).trigger();
-  }, [isOnTrip]);
-
-  useEffect(() => {
-    if (!isGeolocationError)
-      setViewState((prevState) => ({
-        ...prevState,
-        zoom: 15,
-        latitude: userCurrentCoordinate.latitude,
-        longitude: userCurrentCoordinate.longitude,
-      }));
-    else {
-      console.error("Error getting user location");
-      toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
-        position: "top-center",
-      });
-    }
-  }, [userCurrentCoordinate, isGeolocationError]);
+  } = useHomeMap();
 
   return (
     <Mapbox
-      {...viewState}
+      {...mapViewState}
       reuseMaps={true}
       style={{ height: "100vh", width: "100vw" }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-      onMove={(event) => setViewState(event.viewState)}
+      onMove={(event) => setMapViewState(event.viewState)}
     >
       {destination ? (
-        <>
+        <Fragment>
           <Source
             id="routeSource"
             type="geojson"
@@ -79,7 +43,7 @@ export default function HomeMap() {
                   properties: [],
                   geometry: {
                     type: "LineString",
-                    coordinates: destination.coords,
+                    coordinates: destination.coordsToDestination,
                   },
                 },
               ],
@@ -108,8 +72,8 @@ export default function HomeMap() {
                   geometry: {
                     type: "Point",
                     coordinates: [
-                      Number(destination.longitude),
-                      Number(destination.latitude),
+                      Number(destination.destinationLongitude),
+                      Number(destination.destinationLatitude),
                     ],
                   },
                 },
@@ -129,7 +93,7 @@ export default function HomeMap() {
               }}
             />
           </Source>
-        </>
+        </Fragment>
       ) : null}
 
       <GeolocateControl

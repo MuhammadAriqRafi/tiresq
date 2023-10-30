@@ -1,29 +1,18 @@
-import { auth } from "@clerk/nextjs";
-import { cache } from "react";
-import { prisma } from "@/server/db";
-import { getHistories } from "@/server/api/services/histories-service";
+import { Fragment } from "react";
 
 // Components
-import FilterGroup from "./histories-filter-group";
-import HistoryGroup from "./histories-group";
+import Histories from "./_components/histories";
+import HistoriesFilterGroup from "./_components/histories-filter-group";
 
-export default async function Histories() {
-  const { userId: currentUserId } = auth();
-  if (currentUserId === null) return <p>Not Authorized</p>;
-
-  const cachedHistories = cache(
-    async () => await getHistories({ prisma, currentUserId }),
-  );
-  const histories = await cachedHistories();
-
+export default function HistoriesPage() {
   return (
-    <>
+    <Fragment>
       <header className="fixed z-10 w-full max-w-screen-md bg-white p-6 pb-3 shadow">
         <h1 className="mb-6">Riwayat</h1>
-        <FilterGroup />
+        <HistoriesFilterGroup />
       </header>
 
-      <HistoryGroup histories={histories} />
-    </>
+      <Histories />
+    </Fragment>
   );
 }

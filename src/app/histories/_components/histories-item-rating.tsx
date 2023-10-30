@@ -2,17 +2,17 @@ import Link from "next/link";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Fragment } from "react";
 import { ChevronRight, Star } from "lucide-react";
 import { capitalizeFirstLetter } from "@/lib/utils/utils";
-import { type HistoryItemProps } from "./histories-item";
 
 // Components
 import {
   Sheet,
   SheetClose,
-  SheetContent,
   SheetFooter,
   SheetHeader,
+  SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -20,9 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 dayjs.extend(relativeTime);
-
-interface RatingProps extends HistoryItemProps {}
-type RatedProps = Pick<RatingProps, "star" | "review">;
 
 const Rated = ({ star, review }: RatedProps) => {
   return (
@@ -33,9 +30,7 @@ const Rated = ({ star, review }: RatedProps) => {
       </div>
 
       <div className="mr-auto flex flex-col gap-y-1 overflow-hidden">
-        <span
-          className={`${review === null ? "text-red-600" : null} font-semibold`}
-        >
+        <span className={`${review ?? "text-red-600"} font-semibold`}>
           {review !== null ? "Ulasanmu" : "Belum ada ulasan"}
         </span>
         <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
@@ -76,7 +71,7 @@ export default function Rating({
   destination,
 }: RatingProps) {
   return (
-    <>
+    <Fragment>
       {review !== null ? (
         <Sheet>
           <SheetTrigger asChild>
@@ -115,7 +110,7 @@ export default function Rating({
               </div>
             </SheetHeader>
 
-            <div className="flex flex-col gap-1 rounded-md border border-slate-200 px-4 py-6">
+            <div className="flex flex-col gap-1 rounded-md border border-slate-200 p-4">
               <span>Ulasanmu</span>
               <p>{review}</p>
             </div>
@@ -132,6 +127,6 @@ export default function Rating({
           {star === null ? <Unrated /> : <Rated star={star} review={null} />}
         </Link>
       )}
-    </>
+    </Fragment>
   );
 }

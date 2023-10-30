@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Fragment } from "react";
 import { usePathname } from "next/navigation";
 import { Home, History } from "lucide-react";
 import { UserButton, useAuth } from "@clerk/nextjs";
-
-type NavItem = {
-  href: string;
-  icon: React.ReactElement;
-  title: string;
-};
 
 export default function Navbar() {
   const { isSignedIn } = useAuth();
@@ -45,9 +40,9 @@ export default function Navbar() {
   ];
 
   return (
-    <>
+    <Fragment>
       {!blacklistedPath.includes(`/${currentPath.split("/").at(-1)}`) ? (
-        <nav className="fixed bottom-0 left-1/2 z-10 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_-3px_25px_rgba(0,0,0,.15)]">
+        <nav className="fixed bottom-0 left-1/2 z-10 block w-full max-w-screen-md -translate-x-1/2 bg-white drop-shadow-[0_-5px_15px_rgba(0,0,0,.20)]">
           <ul className="flex w-full justify-between">
             {navigationItems.map(({ href, icon, title }) => {
               if (href === "/account" && !isSignedIn) return;
@@ -60,7 +55,9 @@ export default function Navbar() {
                   } flex flex-grow flex-col items-center justify-center gap-2 py-3 hover:bg-slate-100`}
                 >
                   {icon}
-                  <span>{title}</span>
+                  <span className={href === currentPath ? "font-semibold" : ""}>
+                    {title}
+                  </span>
                 </li>
               );
 
@@ -75,6 +72,6 @@ export default function Navbar() {
           </ul>
         </nav>
       ) : null}
-    </>
+    </Fragment>
   );
 }

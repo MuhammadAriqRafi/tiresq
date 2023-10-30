@@ -1,50 +1,48 @@
 "use client";
 
-import useTrip from "@/lib/hooks/useTrip";
-import { toast } from "react-hot-toast";
-import { useState } from "react";
-import { Separator } from "@radix-ui/react-separator";
-import { tripStore } from "@/lib/store/trip-store";
+import useActiveTripInformation from "@/app/_hooks/useActiveTripInformation";
 import { Footprints, Hourglass } from "lucide-react";
+import { Fragment } from "react";
+import { toast } from "react-hot-toast";
 
 // Components
 import { Sheet } from "@/components/ui/sheet";
 import CancelTripSheet, { CancelTripSheetTrigger } from "./cancel-trip-sheet";
 import CompleteTripSheet, {
   CompleteTripSheetTrigger,
-} from "./finish-trip-sheet";
+} from "./complete-trip-sheet";
 
-const ActiveTrip = () => {
-  const [isTripWillBeCompleted, setIsTripWillBeCompleted] = useState<boolean>();
-  const { cancelTrip, completeTrip, isCancellingTrip, isCompletingTrip } =
-    useTrip();
-  const { destination, isOnTrip } = tripStore(({ destination, isOnTrip }) => ({
+export default function ActiveTripInformation() {
+  const {
     destination,
-    isOnTrip,
-  }));
-
-  const handleCancelTrip = () => cancelTrip();
-  const handleCompleteTrip = () => completeTrip();
+    handleCancelTrip,
+    handleCompleteTrip,
+    isCancellingTrip,
+    isCompletingTrip,
+    isTripWillBeCompleted,
+    setIsTripWillBeCompleted,
+  } = useActiveTripInformation();
 
   return (
-    <>
-      {isOnTrip && destination && (!isCancellingTrip || !isCompletingTrip) ? (
+    <Fragment>
+      {destination ? (
         <section className="border-b-1 absolute top-0 flex h-fit w-screen max-w-screen-md items-center justify-between rounded-b-2xl border-b-gray-300 bg-white px-6 py-4 shadow-md">
           <section className="flex flex-col gap-3">
-            <h2>{destination.name ?? "Unknown"}</h2>
+            <h2>{destination.destinationName ?? "Unknown"}</h2>
             <div className="flex gap-3">
               <span className="flex gap-1 font-medium text-gray-500">
-                <Footprints size={16} /> {destination.distance ?? 0} Km
+                <Footprints size={16} /> {destination.tripDistance ?? 0} Km
               </span>
               <span className="flex gap-1 font-medium text-gray-500">
-                <Hourglass size={16} /> {destination.duration ?? 0} Min
+                <Hourglass size={16} /> {destination.tripDuration ?? 0} Min
               </span>
             </div>
           </section>
-          <Separator orientation="vertical" className="bg-border h-9 w-[1px]" />
+
           <section className="flex gap-2">
             <Sheet>
               <CancelTripSheetTrigger
+                isCancelling={isCancellingTrip}
                 onClick={() => {
                   toast.dismiss();
                   setIsTripWillBeCompleted(false);
@@ -52,6 +50,7 @@ const ActiveTrip = () => {
               />
 
               <CompleteTripSheetTrigger
+                isCompleting={isCompletingTrip}
                 onClick={() => {
                   toast.dismiss();
                   setIsTripWillBeCompleted(true);
@@ -67,8 +66,6 @@ const ActiveTrip = () => {
           </section>
         </section>
       ) : null}
-    </>
+    </Fragment>
   );
-};
-
-export default ActiveTrip;
+}

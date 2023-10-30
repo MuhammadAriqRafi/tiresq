@@ -1,12 +1,6 @@
-import { type Prisma } from "@/server/db";
+import { prisma } from "@/server/db";
 
-type GetHistoryProps = { prisma: Prisma; historyId: string };
-type GetHistoriesProps = { prisma: Prisma; currentUserId: string };
-
-export const getHistories = async ({
-  prisma,
-  currentUserId,
-}: GetHistoriesProps) => {
+export const getHistories = async ({ currentUserId }: GetHistoriesProps) => {
   return await prisma.trip.findMany({
     where: { user_id: currentUserId },
     orderBy: { created_at: "desc" },
@@ -18,10 +12,11 @@ export const getHistories = async ({
       rating: { select: { star: true } },
       review: { select: { review: true } },
     },
+    take: 10,
   });
 };
 
-export const getHistory = async ({ prisma, historyId }: GetHistoryProps) => {
+export const getHistory = async ({ historyId }: GetHistoryProps) => {
   return await prisma.trip.findFirst({
     where: { id: Number(historyId) },
     select: {

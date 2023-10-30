@@ -1,35 +1,16 @@
-import { z } from "zod";
-import { prisma } from "@/server/db";
 import { privateProcedure, router } from "../trpc";
+import { getExperienceInputSchema } from "../input-schemas/experiences-input-schema";
+import { getHistory } from "../services/histories-service";
+import { TRPCError } from "@trpc/server";
 
-const createInputSchema = z.object({
-  historyId: z.number(),
-  review: z.string().trim().optional(),
-  rating: z.number().min(1).max(5),
-});
-const create = privateProcedure
-  .input(createInputSchema)
-  .mutation(async ({ input: { historyId, rating, review } }) => {
-    const trip = await prisma.trip.findFirst({
-      where: { id: historyId },
-      select: { rating_id: true, review_id: true },
-    });
-
-    if (trip !== null) {
-      const { rating_id, review_id } = trip;
-
-      if (rating_id !== null)
-        await prisma.rating.update({
-          where: { id: rating_id },
-          data: { star: rating },
-        });
-
-      if (review && review_id !== null)
-        await prisma.review.update({
-          where: { id: review_id },
-          data: { review },
-        });
+const getExperience = privateProcedure
+  .input(getExperienceInputSchema)
+  .query(async ({ input: { historyId } }) => {
+    try {
+      return await getHistory({ historyId });
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     }
   });
 
-export const experiencesRouter = router({ create });
+export const experiencesRouter = router({ getExperience });
