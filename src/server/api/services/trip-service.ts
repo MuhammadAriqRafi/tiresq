@@ -2,119 +2,118 @@
 
 import { auth } from "@clerk/nextjs";
 import { prisma } from "@/server/db";
+import { revalidatePath } from "next/cache";
 import { generateResponse } from "@/lib/utils/utils";
 import { type CreateTripInputSchemaType } from "../input-schemas/trips-input-schema";
 
+export type OnProgressTripType = Awaited<ReturnType<typeof getOnProgressTrip>>;
+
 export const getOnProgressTrip = async ({
-  currentUserId,
-}: GetOnProgressTripProps) => {
-  return await prisma.trip.findFirst({
-    where: { user_id: currentUserId, status: "onprogress" },
-    select: {
-      id: true,
-      destination: {
-        select: { id: true, name: true, longitude: true, latitude: true },
-      },
-    },
-  });
+  userId,
+}: GetOnProgressTripParams) => {
+  const action = async () => {
+    const onProgressTrip = await prisma.trip.findFirst({
+      where: { user_id: userId, status: "onprogress" },
+      select: { id: true },
+    });
+
+    if (onProgressTrip === null)
+      return {
+        status: 200,
+        message: "Kamu sedang tidak mencari tambal ban",
+        data: onProgressTrip,
+      };
+
+    const onProgressTripDetails = await getOnProgressTripDetails(
+      onProgressTrip.id,
+    );
+
+    return {
+      status: 200,
+      message: null,
+      data: onProgressTripDetails,
+    };
+  };
+
+  return await generateResponse<ActionResponseDataType<typeof action>>(action);
 };
 
 export const createTrip = async ({
   userCurrentCoordinate,
-}: CreateTripInputSchemaType) =>
-  generateResponse(
-    async (): Promise<GenerateResponseOutput<TripDetails | null>> => {
-      const { choosenTireRepairShop, choosenTireRepairShopDirections } =
-        await findNearestTireRepairShop(userCurrentCoordinate);
+}: CreateTripInputSchemaType) => {
+  const action = async () => {
+    const { choosenTireRepairShop, choosenTireRepairShopDirections } =
+      await findNearestTireRepairShop(userCurrentCoordinate);
 
-      if (choosenTireRepairShopDirections.coords.length < 1)
-        return {
-          isError: true,
-          data: null,
-          message:
-            "Maaf, kita belum bisa nemuin tambal ban dalam radius 5 kilometer dari lokasi kamu",
-        };
-
-      const { userId } = auth();
-      let tripDetails: TripDetails;
-      const createTripDetailsParams = {
-        tripId: null,
-        userCurrentCoordinate,
-        destination: choosenTireRepairShop,
-        directions: choosenTireRepairShopDirections,
+    if (choosenTireRepairShopDirections.coords.length < 1)
+      return {
+        status: 409,
+        message:
+          "Maaf, kita belum bisa nemuin tambal ban dalam radius 5 kilometer dari lokasi kamu",
+        data: null,
       };
 
-      if (userId !== null) {
-        const { id: newTripId } = await prisma.trip.create({
+    const { userId } = auth();
+
+    if (userId === null)
+      return {
+        status: 200,
+        message: null,
+        data: {
+          id: Infinity,
+          destination: {
+            name: choosenTireRepairShop.name,
+            latitude: choosenTireRepairShop.latitude,
+            longitude: choosenTireRepairShop.longitude,
+          },
+          detail: {
+            duration: choosenTireRepairShopDirections.duration,
+            distance: choosenTireRepairShopDirections.distance,
+            coords_to_destination: choosenTireRepairShopDirections.coords,
+          },
+        } satisfies OnProgressTripType["data"],
+      };
+
+    const newlyCreatedTripId = await prisma.$transaction(
+      async (PrismaClient) => {
+        const { id: newlyCreatedTripId } = await PrismaClient.trip.create({
           data: {
             user_id: userId,
-            tambal_ban_id: choosenTireRepairShop.id,
+            tire_repair_shop_id: choosenTireRepairShop.id,
+          },
+          select: { id: true },
+        });
+
+        await PrismaClient.tripDetail.create({
+          data: {
+            trip_id: newlyCreatedTripId,
+            distance: choosenTireRepairShopDirections.distance,
+            duration: choosenTireRepairShopDirections.duration,
+            coords_to_destination: choosenTireRepairShopDirections.coords,
           },
         });
 
-        tripDetails = await createTripDetails({
-          ...createTripDetailsParams,
-          tripId: newTripId,
-        });
-      } else tripDetails = await createTripDetails(createTripDetailsParams);
+        return newlyCreatedTripId;
+      },
+    );
 
-      return {
-        isError: false,
-        data: tripDetails,
-        message: null,
-      };
-    },
-  );
-
-export const createTripDetails = async ({
-  tripId,
-  directions,
-  destination,
-  userCurrentCoordinate,
-}: CreateTripDetails) => {
-  const { latitude, longitude, name } = destination;
-  let tripDetails: TripDetails = {
-    tripId,
-    tripDistance: "",
-    tripDuration: Infinity,
-    destinationName: name,
-    destinationLatitude: Number(latitude),
-    destinationLongitude: Number(longitude),
-    coordsToDestination: [[Infinity]],
+    return {
+      status: 200,
+      message: null,
+      data: await getOnProgressTripDetails(newlyCreatedTripId),
+    };
   };
 
-  if (directions) {
-    tripDetails = {
-      ...tripDetails,
-      tripDuration: directions.duration,
-      tripDistance: directions.distance,
-      coordsToDestination: directions.coords,
-    };
-  } else {
-    const { distance, duration, coords } = await getDirections({
-      startLatitude: userCurrentCoordinate.latitude,
-      startLongitude: userCurrentCoordinate.longitude,
-      destinationLatitude: Number(latitude),
-      destinationLongitude: Number(longitude),
-    });
-
-    tripDetails = {
-      ...tripDetails,
-      tripDuration: duration,
-      tripDistance: distance,
-      coordsToDestination: coords,
-    };
-  }
-
-  return tripDetails;
+  return await generateResponse<ActionResponseDataType<typeof action>>(action);
 };
 
 export const cancelTrip = (tripId: number) =>
-  generateResponse(async (): Promise<GenerateResponseOutput<null>> => {
+  generateResponse<null>(async () => {
     const { userId } = auth();
+
     if (userId === null)
       return {
-        isError: true,
+        status: 403,
         message: "Kamu harus login terlebih dahulu",
         data: null,
       };
@@ -124,33 +123,36 @@ export const cancelTrip = (tripId: number) =>
       data: { status: "cancelled" },
     });
 
+    revalidatePath("/");
+
     return {
-      isError: false,
+      status: 200,
       message: "Berhasil batalin perjalanan",
       data: null,
     };
   });
 
 export const completeTrip = (tripId: number) =>
-  generateResponse(async (): Promise<GenerateResponseOutput<null>> => {
+  generateResponse<null>(async () => {
     const { userId } = auth();
+
     if (userId === null)
       return {
-        isError: true,
+        status: 403,
         message: "Kamu harus login terlebih dahulu",
         data: null,
       };
 
-    await prisma.$transaction(async () => {
-      const { id: newlyCreatedRatingId } = await prisma.rating.create({
+    await prisma.$transaction(async (PrismaClient) => {
+      const { id: newlyCreatedRatingId } = await PrismaClient.rating.create({
         select: { id: true },
       });
 
-      const { id: newlyCreatedReviewId } = await prisma.review.create({
+      const { id: newlyCreatedReviewId } = await PrismaClient.review.create({
         select: { id: true },
       });
 
-      await prisma.trip.update({
+      await PrismaClient.trip.update({
         where: { id: tripId },
         data: {
           status: "completed",
@@ -160,15 +162,58 @@ export const completeTrip = (tripId: number) =>
       });
     });
 
+    revalidatePath("/");
+
     return {
-      isError: false,
+      status: 200,
       message: "Yay, kamu sudah sampai ditujuan",
       data: null,
     };
   });
 
+const getOnProgressTripDetails = async (tripId: number) =>
+  await prisma.trip.findUniqueOrThrow({
+    where: { id: tripId },
+    select: {
+      id: true,
+      destination: {
+        select: {
+          name: true,
+          latitude: true,
+          longitude: true,
+        },
+      },
+      detail: {
+        select: {
+          duration: true,
+          distance: true,
+          coords_to_destination: true,
+        },
+      },
+    },
+  });
+
+const getDirections = async ({
+  startLatitude,
+  startLongitude,
+  destinationLatitude,
+  destinationLongitude,
+}: GetRouteProps): Promise<Directions> => {
+  const mapboxDirectionsAPI = `https://api.mapbox.com/directions/v5/mapbox/walking/${startLongitude},${startLatitude};${destinationLongitude},${destinationLatitude}?steps=true&geometries=geojson&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+  const mapboxDirectionsAPIResponse = await fetch(mapboxDirectionsAPI);
+  const {
+    routes: [data],
+  } = (await mapboxDirectionsAPIResponse.json()) as Coords;
+
+  return {
+    coords: data.geometry.coordinates,
+    duration: Math.floor(data.duration / 60),
+    distance: Number((data.distance / 1000).toFixed(1)),
+  };
+};
+
 const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
-  const allTireRepairShop = await prisma.tambalBan.findMany({
+  const tireRepairShops = await prisma.tireRepairShop.findMany({
     select: {
       id: true,
       name: true,
@@ -190,29 +235,26 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
   };
 
   let choosenTireRepairShopDirections: Directions = {
-    distance: "",
+    distance: Infinity,
     duration: Infinity,
     coords: [[Infinity]],
   };
 
-  for (const tireRepairShop of allTireRepairShop) {
+  for (const tireRepairShop of tireRepairShops) {
     const { id, name, longitude, latitude } = tireRepairShop;
     const { distance, duration, coords } = await getDirections({
       startLatitude: userCurrentCoordinate.latitude,
       startLongitude: userCurrentCoordinate.longitude,
-      destinationLatitude: Number(latitude),
-      destinationLongitude: Number(longitude),
+      destinationLatitude: latitude,
+      destinationLongitude: longitude,
     });
 
-    if (
-      choosenTireRepairShopDirections.distance === "" ||
-      Number(distance) < Number(choosenTireRepairShopDirections.distance)
-    ) {
+    if (distance < choosenTireRepairShopDirections.distance) {
       choosenTireRepairShop = {
         id,
         name,
-        latitude: Number(latitude),
-        longitude: Number(longitude),
+        latitude,
+        longitude,
       };
       choosenTireRepairShopDirections = {
         coords,
@@ -223,23 +265,4 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
   }
 
   return { choosenTireRepairShop, choosenTireRepairShopDirections };
-};
-
-const getDirections = async ({
-  startLatitude,
-  startLongitude,
-  destinationLatitude,
-  destinationLongitude,
-}: GetRouteProps): Promise<Directions> => {
-  const mapboxDirectionsAPI = `https://api.mapbox.com/directions/v5/mapbox/walking/${startLongitude},${startLatitude};${destinationLongitude},${destinationLatitude}?steps=true&geometries=geojson&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-  const mapboxDirectionsAPIResponse = await fetch(mapboxDirectionsAPI);
-  const {
-    routes: [data],
-  } = (await mapboxDirectionsAPIResponse.json()) as Coords;
-
-  return {
-    coords: data.geometry.coordinates,
-    duration: Math.floor(data.duration / 60),
-    distance: (data.distance / 1000).toFixed(2),
-  };
 };

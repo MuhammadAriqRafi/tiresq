@@ -1,5 +1,4 @@
 import { toast } from "react-hot-toast";
-import { useState } from "react";
 import { useEffectOnce } from "usehooks-ts";
 import { geolocationStore } from "../../lib/store/geolocation-store";
 
@@ -22,22 +21,14 @@ export default function useGeolocation() {
       setUserCurrentCoordinate,
     }),
   );
-  const [isGeolocationError, setIsGeolocationError] = useState<
-    boolean | undefined
-  >();
 
-  const getUserLocation = () => {
-    function onSuccess({ coords }: Position) {
+  useEffectOnce(() => {
+    function onSuccess({ coords: { longitude, latitude } }: Position) {
       setIsGeolocationPermitted(true);
-      setIsGeolocationError(false);
-      setUserCurrentCoordinate({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      });
+      setUserCurrentCoordinate({ latitude, longitude });
     }
 
     function onError() {
-      setIsGeolocationError(true);
       console.error("Error getting user location");
       toast.error("Yah... kita gak dapet izin akses lokasi kamu :(", {
         position: "top-center",
@@ -55,14 +46,10 @@ export default function useGeolocation() {
         },
       );
     }
-  };
-
-  useEffectOnce(() => getUserLocation());
+  });
 
   return {
     userCurrentCoordinate,
-    setUserCurrentCoordinate,
     isGeolocationPermitted,
-    isGeolocationError,
   };
 }

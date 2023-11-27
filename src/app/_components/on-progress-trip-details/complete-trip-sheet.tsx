@@ -12,10 +12,7 @@ import { Loader2 } from "lucide-react";
 export function CompleteTripSheetTrigger({
   onClick,
   isCompleting,
-}: {
-  readonly onClick: () => void;
-  readonly isCompleting: boolean;
-}) {
+}: CompleteTripSheetTrigger) {
   return (
     <SheetTrigger asChild>
       <Button size="sm" className="bg-green-600" onClick={onClick}>
@@ -31,9 +28,7 @@ export function CompleteTripSheetTrigger({
 
 export default function CompleteTripSheet({
   onComplete,
-}: {
-  onComplete: () => void;
-}) {
+}: CompleteTripSheetProps) {
   return (
     <SheetContent className="flex flex-col gap-8" side="bottom">
       <SheetHeader>
@@ -43,9 +38,11 @@ export default function CompleteTripSheet({
       </SheetHeader>
 
       <SheetFooter className="flex w-full flex-row gap-3">
-        <Button type="submit" variant="outline" className="flex-grow">
-          Belum
-        </Button>
+        <SheetClose asChild>
+          <Button type="submit" variant="outline" className="flex-grow">
+            Belum
+          </Button>
+        </SheetClose>
         <SheetClose asChild>
           <Button className="flex-grow bg-green-600" onClick={onComplete}>
             Sudah

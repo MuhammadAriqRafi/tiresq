@@ -26,16 +26,18 @@ export function capitalizeFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export async function generateResponse<T>(action: () => Promise<T>) {
+export async function generateResponse<T>(
+  action: () => Promise<Prettify<ActionResponseType<T>>>,
+) {
   try {
     const response = await action();
     return response;
   } catch (error) {
     console.log(error);
     return {
-      isError: true,
+      status: 500,
       message: "Maaf, terjadi kesalahan pada server, coba lagi nanti ya",
-      data: null,
+      data: undefined as T,
     };
   }
 }

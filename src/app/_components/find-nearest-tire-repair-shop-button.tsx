@@ -2,25 +2,28 @@
 
 import { Fragment } from "react";
 import { Loader2, Search } from "lucide-react";
-import useFindNearestTireRepairShop from "../_hooks/useFindNearestTireRepairShop";
+import { geolocationStore } from "@/lib/store/geolocation-store";
+import useFindNearestTireRepairShop from "../_hooks/use-find-nearest-tire-repair-shop";
 
+// Component
 import { Button } from "@/components/ui/button";
 
 export default function FindNearestTireRepairShopButton() {
+  const { isGeolocationPermitted, userCurrentCoordinate } = geolocationStore(
+    ({ isGeolocationPermitted, userCurrentCoordinate }) => ({
+      isGeolocationPermitted,
+      userCurrentCoordinate,
+    }),
+  );
   const {
-    destination,
-    isGeolocationPermitted,
-    isFetchingOnProgressTripDetails,
+    trip,
     isFindingNearestTireRepairShop,
     handleFindNearestTireRepairShop,
-  } = useFindNearestTireRepairShop();
+  } = useFindNearestTireRepairShop({ userCurrentCoordinate });
 
   return (
     <Fragment>
-      {isGeolocationPermitted &&
-      !isFetchingOnProgressTripDetails &&
-      !isFindingNearestTireRepairShop &&
-      !destination ? (
+      {isGeolocationPermitted && !isFindingNearestTireRepairShop && !trip ? (
         <Button
           size="lg"
           onClick={handleFindNearestTireRepairShop}
@@ -31,7 +34,7 @@ export default function FindNearestTireRepairShopButton() {
         </Button>
       ) : null}
 
-      {isFetchingOnProgressTripDetails || isFindingNearestTireRepairShop ? (
+      {isFindingNearestTireRepairShop ? (
         <Button className="fixed bottom-24 px-3" variant="default" size="lg">
           <Loader2 size={24} strokeWidth={3} className="animate-spin" />
         </Button>

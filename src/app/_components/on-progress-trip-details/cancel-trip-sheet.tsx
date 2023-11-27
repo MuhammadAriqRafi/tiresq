@@ -12,10 +12,7 @@ import { Loader2 } from "lucide-react";
 export function CancelTripSheetTrigger({
   onClick,
   isCancelling,
-}: {
-  readonly onClick: () => void;
-  readonly isCancelling: boolean;
-}) {
+}: CancelTripSheetTrigger) {
   return (
     <SheetTrigger asChild>
       <Button
@@ -34,11 +31,7 @@ export function CancelTripSheetTrigger({
   );
 }
 
-export default function CancelTripSheet({
-  onCancel,
-}: {
-  onCancel: () => void;
-}) {
+export default function CancelTripSheet({ onCancel }: CancelTripSheetProps) {
   return (
     <SheetContent className="flex flex-col gap-8" side="bottom">
       <SheetHeader>
