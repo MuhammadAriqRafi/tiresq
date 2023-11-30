@@ -12,7 +12,7 @@ import ExperienceReview from "./_components/experience-review";
 
 export default function ExperiencePage({
   params: { historyId },
-}: Readonly<ExperiencePageProps>) {
+}: ExperiencePageProps) {
   const {
     experience,
     userRating,

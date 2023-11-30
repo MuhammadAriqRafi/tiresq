@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { historyStore } from "@/lib/store/histories-store";
-import { statusTranslated } from "@/lib/utils/utils";
+import { historiesStore } from "@/lib/store/histories-store";
+import { cn, statusTranslated } from "@/lib/utils/utils";
 import { type TripStatus } from "@prisma/client";
 
 // Components
@@ -28,12 +28,13 @@ const radioItems = [
 export default function HistoriesFilterItem({
   title,
 }: HistoriesFilterItemProps) {
-  const { filterHistoriesByStatus, setFilterHistoriesByStatus } = historyStore(
-    ({ filterHistoriesByStatus, setFilterHistoriesByStatus }) => ({
-      setFilterHistoriesByStatus,
-      filterHistoriesByStatus,
-    }),
-  );
+  const { filterHistoriesByStatus, setFilterHistoriesByStatus } =
+    historiesStore(
+      ({ filterHistoriesByStatus, setFilterHistoriesByStatus }) => ({
+        setFilterHistoriesByStatus,
+        filterHistoriesByStatus,
+      }),
+    );
 
   return (
     <Sheet>
@@ -41,13 +42,12 @@ export default function HistoriesFilterItem({
         <Button
           size="sm"
           variant="outline"
-          className={`${
-            filterHistoriesByStatus !== "none"
-              ? "border border-slate-300 bg-green-600 text-white"
-              : null
-          } flex justify-between gap-1 font-semibold`}
+          className={cn("flex justify-between gap-1 font-semibold", {
+            "border border-slate-300 bg-green-600 text-white":
+              filterHistoriesByStatus,
+          })}
         >
-          {statusTranslated.get(filterHistoriesByStatus) ?? title}
+          {statusTranslated.get(filterHistoriesByStatus ?? "") ?? title}
           <ChevronDown size={18} />
         </Button>
       </SheetTrigger>
@@ -80,7 +80,7 @@ export default function HistoriesFilterItem({
           <Button
             className="w-1/2"
             variant="outline"
-            onClick={() => setFilterHistoriesByStatus("none")}
+            onClick={() => setFilterHistoriesByStatus(undefined)}
           >
             Reset
           </Button>

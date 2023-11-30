@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Fragment } from "react";
@@ -18,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import HistoriesItemImage from "./histories-item-image";
 
 dayjs.extend(relativeTime);
 
@@ -65,6 +65,7 @@ const Unrated = () => {
 export default function Rating({
   star,
   status,
+  rating,
   review,
   historyId,
   created_at,
@@ -83,15 +84,7 @@ export default function Rating({
           <SheetContent className="flex flex-col gap-6" side="bottom">
             <SheetHeader>
               <div className="flex w-full gap-4">
-                <div className="relative h-20 w-20">
-                  <Image
-                    src="/assets/default.svg"
-                    alt="Foto Gerai Tambal Ban"
-                    className="rounded-md object-cover"
-                    sizes="80px"
-                    fill
-                  />
-                </div>
+                <HistoriesItemImage rating={rating} />
                 <div className="flex flex-col gap-2 text-left">
                   <p className="text">{destination}</p>
                   <div className="flex items-center gap-3">

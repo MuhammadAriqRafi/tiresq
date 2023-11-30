@@ -7,7 +7,7 @@ export default function ExperienceRating({
   userRating,
   setUserRating,
   isFetchingExperience,
-}: Readonly<ExperienceRatingProps>) {
+}: ExperienceRatingProps) {
   const handleOnClick = (starIndex: number) => setUserRating(starIndex);
 
   return (

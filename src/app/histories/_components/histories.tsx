@@ -1,8 +1,9 @@
 "use client";
 
 import { api } from "../../_trpc/client";
-import { historyStore } from "@/lib/store/histories-store";
+import { historiesStore } from "@/lib/store/histories-store";
 
+// Components
 import HistoryItem from "./histories-item";
 import HistoriesLoading from "./histories-loading";
 
@@ -13,7 +14,7 @@ export default function Histories() {
     data: histories,
   } = api.histories.getHistories.useQuery();
 
-  const { filterHistoriesByStatus } = historyStore(
+  const { filterHistoriesByStatus } = historiesStore(
     ({ filterHistoriesByStatus }) => ({
       filterHistoriesByStatus,
     }),
@@ -27,38 +28,30 @@ export default function Histories() {
 
       {!isLoading && histories.length > 0
         ? histories.map(
-            ({
-              id,
-              status,
-              rating,
-              review,
-              created_at,
-              destination: { name },
-            }) => {
+            ({ id, status, rating, review, created_at, destination }) => {
               if (
-                filterHistoriesByStatus !== status &&
-                filterHistoriesByStatus !== "none"
+                !filterHistoriesByStatus ||
+                filterHistoriesByStatus === status
               )
-                return;
-
-              return (
-                <HistoryItem
-                  key={id}
-                  status={status}
-                  historyId={id}
-                  destination={name}
-                  created_at={created_at}
-                  review={review !== null ? review.review : review}
-                  star={rating !== null ? rating.star : rating}
-                />
-              );
+                return (
+                  <HistoryItem
+                    key={id}
+                    status={status}
+                    historyId={id}
+                    destination={destination.name}
+                    created_at={created_at}
+                    rating={destination.rating}
+                    review={review !== null ? review.review : review}
+                    star={rating !== null ? rating.star : rating}
+                  />
+                );
             },
           )
         : null}
 
       {!isLoading && histories.length < 1 ? (
         <div className="flex h-[60vh] w-screen items-center justify-center">
-          <h2>Belum ada riwayat</h2>
+          <h2 className="text-zinc-300">Belum ada riwayat</h2>
         </div>
       ) : null}
     </main>

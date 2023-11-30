@@ -8,7 +8,7 @@ export const getHistories = async ({ currentUserId }: GetHistoriesProps) => {
       id: true,
       status: true,
       created_at: true,
-      destination: { select: { name: true } },
+      destination: { select: { name: true, rating: true } },
       rating: { select: { star: true } },
       review: { select: { review: true } },
     },

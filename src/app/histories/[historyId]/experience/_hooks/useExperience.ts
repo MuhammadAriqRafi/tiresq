@@ -24,13 +24,13 @@ export default function useExperience({ historyId }: UseExperienceParams) {
     if (userRating === 0) return toast.error("Kasih bintang dulu yaa");
 
     createExperience(async () => {
-      const { isError, message } = await createExperienceService({
+      const { status, message } = await createExperienceService({
         historyId: +historyId,
         userRating,
         userReview,
       });
 
-      if (isError) toast.error(message);
+      if (status !== 200) toast.error(message);
       else {
         toast.success(message, {
           position: "bottom-center",

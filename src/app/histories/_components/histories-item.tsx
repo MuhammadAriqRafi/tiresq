@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Fragment } from "react";
@@ -9,6 +8,7 @@ import { statusColor, statusTranslated } from "@/lib/utils/utils";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import Rating from "./histories-item-rating";
+import HistoriesItemImage from "./histories-item-image";
 
 dayjs.extend(relativeTime);
 
@@ -18,19 +18,13 @@ export default function HistoryItem({
   created_at,
   destination,
   review,
+  rating,
   star,
 }: HistoryItemProps) {
   const page = (
     <article className="mb-3 bg-white px-6 py-3 shadow-md">
       <div className="flex gap-4">
-        <div className="relative h-16 w-16">
-          <Image
-            src="/assets/default.svg"
-            alt="Foto Gerai Tambal Ban"
-            className="rounded-md object-cover"
-            fill
-          />
-        </div>
+        <HistoriesItemImage rating={rating} />
         <div className="flex flex-col gap-y-1">
           <h2>{destination}</h2>
           <span>{dayjs(created_at).format("D MMM, HH:mm")}</span>
@@ -54,6 +48,7 @@ export default function HistoryItem({
             created_at={created_at}
             destination={destination}
             review={review}
+            rating={rating}
             star={star}
           />
         </Fragment>

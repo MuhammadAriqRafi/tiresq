@@ -13,32 +13,42 @@ model TireRepairShop {
   name       String   @db.VarChar(128)
   longitude  Float    @unique @db.Double
   latitude   Float    @unique @db.Double
-  rating     Int?     @db.UnsignedTinyInt
+  rating     Float?   @db.Float
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  visits Trip[]
+  visits  Trip[]
+  reviews Review[]
+  ratings Rating[]
 
   @@map("tire_repair_shops")
 }
 
 model Rating {
-  id         Int      @id @default(autoincrement())
-  star       Int?     @db.UnsignedTinyInt
-  created_at DateTime @default(now())
+  id                  Int      @id @default(autoincrement())
+  star                Int?     @db.UnsignedTinyInt
+  tire_repair_shop_id Int?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now()) @updatedAt
 
-  trip Trip?
+  trip             Trip?
+  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
 
+  @@index([tire_repair_shop_id])
   @@map("ratings")
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  review     String?  @db.Text
-  created_at DateTime @default(now())
+  id                  Int      @id @default(autoincrement())
+  review              String?  @db.Text
+  tire_repair_shop_id Int?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now()) @updatedAt
 
-  trip Trip?
+  trip             Trip?
+  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
 
+  @@index([tire_repair_shop_id])
   @@map("reviews")
 }
 
@@ -56,6 +66,7 @@ model Trip {
   rating_id           Int?       @unique
   status              TripStatus @default(onprogress)
   created_at          DateTime   @default(now())
+  updated_at          DateTime   @default(now()) @updatedAt
 
   detail      TripDetail?
   rating      Rating?        @relation(fields: [rating_id], references: [id], onDelete: SetNull)

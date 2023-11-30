@@ -68,6 +68,7 @@ type Destination = Prettify<{
   name: string;
   longitude: number;
   latitude: number;
+  rating: number | null;
 }>;
 
 type CreateTripDetails = {

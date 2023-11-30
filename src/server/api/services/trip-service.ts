@@ -63,6 +63,7 @@ export const createTrip = async ({
           id: Infinity,
           destination: {
             name: choosenTireRepairShop.name,
+            rating: choosenTireRepairShop.rating,
             latitude: choosenTireRepairShop.latitude,
             longitude: choosenTireRepairShop.longitude,
           },
@@ -77,11 +78,11 @@ export const createTrip = async ({
     const newlyCreatedTripId = await prisma.$transaction(
       async (PrismaClient) => {
         const { id: newlyCreatedTripId } = await PrismaClient.trip.create({
+          select: { id: true },
           data: {
             user_id: userId,
             tire_repair_shop_id: choosenTireRepairShop.id,
           },
-          select: { id: true },
         });
 
         await PrismaClient.tripDetail.create({
@@ -144,12 +145,27 @@ export const completeTrip = (tripId: number) =>
       };
 
     await prisma.$transaction(async (PrismaClient) => {
+      const currentTrip = await PrismaClient.trip.findUniqueOrThrow({
+        where: { id: tripId },
+        select: { tire_repair_shop_id: true },
+      });
+
       const { id: newlyCreatedRatingId } = await PrismaClient.rating.create({
         select: { id: true },
+        data: {
+          tire_repair_shop: {
+            connect: { id: currentTrip?.tire_repair_shop_id },
+          },
+        },
       });
 
       const { id: newlyCreatedReviewId } = await PrismaClient.review.create({
         select: { id: true },
+        data: {
+          tire_repair_shop: {
+            connect: { id: currentTrip?.tire_repair_shop_id },
+          },
+        },
       });
 
       await PrismaClient.trip.update({
@@ -181,6 +197,7 @@ const getOnProgressTripDetails = async (tripId: number) =>
           name: true,
           latitude: true,
           longitude: true,
+          rating: true,
         },
       },
       detail: {
@@ -217,6 +234,7 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
     select: {
       id: true,
       name: true,
+      rating: true,
       latitude: true,
       longitude: true,
     },
@@ -230,8 +248,9 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
   let choosenTireRepairShop: Destination = {
     id: Infinity,
     name: "",
-    longitude: Infinity,
+    rating: Infinity,
     latitude: Infinity,
+    longitude: Infinity,
   };
 
   let choosenTireRepairShopDirections: Directions = {
@@ -241,7 +260,7 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
   };
 
   for (const tireRepairShop of tireRepairShops) {
-    const { id, name, longitude, latitude } = tireRepairShop;
+    const { id, name, rating, longitude, latitude } = tireRepairShop;
     const { distance, duration, coords } = await getDirections({
       startLatitude: userCurrentCoordinate.latitude,
       startLongitude: userCurrentCoordinate.longitude,
@@ -253,6 +272,7 @@ const findNearestTireRepairShop = async (userCurrentCoordinate: LatLng) => {
       choosenTireRepairShop = {
         id,
         name,
+        rating,
         latitude,
         longitude,
       };
