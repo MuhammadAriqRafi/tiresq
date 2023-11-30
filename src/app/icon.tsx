@@ -1,7 +1,4 @@
-import { ImageResponse } from "next/server";
-
-// Route segment config
-export const runtime = "edge";
+import { ImageResponse } from "next/og";
 
 // Image metadata
 export const size = {

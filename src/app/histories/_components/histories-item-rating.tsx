@@ -1,28 +1,25 @@
 import Link from "next/link";
-import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Fragment } from "react";
 import { ChevronRight, Star } from "lucide-react";
 import { capitalizeFirstLetter } from "@/lib/utils/utils";
-import { type HistoryItemProps } from "./histories-item";
 
 // Components
 import {
   Sheet,
   SheetClose,
-  SheetContent,
   SheetFooter,
   SheetHeader,
+  SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import HistoriesItemImage from "./histories-item-image";
 
 dayjs.extend(relativeTime);
-
-interface RatingProps extends HistoryItemProps {}
-type RatedProps = Pick<RatingProps, "star" | "review">;
 
 const Rated = ({ star, review }: RatedProps) => {
   return (
@@ -33,9 +30,7 @@ const Rated = ({ star, review }: RatedProps) => {
       </div>
 
       <div className="mr-auto flex flex-col gap-y-1 overflow-hidden">
-        <span
-          className={`${review === null ? "text-red-600" : null} font-semibold`}
-        >
+        <span className={`${review ?? "text-red-600"} font-semibold`}>
           {review !== null ? "Ulasanmu" : "Belum ada ulasan"}
         </span>
         <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
@@ -70,13 +65,14 @@ const Unrated = () => {
 export default function Rating({
   star,
   status,
+  rating,
   review,
   historyId,
   created_at,
   destination,
 }: RatingProps) {
   return (
-    <>
+    <Fragment>
       {review !== null ? (
         <Sheet>
           <SheetTrigger asChild>
@@ -88,15 +84,7 @@ export default function Rating({
           <SheetContent className="flex flex-col gap-6" side="bottom">
             <SheetHeader>
               <div className="flex w-full gap-4">
-                <div className="relative h-20 w-20">
-                  <Image
-                    src="/assets/default.svg"
-                    alt="Foto Gerai Tambal Ban"
-                    className="rounded-md object-cover"
-                    sizes="80px"
-                    fill
-                  />
-                </div>
+                <HistoriesItemImage rating={rating} />
                 <div className="flex flex-col gap-2 text-left">
                   <p className="text">{destination}</p>
                   <div className="flex items-center gap-3">
@@ -115,7 +103,7 @@ export default function Rating({
               </div>
             </SheetHeader>
 
-            <div className="flex flex-col gap-1 rounded-md border border-slate-200 px-4 py-6">
+            <div className="flex flex-col gap-1 rounded-md border border-slate-200 p-4">
               <span>Ulasanmu</span>
               <p>{review}</p>
             </div>
@@ -132,6 +120,6 @@ export default function Rating({
           {star === null ? <Unrated /> : <Rated star={star} review={null} />}
         </Link>
       )}
-    </>
+    </Fragment>
   );
 }

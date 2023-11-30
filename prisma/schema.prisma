@@ -4,37 +4,51 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  url          = env("DATABASE_URL")
   relationMode = "prisma"
+  url          = env("DATABASE_URL")
 }
 
-model TambalBan {
+model TireRepairShop {
   id         Int      @id @default(autoincrement())
   name       String   @db.VarChar(128)
-  longitude  String   @unique @db.VarChar(25)
-  latitude   String   @unique @db.VarChar(25)
+  longitude  Float    @unique @db.Double
+  latitude   Float    @unique @db.Double
+  rating     Float?   @db.Float
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  visits     Trip[]
 
-  @@map("tambal_ban")
+  visits  Trip[]
+  reviews Review[]
+  ratings Rating[]
+
+  @@map("tire_repair_shops")
 }
 
 model Rating {
-  id         Int      @id @default(autoincrement())
-  star       Int?     @db.TinyInt
-  created_at DateTime @default(now())
-  trips      Trip?
+  id                  Int      @id @default(autoincrement())
+  star                Int?     @db.UnsignedTinyInt
+  tire_repair_shop_id Int?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now()) @updatedAt
 
+  trip             Trip?
+  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
+
+  @@index([tire_repair_shop_id])
   @@map("ratings")
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  review     String?  @db.Text
-  created_at DateTime @default(now())
-  trips      Trip?
+  id                  Int      @id @default(autoincrement())
+  review              String?  @db.Text
+  tire_repair_shop_id Int?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now()) @updatedAt
 
+  trip             Trip?
+  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
+
+  @@index([tire_repair_shop_id])
   @@map("reviews")
 }
 
@@ -45,20 +59,35 @@ enum TripStatus {
 }
 
 model Trip {
-  id            Int        @id @default(autoincrement())
-  user_id       String     @db.VarChar(50)
-  tambal_ban_id Int
-  review_id     Int?       @unique
-  rating_id     Int?       @unique
-  status        TripStatus @default(onprogress)
-  created_at    DateTime   @default(now())
-  destination   TambalBan  @relation(fields: [tambal_ban_id], references: [id])
-  rating        Rating?    @relation(fields: [rating_id], references: [id])
-  review        Review?    @relation(fields: [review_id], references: [id])
+  id                  Int        @id @default(autoincrement())
+  user_id             String     @db.VarChar(50)
+  tire_repair_shop_id Int
+  review_id           Int?       @unique
+  rating_id           Int?       @unique
+  status              TripStatus @default(onprogress)
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @default(now()) @updatedAt
 
-  @@index([user_id])
+  detail      TripDetail?
+  rating      Rating?        @relation(fields: [rating_id], references: [id], onDelete: SetNull)
+  review      Review?        @relation(fields: [review_id], references: [id], onDelete: SetNull)
+  destination TireRepairShop @relation(fields: [tire_repair_shop_id], references: [id])
+
   @@index([rating_id])
   @@index([review_id])
-  @@index([tambal_ban_id])
+  @@index([tire_repair_shop_id])
   @@map("trips")
+}
+
+model TripDetail {
+  id                    Int   @id @default(autoincrement())
+  trip_id               Int   @unique
+  duration              Int   @db.UnsignedSmallInt
+  distance              Float @db.Float
+  coords_to_destination Json
+
+  trip Trip @relation(fields: [trip_id], references: [id], onDelete: Cascade)
+
+  @@index([trip_id])
+  @@map("trip_details")
 }
