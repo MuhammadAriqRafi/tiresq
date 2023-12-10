@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Fragment } from "react";
 import { ChevronRight, Star } from "lucide-react";
-import { capitalizeFirstLetter } from "@/lib/utils/utils";
+import { capitalizeFirstLetter, cn } from "@/lib/utils/utils";
 
 // Components
 import {
@@ -21,20 +21,24 @@ import HistoriesItemImage from "./histories-item-image";
 
 dayjs.extend(relativeTime);
 
-const Rated = ({ star, review }: RatedProps) => {
+const Rated = ({ trip_rating, trip_review }: RatedProps) => {
   return (
     <section className="flex w-full items-center justify-between rounded border-2 border-gray-200 p-4">
       <div className="mr-4 flex items-center gap-1 border-r border-r-gray-200 py-1 pr-4">
-        <h2 className="text-subheading">{star}</h2>
+        <h2 className="text-subheading">{trip_rating}</h2>
         <Star size={14} className="fill-yellow-300 stroke-yellow-600" />
       </div>
 
       <div className="mr-auto flex flex-col gap-y-1 overflow-hidden">
-        <span className={`${review ?? "text-red-600"} font-semibold`}>
-          {review !== null ? "Ulasanmu" : "Belum ada ulasan"}
+        <span
+          className={cn("font-semibold", {
+            "text-red-600": trip_review === null,
+          })}
+        >
+          {trip_review !== null ? "Ulasanmu" : "Belum ada ulasan"}
         </span>
         <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-          {review ?? "Bagaimana pelayanan tambal bannya?"}
+          {trip_review ?? "Bagaimana pelayanan tambal bannya?"}
         </span>
       </div>
 
@@ -63,30 +67,30 @@ const Unrated = () => {
 };
 
 export default function Rating({
-  star,
   status,
-  rating,
-  review,
   historyId,
   created_at,
-  destination,
+  trip_rating,
+  trip_review,
+  destination_name,
+  destination_rating,
 }: RatingProps) {
   return (
     <Fragment>
-      {review !== null ? (
+      {trip_review !== null ? (
         <Sheet>
           <SheetTrigger asChild>
-            <section className="w-full">
-              <Rated star={star} review={review} />
-            </section>
+            <div className="w-full">
+              <Rated trip_rating={trip_rating} trip_review={trip_review} />
+            </div>
           </SheetTrigger>
 
           <SheetContent className="flex flex-col gap-6" side="bottom">
             <SheetHeader>
               <div className="flex w-full gap-4">
-                <HistoriesItemImage rating={rating} />
+                <HistoriesItemImage destination_rating={destination_rating} />
                 <div className="flex flex-col gap-2 text-left">
-                  <p className="text">{destination}</p>
+                  <p className="text">{destination_name}</p>
                   <div className="flex items-center gap-3">
                     <span>{dayjs(created_at).format("D MMM, HH:mm")}</span>
                     <Separator orientation="vertical" />
@@ -105,7 +109,7 @@ export default function Rating({
 
             <div className="flex flex-col gap-1 rounded-md border border-slate-200 p-4">
               <span>Ulasanmu</span>
-              <p>{review}</p>
+              <p>{trip_review}</p>
             </div>
 
             <SheetFooter className="w-full">
@@ -117,7 +121,11 @@ export default function Rating({
         </Sheet>
       ) : (
         <Link href={`histories/${historyId}/experience`}>
-          {star === null ? <Unrated /> : <Rated star={star} review={null} />}
+          {trip_rating === null ? (
+            <Unrated />
+          ) : (
+            <Rated trip_rating={trip_rating} trip_review={null} />
+          )}
         </Link>
       )}
     </Fragment>

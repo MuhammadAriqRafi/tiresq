@@ -22,7 +22,7 @@ export default function OnProgressTripDetails() {
     isTripWillBeCompleted,
     setIsTripWillBeCompleted,
   } = useOnProgressTripActions();
-  const { trip } = tripStore(({ trip }) => ({ trip }));
+  const [trip] = tripStore(({ trip }) => [trip]);
 
   return (
     <Fragment>

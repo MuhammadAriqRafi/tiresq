@@ -28,7 +28,7 @@ export default function Histories() {
 
       {!isLoading && histories.length > 0
         ? histories.map(
-            ({ id, status, rating, review, created_at, destination }) => {
+            ({ id, status, created_at, destination, experience }) => {
               if (
                 !filterHistoriesByStatus ||
                 filterHistoriesByStatus === status
@@ -38,11 +38,15 @@ export default function Histories() {
                     key={id}
                     status={status}
                     historyId={id}
-                    destination={destination.name}
                     created_at={created_at}
-                    rating={destination.rating}
-                    review={review !== null ? review.review : review}
-                    star={rating !== null ? rating.star : rating}
+                    destination_name={destination.name}
+                    destination_rating={destination.rating}
+                    trip_review={
+                      experience !== null ? experience.review : experience
+                    }
+                    trip_rating={
+                      experience !== null ? experience.rating : experience
+                    }
                   />
                 );
             },

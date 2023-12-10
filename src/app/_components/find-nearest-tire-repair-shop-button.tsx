@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
+import { tripStore } from "@/lib/store/trip-store";
 import { Loader2, Search } from "lucide-react";
 import { geolocationStore } from "@/lib/store/geolocation-store";
 import useFindNearestTireRepairShop from "../_hooks/use-find-nearest-tire-repair-shop";
@@ -9,21 +10,21 @@ import useFindNearestTireRepairShop from "../_hooks/use-find-nearest-tire-repair
 import { Button } from "@/components/ui/button";
 
 export default function FindNearestTireRepairShopButton() {
+  const [trip] = tripStore(({ trip }) => [trip]);
   const { isGeolocationPermitted, userCurrentCoordinate } = geolocationStore(
     ({ isGeolocationPermitted, userCurrentCoordinate }) => ({
       isGeolocationPermitted,
       userCurrentCoordinate,
     }),
   );
-  const {
-    trip,
-    isFindingNearestTireRepairShop,
-    handleFindNearestTireRepairShop,
-  } = useFindNearestTireRepairShop({ userCurrentCoordinate });
+  const { isFindingNearestTireRepairShop, handleFindNearestTireRepairShop } =
+    useFindNearestTireRepairShop({ userCurrentCoordinate });
 
   return (
     <Fragment>
-      {isGeolocationPermitted && !isFindingNearestTireRepairShop && !trip ? (
+      {isGeolocationPermitted &&
+      !isFindingNearestTireRepairShop &&
+      trip === null ? (
         <Button
           size="lg"
           onClick={handleFindNearestTireRepairShop}

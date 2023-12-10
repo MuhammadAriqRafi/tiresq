@@ -2,20 +2,15 @@ import toast from "react-hot-toast";
 import { useAuth } from "@clerk/nextjs";
 import { tripStore } from "@/lib/store/trip-store";
 import { useState, useTransition } from "react";
-import {
-  cancelTrip as cancelTripService,
-  completeTrip as completeTripService,
-} from "@/server/api/services/trip-service";
+import { cancelTrip as cancelTripService } from "../_actions/cancel-trip";
+import { completeTrip as completeTripService } from "../_actions/complete-trip";
 
 export default function useOnProgressTripActions() {
   const [isCancellingTrip, cancelTrip] = useTransition();
   const [isCompletingTrip, completeTrip] = useTransition();
   const [isTripWillBeCompleted, setIsTripWillBeCompleted] = useState<boolean>();
   const { isSignedIn: isUserSignedIn } = useAuth();
-  const { trip, setTrip } = tripStore(({ trip, setTrip }) => ({
-    setTrip,
-    trip,
-  }));
+  const [trip, setTrip] = tripStore(({ trip, setTrip }) => [trip, setTrip]);
 
   function removePublicUserTripFromLocalStorage() {
     localStorage.removeItem("tiresq.publicUserTrip");

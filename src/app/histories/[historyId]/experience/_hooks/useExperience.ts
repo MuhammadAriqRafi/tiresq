@@ -43,7 +43,7 @@ export default function useExperience({ historyId }: UseExperienceParams) {
 
   useEffect(() => {
     if (isSuccessFetchingExperience && experience)
-      setUserRating(experience.rating?.star ?? 0);
+      setUserRating(experience.experience?.rating ?? 0);
   }, [experience, isSuccessFetchingExperience]);
 
   return {

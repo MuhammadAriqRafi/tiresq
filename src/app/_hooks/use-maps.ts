@@ -1,12 +1,8 @@
-import { geolocationStore } from "@/lib/store/geolocation-store";
 import { tripStore } from "@/lib/store/trip-store";
 import { useEffect, useState, useRef } from "react";
 
 export default function useMaps({ userCurrentCoordinate }: UseMapsParams) {
   const [trip] = tripStore(({ trip }) => [trip]);
-  const [setUserCurrentCoordinate] = geolocationStore(
-    ({ setUserCurrentCoordinate }) => [setUserCurrentCoordinate],
-  );
   const [mapViewState, setMapViewState] = useState<MapViewState>({
     zoom: 14,
     latitude: userCurrentCoordinate.latitude,
@@ -20,18 +16,14 @@ export default function useMaps({ userCurrentCoordinate }: UseMapsParams) {
   }, [trip]);
 
   useEffect(() => {
-    setMapViewState((prevState) => ({
-      ...prevState,
-      latitude: userCurrentCoordinate.latitude,
-      longitude: userCurrentCoordinate.longitude,
-    }));
-  }, [userCurrentCoordinate]);
+    if (geolocateControlRef.current !== null)
+      (geolocateControlRef.current as { trigger: () => void }).trigger();
+  }, [geolocateControlRef.current]);
 
   return {
     trip,
     mapViewState,
     setMapViewState,
     geolocateControlRef,
-    setUserCurrentCoordinate,
   };
 }
