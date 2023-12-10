@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { type OnProgressTripType } from "@/server/api/services/trip-service";
+import { type OnProgressTripOutputType } from "@/app/_actions/get-on-progress-trip";
 
-type Store = { trip: OnProgressTripType["data"] };
-type Actions = { setTrip: (trip: OnProgressTripType["data"]) => void };
+type Store = { trip: OnProgressTripOutputType["data"] };
+type Actions = { setTrip: (trip: OnProgressTripOutputType["data"]) => void };
 
 export const tripStore = create<Store & Actions>((set) => ({
   trip: null,

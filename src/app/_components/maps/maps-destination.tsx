@@ -1,8 +1,10 @@
 import { Fragment } from "react";
 import { Layer, Source } from "react-map-gl";
-import { type OnProgressTripType } from "@/server/api/services/trip-service";
+import { type OnProgressTripOutputType } from "@/app/_actions/get-on-progress-trip";
 
-type MapsDestinationProps = Readonly<{ trip: OnProgressTripType["data"] }>;
+type MapsDestinationProps = Readonly<{
+  trip: OnProgressTripOutputType["data"];
+}>;
 
 export default function MapsDestination({ trip }: MapsDestinationProps) {
   return (

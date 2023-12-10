@@ -15,41 +15,11 @@ model TireRepairShop {
   latitude   Float    @unique @db.Double
   rating     Float?   @db.Float
   created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  updated_at DateTime @default(now()) @updatedAt
 
-  visits  Trip[]
-  reviews Review[]
-  ratings Rating[]
+  visits Trip[]
 
   @@map("tire_repair_shops")
-}
-
-model Rating {
-  id                  Int      @id @default(autoincrement())
-  star                Int?     @db.UnsignedTinyInt
-  tire_repair_shop_id Int?
-  created_at          DateTime @default(now())
-  updated_at          DateTime @default(now()) @updatedAt
-
-  trip             Trip?
-  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
-
-  @@index([tire_repair_shop_id])
-  @@map("ratings")
-}
-
-model Review {
-  id                  Int      @id @default(autoincrement())
-  review              String?  @db.Text
-  tire_repair_shop_id Int?
-  created_at          DateTime @default(now())
-  updated_at          DateTime @default(now()) @updatedAt
-
-  trip             Trip?
-  tire_repair_shop TireRepairShop? @relation(fields: [tire_repair_shop_id], references: [id], onDelete: SetNull)
-
-  @@index([tire_repair_shop_id])
-  @@map("reviews")
 }
 
 enum TripStatus {
@@ -62,32 +32,42 @@ model Trip {
   id                  Int        @id @default(autoincrement())
   user_id             String     @db.VarChar(50)
   tire_repair_shop_id Int
-  review_id           Int?       @unique
-  rating_id           Int?       @unique
+  trip_experience_id  Int?       @unique
+  trip_detail_id      Int        @unique
   status              TripStatus @default(onprogress)
   created_at          DateTime   @default(now())
   updated_at          DateTime   @default(now()) @updatedAt
 
-  detail      TripDetail?
-  rating      Rating?        @relation(fields: [rating_id], references: [id], onDelete: SetNull)
-  review      Review?        @relation(fields: [review_id], references: [id], onDelete: SetNull)
-  destination TireRepairShop @relation(fields: [tire_repair_shop_id], references: [id])
+  detail      TripDetail      @relation(fields: [trip_detail_id], references: [id], onDelete: Restrict)
+  experience  TripExperience? @relation(fields: [trip_experience_id], references: [id], onDelete: Restrict)
+  destination TireRepairShop  @relation(fields: [tire_repair_shop_id], references: [id])
 
-  @@index([rating_id])
-  @@index([review_id])
   @@index([tire_repair_shop_id])
+  @@index([trip_experience_id])
+  @@index([trip_detail_id])
   @@map("trips")
 }
 
 model TripDetail {
   id                    Int   @id @default(autoincrement())
-  trip_id               Int   @unique
   duration              Int   @db.UnsignedSmallInt
   distance              Float @db.Float
   coords_to_destination Json
 
-  trip Trip @relation(fields: [trip_id], references: [id], onDelete: Cascade)
+  Trip Trip[]
 
-  @@index([trip_id])
   @@map("trip_details")
+}
+
+model TripExperience {
+  id                Int      @id @default(autoincrement())
+  rating            Int?     @db.UnsignedTinyInt
+  review            String?  @db.VarChar(1000)
+  is_anonymous      Boolean  @default(false)
+  rating_updated_at DateTime
+  review_updated_at DateTime
+
+  Trip Trip[]
+
+  @@map("trip_experiences")
 }

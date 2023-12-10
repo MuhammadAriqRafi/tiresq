@@ -1,3 +1,4 @@
+import { tripStore } from "@/lib/store/trip-store";
 import Mapbox, {
   Marker,
   GeolocateControl,
@@ -10,13 +11,10 @@ export default function Maps({
   userCurrentCoordinate,
   isGeolocationPermitted,
 }: MapsProps) {
-  const {
-    trip,
-    mapViewState,
-    setMapViewState,
-    geolocateControlRef,
-    setUserCurrentCoordinate,
-  } = useMaps({ userCurrentCoordinate });
+  const [trip] = tripStore(({ trip }) => [trip]);
+  const { mapViewState, setMapViewState, geolocateControlRef } = useMaps({
+    userCurrentCoordinate,
+  });
 
   return (
     <Mapbox
@@ -37,10 +35,11 @@ export default function Maps({
         positionOptions={{ enableHighAccuracy: true }}
         style={{ position: "fixed", bottom: 184, right: 8 }}
         onGeolocate={(event) =>
-          setUserCurrentCoordinate({
+          setMapViewState((prevState) => ({
+            ...prevState,
             latitude: event.coords.latitude,
             longitude: event.coords.longitude,
-          })
+          }))
         }
       />
       <NavigationControl

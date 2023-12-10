@@ -35,9 +35,14 @@ export default function useGeolocation() {
       });
     }
 
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    else {
+    let watchId = 0;
+
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+      });
+    } else {
       console.error("Geolocation is not supported by this browser.");
       toast.error(
         "Yah, fitur geolokasi gak disupport di browser ini, coba pakai browser lain",
@@ -46,6 +51,8 @@ export default function useGeolocation() {
         },
       );
     }
+
+    return () => navigator.geolocation.clearWatch(watchId);
   });
 
   return {
