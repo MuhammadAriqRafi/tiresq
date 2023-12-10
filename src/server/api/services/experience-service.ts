@@ -26,14 +26,12 @@ export const createExperience = async (
       select: { tire_repair_shop_id: true },
       where: { id: historyId },
       data: {
-        rating: {
+        experience: {
           update: {
-            star: userRating,
-          },
-        },
-        review: {
-          update: {
+            rating: userRating,
             review: userReview,
+            rating_updated_at: new Date(),
+            review_updated_at: userReview ? new Date() : undefined,
           },
         },
       },

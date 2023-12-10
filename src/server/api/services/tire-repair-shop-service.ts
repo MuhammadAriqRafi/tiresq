@@ -6,9 +6,12 @@ export const calculateTireRepairShopRating = async (
   tireRepairShopId: number,
 ) => {
   try {
-    const ratings = await prisma.rating.findMany({
-      where: { tire_repair_shop_id: tireRepairShopId, star: { not: null } },
-      select: { star: true },
+    const ratings = await prisma.trip.findMany({
+      select: { experience: { select: { rating: true } } },
+      where: {
+        tire_repair_shop_id: tireRepairShopId,
+        experience: { rating: { not: null } },
+      },
     });
 
     const eachStarAmount: Record<number, number> = {
@@ -19,8 +22,8 @@ export const calculateTireRepairShopRating = async (
       5: 0,
     };
 
-    ratings.forEach(({ star }) => {
-      if (star !== null) eachStarAmount[star] += 1;
+    ratings.forEach(({ experience }) => {
+      if (experience?.rating !== null) eachStarAmount[experience!.rating] += 1;
     });
 
     const tireRepairShopRating =
@@ -31,7 +34,6 @@ export const calculateTireRepairShopRating = async (
       ) / ratings.length;
 
     await prisma.tireRepairShop.update({
-      select: { rating: true },
       where: { id: tireRepairShopId },
       data: { rating: +tireRepairShopRating.toFixed(1) },
     });

@@ -16,17 +16,17 @@ export default function HistoryItem({
   status,
   historyId,
   created_at,
-  destination,
-  review,
-  rating,
-  star,
+  trip_rating,
+  trip_review,
+  destination_name,
+  destination_rating,
 }: HistoryItemProps) {
   const page = (
     <article className="mb-3 bg-white px-6 py-3 shadow-md">
       <div className="flex gap-4">
-        <HistoriesItemImage rating={rating} />
+        <HistoriesItemImage destination_rating={destination_rating} />
         <div className="flex flex-col gap-y-1">
-          <h2>{destination}</h2>
+          <h2>{destination_name}</h2>
           <span>{dayjs(created_at).format("D MMM, HH:mm")}</span>
         </div>
         <div className="ml-auto">
@@ -46,10 +46,10 @@ export default function HistoryItem({
             status={status}
             historyId={historyId}
             created_at={created_at}
-            destination={destination}
-            review={review}
-            rating={rating}
-            star={star}
+            trip_review={trip_review}
+            trip_rating={trip_rating}
+            destination_name={destination_name}
+            destination_rating={destination_rating}
           />
         </Fragment>
       ) : null}
