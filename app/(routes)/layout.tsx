@@ -1,6 +1,7 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
+import Navigation from '@/app/(routes)/navigation'
 import { Toaster } from '@/components/ui/toaster'
 import '@/styles/globals.css'
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <NextTopLoader showSpinner={false} />
         {children}
+        <Navigation />
         <Toaster />
       </body>
     </html>

@@ -1,17 +1,17 @@
-import { MoveLeft } from 'lucide-react'
+import { MoveLeft } from 'lucide-react';
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/app/_components/ui/button'
+import { Input } from '@/app/_components/ui/input'
+import { Label } from '@/app/_components/ui/label'
 
 export default function RegisterPage() {
   return (
     <main className="flex h-[100dvh] flex-col p-8">
       <div className="mb-8 flex w-full items-center justify-between">
-        <MoveLeft />
-        <span className="text-sm font-semibold text-muted-foreground">
-          TiresQ
-        </span>
+        <Link href="/">
+          <MoveLeft />
+        </Link>
+        <span className="text-sm font-semibold text-primary/30">TiresQ</span>
       </div>
 
       <div className="space-y-8">

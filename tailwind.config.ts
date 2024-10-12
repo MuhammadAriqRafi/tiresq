@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss'
 import tailwindAnimate from 'tailwindcss-animate'
 import defaultTheme from 'tailwindcss/defaultTheme'
 
@@ -58,6 +58,7 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        success: '#16A34A',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -68,4 +69,4 @@ const config: Config = {
   },
   plugins: [tailwindAnimate],
 }
-export default config;
+export default config
