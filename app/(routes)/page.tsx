@@ -8,7 +8,7 @@ export default function Home() {
       {/* <OnProgressTripBanner /> */}
       {/* <OnProgressTripConfirmationBanner /> */}
 
-      <Button className="fixed bottom-24 left-1/2 w-[calc(100%-48px)] -translate-x-1/2">
+      <Button className="fixed bottom-24 left-1/2 w-[calc(100%-48px)] max-w-md -translate-x-1/2">
         Cari Tambal Ban
       </Button>
     </main>

@@ -11,10 +11,10 @@ export default function Navigation() {
   if (blacklistedRoutes.includes(currentPath)) return null
 
   return (
-    <nav className="fixed bottom-0 w-full">
+    <nav className="fixed bottom-0 w-full max-w-md shadow-[0_-5px_30px_-20px_rgba(0,0,0,0.3)]">
       <ul className="flex">
         {routes.map(({ url, text, icon }) => {
-          const isActive = currentPath.startsWith(url)
+          const isActive = currentPath === url
 
           return (
             <Link
