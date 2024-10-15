@@ -8,7 +8,9 @@ import { cn } from '@/lib/utils'
 export default function Navigation() {
   const currentPath = usePathname()
 
-  if (blacklistedRoutes.includes(currentPath)) return null
+  for (const blacklistedRoute of blacklistedRoutes) { 
+    if (currentPath.startsWith(blacklistedRoute)) return null
+  }
 
   return (
     <nav className="fixed bottom-0 w-full max-w-md shadow-[0_-5px_30px_-20px_rgba(0,0,0,0.3)]">

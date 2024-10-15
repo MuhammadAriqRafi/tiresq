@@ -109,7 +109,7 @@ function HistoryItemRatedAndReviewed({
 
             <div className="ml-4 flex flex-col gap-[2px] border-l pl-4">
               <p className="text-xs font-medium">Ulasanmu</p>
-              <span className="text-xs font-light">{history.review}</span>
+              <span className="text-xs font-light line-clamp-1">{history.review}</span>
             </div>
 
             <ChevronRight
