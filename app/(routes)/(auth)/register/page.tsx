@@ -1,16 +1,14 @@
-import { MoveLeft } from 'lucide-react';
 import Link from 'next/link'
 import { Button } from '@/app/_components/ui/button'
 import { Input } from '@/app/_components/ui/input'
 import { Label } from '@/app/_components/ui/label'
+import NavigationButton from '@/app/_components/ui/navigation-button'
 
 export default function RegisterPage() {
   return (
     <main className="flex h-[100dvh] flex-col p-8">
       <div className="mb-8 flex w-full items-center justify-between">
-        <Link href="/">
-          <MoveLeft />
-        </Link>
+        <NavigationButton type="BACK" />
         <span className="text-sm font-semibold text-primary/30">TiresQ</span>
       </div>
 
@@ -22,7 +20,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form className="space-y-6">
+        <form className="space-y-5">
           <div className="input-wrapper">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" />

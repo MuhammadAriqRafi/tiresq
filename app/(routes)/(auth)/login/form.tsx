@@ -38,7 +38,7 @@ export default function LoginForm() {
   }
 
   return (
-    <form className="flex h-full flex-col gap-6" onSubmit={handleOnSubmit}>
+    <form className="flex h-full flex-col gap-5" onSubmit={handleOnSubmit}>
       <div className="input-wrapper">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="text" />

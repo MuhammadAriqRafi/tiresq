@@ -18,4 +18,9 @@ export const routes = [
   },
 ]
 
-export const blacklistedRoutes = ['/login', '/register', '/experience']
+export const blacklistedRoutes = [
+  '/login',
+  '/register',
+  '/experience',
+  '/account',
+]

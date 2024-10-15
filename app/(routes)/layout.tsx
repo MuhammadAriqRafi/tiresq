@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import Navigation from '@/app/(routes)/navigation'
@@ -8,6 +8,11 @@ import '@/styles/globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = { title: 'TiresQ' }
+export const viewport: Viewport = {
+  width: 'device-width',
+  maximumScale: 1,
+  initialScale: 1,
+}
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
