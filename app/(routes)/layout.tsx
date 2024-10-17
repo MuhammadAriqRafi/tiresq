@@ -14,7 +14,9 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: LayoutProps) {
+  // TODO: Redirect user to login page if not logged in
+
   return (
     <html lang="en">
       <body

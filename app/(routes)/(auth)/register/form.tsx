@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { FormEvent } from 'react'
 import { useServerAction } from 'zsa-react'
-import { login } from '@/routes/(auth)/_actions/login'
+import { register } from '@/routes/(auth)/_actions/register'
 import InputParseError from '@/app/_components/ui/input-parse-error'
 import InputPassword from '@/app/_components/ui/input-password'
 import { Button } from '@/components/ui/button'
@@ -13,9 +13,9 @@ import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { formatInputParseErrorOutput } from '@/lib/utils'
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const { toast } = useToast()
-  const { isPending, execute } = useServerAction(login, {
+  const { isPending, execute } = useServerAction(register, {
     onError({ err }) {
       toast({
         title: 'Gagal',
@@ -42,11 +42,7 @@ export default function LoginForm() {
   }
 
   return (
-    <form
-      className="flex h-full flex-col gap-5"
-      onSubmit={handleOnSubmit}
-      method="POST"
-    >
+    <form className="flex h-full flex-col gap-5" onSubmit={handleOnSubmit}>
       <div className="input-wrapper">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="text" />
@@ -57,18 +53,23 @@ export default function LoginForm() {
         <InputPassword id="password" name="password" />
       </div>
 
+      <div className="input-wrapper">
+        <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
+        <InputPassword id="confirmPassword" name="confirmPassword" />
+      </div>
+
       <div className="mt-auto flex flex-col items-center gap-4">
         <Button className="w-full">
-          {isPending ? <Loader2 className="animate-spin" /> : 'Masuk'}
+          {isPending ? <Loader2 className="animate-spin" /> : 'Daftar'}
         </Button>
 
         <span className="text-xs font-medium text-muted-foreground">
-          Belum punya akun?{' '}
+          Sudah punya akun?{' '}
           <Link
-            href="/register"
+            href="/login"
             className="text-primary underline underline-offset-2"
           >
-            Daftar
+            Masuk
           </Link>
         </span>
       </div>
