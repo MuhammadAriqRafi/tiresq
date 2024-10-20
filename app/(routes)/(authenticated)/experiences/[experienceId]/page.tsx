@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Star } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/app/_components/ui/button'
 import { Checkbox } from '@/app/_components/ui/checkbox'
@@ -36,7 +36,7 @@ export default function ExperiencePage({
             {Array.from({ length: 5 }, (_, i) => i++).map((index) => (
               <div key={index} className="relative">
                 <div className="peer z-10 size-7 opacity-0">
-                  <Checkbox className='w-full h-full' />
+                  <Checkbox className="h-full w-full" />
                 </div>
                 <Star className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 fill-muted-foreground stroke-muted-foreground peer-has-[:checked]:fill-yellow-200 peer-has-[:checked]:stroke-yellow-500" />
               </div>
@@ -48,7 +48,7 @@ export default function ExperiencePage({
         <Separator className="my-8" />
 
         <div className="flex flex-col items-center gap-6">
-          <p className="text-sm font-semibold text-center">
+          <p className="text-center text-sm font-semibold">
             Apa yang bisa ditingkatin? tulis masukan kamu
           </p>
 

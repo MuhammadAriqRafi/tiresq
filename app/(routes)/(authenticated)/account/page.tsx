@@ -1,7 +1,8 @@
 import { History, Pencil } from 'lucide-react'
-import MenuItem from '@/routes/account/menu-item'
-import MenuItemLogout from '@/routes/account/menu-item-logout'
 import NavigationButton from '@/app/_components/ui/navigation-button'
+import MenuItem from '@/app/(routes)/(authenticated)/account/menu-item'
+import MenuItemLogout from '@/app/(routes)/(authenticated)/account/menu-item-logout'
+
 
 export default function AccountPage() {
   return (

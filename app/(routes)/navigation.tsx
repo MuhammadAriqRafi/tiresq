@@ -13,7 +13,7 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="fixed bottom-0 w-full max-w-md shadow-[0_-5px_30px_-20px_rgba(0,0,0,0.3)]">
+    <nav className="fixed bottom-0 w-full bg-white max-w-md shadow-[0_-5px_30px_-20px_rgba(0,0,0,0.3)]">
       <ul className="flex">
         {routes.map(({ url, text, icon }) => {
           const isActive = currentPath === url
