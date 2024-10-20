@@ -7,7 +7,10 @@ import { createServerAction } from 'zsa'
 import authenticationService from '@/src/infrastructure/services/authentication.service'
 
 const LoginInputSchema = z.object({
-  email: z.string().email().min(1, { message: 'Email tidak boleh kosong' }),
+  email: z
+    .string()
+    .email({ message: 'Email tidak valid' })
+    .min(1, { message: 'Email tidak boleh kosong' }),
   password: z.string().min(1, { message: 'Password tidak boleh kosong' }),
 })
 
