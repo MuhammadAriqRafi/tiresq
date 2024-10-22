@@ -1,4 +1,4 @@
-import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
 import { useEffect, useState } from 'react'
 import OnProgressTripBanner from '@/routes/on-progress-trip-banner'
 
