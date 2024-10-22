@@ -1,23 +1,30 @@
 'use client'
 
-import { ReactNode, createContext } from 'react'
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useState,
+} from 'react'
 import { OnProgressTrip } from '@/routes/_actions/get-on-progress-trip.action'
 
-export const UserOnProgressTripContext = createContext<OnProgressTrip | null>(
-  null
-)
+export const UserOnProgressTripContext = createContext<{
+  onProgressTrip: OnProgressTrip | null
+  setOnProgressTrip: Dispatch<SetStateAction<OnProgressTrip | null>>
+}>({ onProgressTrip: null, setOnProgressTrip: () => null })
 
 export default function UserOnProgressTripProvider({
   trip,
   children,
 }: {
-  trip: OnProgressTrip
+  trip: OnProgressTrip | null
   children: ReactNode
 }) {
-  // TODO: Add state for the destination data, and return both the setter and getter
+  const [onProgressTrip, setOnProgressTrip] = useState<OnProgressTrip | null>(trip)
 
   return (
-    <UserOnProgressTripContext.Provider value={trip}>
+    <UserOnProgressTripContext.Provider value={{ onProgressTrip, setOnProgressTrip }}>
       {children}
     </UserOnProgressTripContext.Provider>
   )

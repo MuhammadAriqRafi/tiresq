@@ -2,14 +2,13 @@
 
 import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps'
 import { useContext } from 'react'
-import Directions from '@/routes/maps/directions'
+import DirectionsProvider from '@/routes/maps/directions-provider'
 import GeolocateButton from '@/routes/maps/geolocate-button'
+import OnProgressTripBanner from '@/routes/on-progress-trip-banner'
 import { UserLocationContext } from '@/routes/user-location-provider'
-import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 
 export default function Maps() {
   const userLocation = useContext(UserLocationContext)
-  const userOnProgressTrip = useContext(UserOnProgressTripContext)
   if (userLocation === null) return null
 
   return (
@@ -22,12 +21,9 @@ export default function Maps() {
           gestureHandling="greedy"
           disableDefaultUI={true}
         >
-          {userOnProgressTrip !== null && (
-            <Directions
-              origin={userLocation.coordinate}
-              destination={userOnProgressTrip.destination.coordinate}
-            />
-          )}
+          <DirectionsProvider>
+            <OnProgressTripBanner />
+          </DirectionsProvider>
 
           <AdvancedMarker position={userLocation.coordinate} />
           <GeolocateButton position={userLocation.coordinate} />

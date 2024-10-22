@@ -2,25 +2,21 @@ import { Footprints, Hourglass } from 'lucide-react'
 import { useContext } from 'react'
 import CancelTripButton from '@/routes/cancel-trip-button'
 import CompleteTripButton from '@/routes/complete-trip-button'
+import { DirectionsContext } from '@/routes/maps/directions-provider'
 import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 import RatingBadge from '@/components/ui/rating-badge'
 
-export default function OnProgressTripBanner({
-  duration,
-  distance,
-}: {
-  distance?: string
-  duration?: string
-}) {
-  const userOnProgressTrip = useContext(UserOnProgressTripContext)
-  if (userOnProgressTrip === null) return null
+export default function OnProgressTripBanner() {
+  const { onProgressTrip } = useContext(UserOnProgressTripContext)
+  const { distance, duration } = useContext(DirectionsContext)
+  if (onProgressTrip === null) return null
 
   return (
     <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 space-y-4 rounded-xl border border-secondary bg-white px-6 py-5">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-base font-bold">
-            {userOnProgressTrip.destination.name}
+            {onProgressTrip.destination.name}
           </p>
 
           <div className="flex gap-4">
@@ -40,7 +36,6 @@ export default function OnProgressTripBanner({
       </div>
 
       <div className="flex w-full gap-2 [&>button]:w-1/2">
-        {/* TODO: Pass tripId to these components */}
         <CancelTripButton />
         <CompleteTripButton />
       </div>

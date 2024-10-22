@@ -1,7 +1,12 @@
-import 'server-only'
+'use server'
+
+import getOnProgressTripUseCase from '@/src/application/use-cases/get-on-progress-trip.use-case'
 
 export type OnProgressTrip = {
   tripId: number
+  status: 'COMPLETED' | 'CANCELLED' | 'ONPROGRESS'
+  createdAt: string
+  expiredAt: Date
   destination: {
     name: string
     rating: number
@@ -10,12 +15,6 @@ export type OnProgressTrip = {
 }
 
 export default async function getOnProgressTrip() {
-  return {
-    tripId: 1,
-    destination: {
-      name: 'Tambal Ban Ujang',
-      rating: 5,
-      coordinate: { lat: -5.36122722040926, lng: 105.31364286741777 },
-    },
-  }
+  // TODO: Change all dates to use epoch time
+  return getOnProgressTripUseCase()
 }

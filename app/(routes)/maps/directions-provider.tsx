@@ -1,16 +1,29 @@
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
-import { useEffect, useState } from 'react'
-import OnProgressTripBanner from '@/routes/on-progress-trip-banner'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { UserLocationContext } from '@/routes/user-location-provider'
+import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 
-export default function Directions({
-  origin,
-  destination,
+export const DirectionsContext = createContext<{
+  duration?: string
+  distance?: string
+  directionsRenderer?: google.maps.DirectionsRenderer
+}>({})
+
+export default function DirectionsProvider({
+  children,
 }: {
-  origin: google.maps.LatLngLiteral
-  destination: google.maps.LatLngLiteral
+  children: ReactNode
 }) {
   const map = useMap()
   const routesLibrary = useMapsLibrary('routes')
+  const userLocation = useContext(UserLocationContext)
+  const { onProgressTrip } = useContext(UserOnProgressTripContext)
 
   const [directionsService, setDirectionsService] =
     useState<google.maps.DirectionsService>()
@@ -26,11 +39,18 @@ export default function Directions({
   }, [routesLibrary, map])
 
   useEffect(() => {
-    if (!directionsService || !directionsRenderer) return
+    if (
+      !directionsService ||
+      !directionsRenderer ||
+      userLocation === null ||
+      onProgressTrip === null
+    )
+      return
+
     directionsService
       .route({
-        origin,
-        destination,
+        origin: userLocation.coordinate,
+        destination: onProgressTrip.destination.coordinate,
         travelMode: google.maps.TravelMode.WALKING,
         provideRouteAlternatives: true,
       })
@@ -41,7 +61,13 @@ export default function Directions({
         setDistance(distance)
         setDuration(duration)
       })
-  }, [directionsService, directionsRenderer, destination, origin])
+  }, [directionsService, directionsRenderer, onProgressTrip, userLocation])
 
-  return <OnProgressTripBanner distance={distance} duration={duration} />
+  return (
+    <DirectionsContext.Provider
+      value={{ distance, duration, directionsRenderer }}
+    >
+      {children}
+    </DirectionsContext.Provider>
+  )
 }

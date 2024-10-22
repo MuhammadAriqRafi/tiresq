@@ -11,20 +11,20 @@ export default function GeolocateButton({
   position: google.maps.LatLngLiteral
 }) {
   const map = useMap()
-  const userOnProgressTrip = useContext(UserOnProgressTripContext)
+  const { onProgressTrip } = useContext(UserOnProgressTripContext)
 
   return (
     <Button
       size="icon"
       variant="outline"
+      onClick={() => (map ? map.panTo(position) : null)}
       className={cn(
         'fixed right-6 border-primary bg-transparent backdrop-blur-sm',
         {
-          'bottom-24': userOnProgressTrip !== null,
-          'top-6': userOnProgressTrip === null,
+          'bottom-24': onProgressTrip !== null,
+          'top-6': onProgressTrip === null,
         }
       )}
-      onClick={() => (map ? map.panTo(position) : null)}
     >
       <LocateFixed className="stroke-primary" />
     </Button>

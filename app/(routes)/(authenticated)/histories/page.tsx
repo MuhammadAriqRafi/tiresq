@@ -1,6 +1,6 @@
+import FiltereByStatusSelect from '@/routes/(authenticated)/histories/filter-by-status-select'
+import HistoryItem from '@/routes/(authenticated)/histories/history-item'
 import { ScrollArea } from '@/app/_components/ui/scroll-area'
-import FiltereByStatusSelect from '@/app/(routes)/(authenticated)/histories/filter-by-status-select'
-import HistoryItem from '@/app/(routes)/(authenticated)/histories/history-item'
 import { histories } from '@/lib/data'
 
 export default function HistoriesPage({

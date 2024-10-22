@@ -1,5 +1,5 @@
+import LoginForm from '@/routes/(auth)/login/form'
 import NavigationButton from '@/app/_components/ui/navigation-button'
-import LoginForm from '@/app/(routes)/(auth)/login/form'
 
 export default function LoginPage() {
   return (
