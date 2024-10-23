@@ -15,7 +15,7 @@ export default async function Home() {
 
       <UserOnProgressTripProvider trip={onProgressTrip}>
         <UserLocationProvider>
-          <Maps />
+          {/* <Maps /> */}
           <FindNearestTireRepairShopButton />
         </UserLocationProvider>
       </UserOnProgressTripProvider>

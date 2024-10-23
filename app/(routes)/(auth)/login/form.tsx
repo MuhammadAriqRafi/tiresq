@@ -71,6 +71,8 @@ export default function LoginForm() {
             Daftar
           </Link>
         </span>
+
+        {/* TODO: Add login as guest option, when clicked, display drawer for hCaptcha and call sign in as anonymous user with supabase */}
       </div>
     </form>
   )

@@ -1,5 +1,6 @@
 'use server'
 
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
 
@@ -10,6 +11,6 @@ const CompleteTripSchema = z.object({
 export const completeTrip = createServerAction()
   .input(CompleteTripSchema)
   .handler(async ({ input }) => {
-    console.log({ input })
-    return { message: 'Berhasil Trip' }
+    // TODO: If the user is not authenticated, return success message instead of redirect
+    redirect(`/experiences/${input.tripId}`)
   })

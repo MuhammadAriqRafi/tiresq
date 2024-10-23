@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: (Further dev) Add trip feedback feature
+model Trip {
+  id            String     @id @unique
+  userId        String
+  destinationId Int
+  status        TripStatus @default(ONPROGRESS)
+  expiredAt     BigInt
+  createdAt     BigInt
+  completedAt   BigInt?
+  cancelledAt   BigInt?
+
+  experience  TripExperience?
+  destination TireRepairShop  @relation(fields: [destinationId], references: [id], onDelete: Restrict)
+
+  @@map("trips")
+}
+
+model TripExperience {
+  id          String  @id @unique
+  tripId      String  @unique
+  rating      Int?
+  review      String?
+  isAnonymous Boolean @default(false)
+  reviewedAt  BigInt?
+  ratedAt     BigInt?
+
+  trip Trip @relation(fields: [tripId], references: [id])
+
+  @@map("trip_experiences")
+}
+
+// TODO: (Further dev) Add open/close feature
+model TireRepairShop {
+  id        Int    @id @default(autoincrement())
+  userId    String @unique
+  name      String
+  rating    Float  @default(0)
+  lat       Float
+  lng       Float
+  createdAt BigInt
+  trips     Trip[]
+
+  @@map("tire_repair_shops")
+}
+
+enum TripStatus {
+  COMPLETED
+  ONPROGRESS
+  CANCELLED
+}

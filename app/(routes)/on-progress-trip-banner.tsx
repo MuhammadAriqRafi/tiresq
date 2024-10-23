@@ -12,7 +12,7 @@ export default function OnProgressTripBanner() {
   if (onProgressTrip === null) return null
 
   return (
-    <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 space-y-4 rounded-xl border border-secondary bg-white px-6 py-5">
+    <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md shadow-md shadow-primary/10 -translate-x-1/2 space-y-4 rounded-xl border border-primary/15 bg-white px-6 py-5">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-base font-bold">

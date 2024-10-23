@@ -1,0 +1,12 @@
+-- AlterTable
+ALTER TABLE "tire_repair_shops" ALTER COLUMN "createdAt" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "trip_experiences" ALTER COLUMN "reviewedAt" SET DATA TYPE BIGINT,
+ALTER COLUMN "ratedAt" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "trips" ALTER COLUMN "expiredAt" SET DATA TYPE BIGINT,
+ALTER COLUMN "createdAt" SET DATA TYPE BIGINT,
+ALTER COLUMN "completedAt" SET DATA TYPE BIGINT,
+ALTER COLUMN "cancelledAt" SET DATA TYPE BIGINT;

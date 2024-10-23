@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { Loader2 } from 'lucide-react'
 import { useContext } from 'react'
@@ -28,7 +28,7 @@ export default function FindNearestTireRepairShopButton() {
       className="fixed bottom-24 left-1/2 w-[calc(100%-48px)] max-w-md -translate-x-1/2"
     >
       {!isPending && 'Cari Tambal Ban'}
-      {isPending && <Loader2 className='animate-spin' />}
+      {isPending && <Loader2 className="animate-spin" />}
     </Button>
   )
 }
