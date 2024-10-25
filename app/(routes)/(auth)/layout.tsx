@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
-import authenticationService from '@/src/infrastructure/services/authentication.service'
+import { getInjection } from '@/src/di/container'
 
 export default async function AuthLayout({ children }: LayoutProps) {
-  const user = await authenticationService().getUser()
+  const user = await getInjection('IAuthenticationService').getUser()
   if (user !== null) return redirect('/')
   return <>{children}</>
 }

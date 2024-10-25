@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
-import authenticationService from '@/src/infrastructure/services/authentication.service'
+import { getInjection } from '@/src/di/container'
 
 const LoginInputSchema = z.object({
   email: z
@@ -17,7 +17,7 @@ const LoginInputSchema = z.object({
 export const login = createServerAction()
   .input(LoginInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationsService = authenticationService()
+    const authenticationsService = getInjection('IAuthenticationService')
     await authenticationsService.loginWithPassword(input)
     revalidatePath('/', 'layout')
     redirect('/')

@@ -2,10 +2,10 @@
 
 import { redirect } from 'next/navigation'
 import { createServerAction } from 'zsa'
-import authenticationService from '@/src/infrastructure/services/authentication.service'
+import { getInjection } from '@/src/di/container'
 
 export const logout = createServerAction().handler(async () => {
-  const authenticationsService = authenticationService()
+  const authenticationsService = getInjection('IAuthenticationService')
   await authenticationsService.logout()
   redirect('/login')
 })

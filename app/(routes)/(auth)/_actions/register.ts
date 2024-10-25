@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
-import authenticationService from '@/src/infrastructure/services/authentication.service'
+import { getInjection } from '@/src/di/container'
 
 const RegisterInputSchema = z
   .object({
@@ -26,7 +26,7 @@ const RegisterInputSchema = z
 export const register = createServerAction()
   .input(RegisterInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationsService = authenticationService()
+    const authenticationsService = getInjection('IAuthenticationService')
     await authenticationsService.register(input)
     redirect('/login')
   })
