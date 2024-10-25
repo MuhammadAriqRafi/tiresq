@@ -1,9 +1,11 @@
 'use client'
 
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { useServerAction } from 'zsa-react'
+import { anonymousLogin } from '@/routes/(auth)/_actions/anonymous-login'
 import { login } from '@/routes/(auth)/_actions/login'
 import InputParseError from '@/app/_components/ui/input-parse-error'
 import InputPassword from '@/app/_components/ui/input-password'
@@ -15,30 +17,66 @@ import { formatInputParseErrorOutput } from '@/lib/utils'
 
 export default function LoginForm() {
   const { toast } = useToast()
-  const { isPending, execute } = useServerAction(login, {
-    onError({ err }) {
-      toast({
-        title: 'Gagal',
-        variant: 'destructive',
-        description:
-          err.code === 'INPUT_PARSE_ERROR' ? (
-            <InputParseError
-              formattedFieldErrors={formatInputParseErrorOutput(
-                err.fieldErrors
-              )}
-            />
-          ) : (
-            err.message
-          ),
-      })
-    },
-  })
+  const [captchaToken, setCaptchaToken] = useState('')
+  const { isPending: isLoginPending, execute: executeLogin } = useServerAction(
+    login,
+    {
+      bind: { captchaToken },
+      onError({ err }) {
+        toast({
+          title: 'Gagal',
+          variant: 'destructive',
+          description:
+            err.code === 'INPUT_PARSE_ERROR' ? (
+              <InputParseError
+                formattedFieldErrors={formatInputParseErrorOutput(
+                  err.fieldErrors
+                )}
+              />
+            ) : (
+              err.message
+            ),
+        })
+      },
+    }
+  )
+
+  const { isPending: isAnonymousLoginPending, execute: executeAnonymousLogin } =
+    useServerAction(anonymousLogin, {
+      onError({ err }) {
+        toast({
+          title: 'Gagal',
+          variant: 'destructive',
+          description:
+            err.code === 'INPUT_PARSE_ERROR' ? (
+              <InputParseError
+                formattedFieldErrors={formatInputParseErrorOutput(
+                  err.fieldErrors
+                )}
+              />
+            ) : (
+              err.message
+            ),
+        })
+      },
+    })
 
   async function handleOnSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
-    await execute(formData)
+    await executeLogin(formData)
+  }
+
+  async function handleAnonymousLogin() {
+    if (!captchaToken)
+      return toast({
+        title: 'Warning',
+        description: 'Captcha harus diisi',
+        variant: 'destructive',
+      })
+
+    await executeAnonymousLogin({ captchaToken })
   }
 
   return (
@@ -58,21 +96,37 @@ export default function LoginForm() {
       </div>
 
       <div className="mt-auto flex flex-col items-center gap-4">
+        <HCaptcha
+          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY}
+          onVerify={setCaptchaToken}
+        />
+
         <Button className="w-full">
-          {isPending ? <Loader2 className="animate-spin" /> : 'Masuk'}
+          {isLoginPending || isAnonymousLoginPending ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            'Masuk'
+          )}
         </Button>
 
-        <span className="text-xs font-medium text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">
           Belum punya akun?{' '}
           <Link
             href="/register"
             className="text-primary underline underline-offset-2"
           >
             Daftar
-          </Link>
-        </span>
-
-        {/* TODO: Add login as guest option, when clicked, display drawer for hCaptcha and call sign in as anonymous user with supabase */}
+          </Link>{' '}
+          atau{' '}
+          <Button
+            type="button"
+            variant="link"
+            onClick={handleAnonymousLogin}
+            className="m-0 h-fit p-0 text-xs text-primary underline underline-offset-2"
+          >
+            Masuk Sebagai Tamu
+          </Button>
+        </p>
       </div>
     </form>
   )

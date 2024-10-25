@@ -6,20 +6,18 @@ import { z } from 'zod'
 import { createServerAction } from 'zsa'
 import { getInjection } from '@/src/di/container'
 
-const LoginInputSchema = z.object({
-  email: z
-    .string()
-    .email({ message: 'Email tidak valid' })
-    .min(1, { message: 'Email tidak boleh kosong' }),
-  password: z.string().min(1, { message: 'Password tidak boleh kosong' }),
+const AnonymousLoginInputSchema = z.object({
   captchaToken: z.string().min(1, { message: 'Captcha harus diisi' }),
 })
 
-export const login = createServerAction()
-  .input(LoginInputSchema, { type: 'formData' })
+export const anonymousLogin = createServerAction()
+  .input(AnonymousLoginInputSchema)
   .handler(async ({ input }) => {
     const authenticationsService = getInjection('IAuthenticationService')
-    await authenticationsService.loginWithPassword(input)
+    await authenticationsService.loginAnonymously({
+      captchaToken: input.captchaToken,
+    })
+
     revalidatePath('/', 'layout')
     redirect('/')
   })

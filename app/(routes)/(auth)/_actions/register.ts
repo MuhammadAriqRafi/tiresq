@@ -9,6 +9,7 @@ const RegisterInputSchema = z
   .object({
     email: z.string().email().min(1, { message: 'Email tidak boleh kosong' }),
     password: z.string().min(1, { message: 'Password tidak boleh kosong' }),
+    captchaToken: z.string().min(1, { message: 'Captcha harus diisi' }),
     confirmPassword: z
       .string()
       .min(1, { message: 'Konfirmasi password tidak boleh kosong' }),

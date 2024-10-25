@@ -18,15 +18,39 @@ export class AuthenticationService implements IAuthenticationService {
     return user
   }
 
-  async loginWithPassword(input: { email: string; password: string }) {
+  async loginWithPassword(input: {
+    email: string
+    password: string
+    captchaToken: string
+  }) {
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword(input)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: input.email,
+      password: input.password,
+      options: { captchaToken: input.captchaToken },
+    })
     if (error !== null) throw new AuthenticationError(error.message)
   }
 
-  async register(input: { email: string; password: string }) {
+  async loginAnonymously(input: { captchaToken: string }): Promise<void> {
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp(input)
+    const { error } = await supabase.auth.signInAnonymously({
+      options: { captchaToken: input.captchaToken },
+    })
+    if (error !== null) throw new AuthenticationError(error.message)
+  }
+
+  async register(input: {
+    email: string
+    password: string
+    captchaToken: string
+  }) {
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({
+      email: input.email,
+      password: input.password,
+      options: { captchaToken: input.captchaToken },
+    })
     if (error !== null) throw new AuthenticationError(error.message)
   }
 

@@ -1,8 +1,9 @@
 'use client'
 
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { useServerAction } from 'zsa-react'
 import { register } from '@/routes/(auth)/_actions/register'
 import InputParseError from '@/app/_components/ui/input-parse-error'
@@ -15,7 +16,9 @@ import { formatInputParseErrorOutput } from '@/lib/utils'
 
 export default function RegisterForm() {
   const { toast } = useToast()
+  const [captchaToken, setCaptchaToken] = useState('')
   const { isPending, execute } = useServerAction(register, {
+    bind: { captchaToken },
     onError({ err }) {
       toast({
         title: 'Gagal',
@@ -42,7 +45,7 @@ export default function RegisterForm() {
   }
 
   return (
-    <form className="flex h-full flex-col gap-5" onSubmit={handleOnSubmit}>
+    <form className="flex h-full flex-col gap-3" onSubmit={handleOnSubmit}>
       <div className="input-wrapper">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="text" />
@@ -59,6 +62,11 @@ export default function RegisterForm() {
       </div>
 
       <div className="mt-auto flex flex-col items-center gap-4">
+        <HCaptcha
+          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY}
+          onVerify={setCaptchaToken}
+        />
+
         <Button className="w-full">
           {isPending ? <Loader2 className="animate-spin" /> : 'Daftar'}
         </Button>
