@@ -7,8 +7,10 @@ import { findNearestTireRepairShop } from '@/routes/_actions/find-nearest-tire-r
 import { UserLocationContext } from '@/routes/user-location-provider'
 import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 
 export default function FindNearestTireRepairShopButton() {
+  const { toast } = useToast()
   const userLocation = useContext(UserLocationContext)
   const { onProgressTrip, setOnProgressTrip } = useContext(
     UserOnProgressTripContext
@@ -16,6 +18,13 @@ export default function FindNearestTireRepairShopButton() {
   const { isPending, execute } = useServerAction(findNearestTireRepairShop, {
     onSuccess({ data }) {
       setOnProgressTrip(data)
+    },
+    onError({ err }) {
+      toast({
+        title: 'Gagal',
+        variant: 'destructive',
+        description: err.message,
+      })
     },
   })
 

@@ -2,16 +2,17 @@
 
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
-import toggleTripStatusUseCase from '@/src/application/use-cases/toggle-trip-status.use-case'
+import extendTripExpiryPeriodUseCase from '@/src/application/use-cases/extend-trip-expiry-period.use-case'
+import getOnProgressTripUseCase from '@/src/application/use-cases/get-on-progress-trip.use-case'
 import { getInjection } from '@/src/di/container'
 import { AuthenticationError } from '@/src/entities/errors/authentication'
 
-const CancelTripSchema = z.object({
+const ContinueTripInputSchema = z.object({
   tripId: z.string().min(1),
 })
 
-export const cancelTrip = createServerAction()
-  .input(CancelTripSchema)
+export const continueTrip = createServerAction()
+  .input(ContinueTripInputSchema)
   .handler(async ({ input }) => {
     const authenticationService = getInjection('IAuthenticationService')
     const user = await authenticationService.getUser()
@@ -19,8 +20,6 @@ export const cancelTrip = createServerAction()
     if (user === null)
       throw new AuthenticationError('Anda harus login terlebih dahulu')
 
-    await toggleTripStatusUseCase({
-      tripId: input.tripId,
-      status: 'CANCELLED',
-    })
+    await extendTripExpiryPeriodUseCase({ tripId: input.tripId })
+    return getOnProgressTripUseCase({ userId: user.id })
   })

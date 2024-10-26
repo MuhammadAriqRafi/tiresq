@@ -5,19 +5,16 @@ import OnProgressTripConfirmationBanner from '@/routes/on-progress-trip-confirma
 import UserLocationProvider from '@/routes/user-location-provider'
 import UserOnProgressTripProvider from '@/routes/user-on-progress-trip-provider'
 
-// TODO: Enable anonymous sign in
-
 export default async function Home() {
-  const onProgressTrip = null
-  // const onProgressTrip = await getOnProgressTrip()
+  const onProgressTrip = await getOnProgressTrip()
 
   return (
     <main className="h-dvh">
-      {/* <OnProgressTripConfirmationBanner /> */}
-
       <UserOnProgressTripProvider trip={onProgressTrip}>
+        <OnProgressTripConfirmationBanner />
+
         <UserLocationProvider>
-          {/* <Maps /> */}
+          <Maps />
           <FindNearestTireRepairShopButton />
         </UserLocationProvider>
       </UserOnProgressTripProvider>

@@ -22,10 +22,21 @@ export function formatInputParseErrorOutput(fieldErrors: {
 }) {
   let formattedFieldErrors: { [key: string]: string } = {}
 
-  Object.keys(fieldErrors).map((key) => {
+  Object.keys(fieldErrors).forEach((key) => {
     const errorMessage = fieldErrors[key][0]
     formattedFieldErrors = { ...formattedFieldErrors, [key]: errorMessage }
   })
 
   return formattedFieldErrors
+}
+
+export function tryCatchWrapper<T>(
+  promise: Promise<T>
+): Promise<[T, undefined] | [undefined, Error]> {
+  return promise
+    .then((data) => [data, undefined] as [T, undefined])
+    .catch((error) => {
+      console.error(error)
+      return [undefined, error]
+    })
 }

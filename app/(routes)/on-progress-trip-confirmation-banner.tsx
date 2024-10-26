@@ -1,6 +1,10 @@
+'use client'
+
 import { Footprints, MoveRight } from 'lucide-react'
+import { useContext } from 'react'
 import CancelTripConfirmationButton from '@/routes/cancel-trip-confirmation-button'
 import ContinueTripConfirmationButton from '@/routes/continue-trip-confirmation-button'
+import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 import {
   Drawer,
   DrawerContent,
@@ -11,8 +15,13 @@ import {
 } from '@/components/ui/drawer'
 
 export default function OnProgressTripConfirmationBanner() {
+  const { onProgressTrip } = useContext(UserOnProgressTripContext)
+
   return (
-    <Drawer defaultOpen={true} dismissible={false}>
+    <Drawer
+      dismissible={false}
+      open={onProgressTrip !== null && onProgressTrip.isExpired}
+    >
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Mau lanjutin perjalan?</DrawerTitle>
@@ -29,8 +38,11 @@ export default function OnProgressTripConfirmationBanner() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-bold text-black">Tambal Ban Ujang</p>
-            <span className="text-xs">Sabtu, 8 Apr 2023, 15:00</span>
+            <p className="text-sm font-bold text-black">
+              {onProgressTrip?.destination.name}
+            </p>
+            <span className="text-xs">{onProgressTrip?.createdAt}</span>
+            {/* <span className="text-xs">Sabtu, 8 Apr 2023, 15:00</span> */}
           </div>
         </div>
 

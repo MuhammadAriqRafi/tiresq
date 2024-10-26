@@ -1,18 +1,18 @@
 import { Footprints, Hourglass } from 'lucide-react'
 import { useContext } from 'react'
+import { DirectionsContext } from '@/routes/_maps/directions-provider'
 import CancelTripButton from '@/routes/cancel-trip-button'
 import CompleteTripButton from '@/routes/complete-trip-button'
-import { DirectionsContext } from '@/routes/maps/directions-provider'
 import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 import RatingBadge from '@/components/ui/rating-badge'
 
 export default function OnProgressTripBanner() {
   const { onProgressTrip } = useContext(UserOnProgressTripContext)
   const { distance, duration } = useContext(DirectionsContext)
-  if (onProgressTrip === null) return null
+  if (onProgressTrip === null || onProgressTrip.isExpired) return null
 
   return (
-    <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md shadow-md shadow-primary/10 -translate-x-1/2 space-y-4 rounded-xl border border-primary/15 bg-white px-6 py-5">
+    <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 space-y-4 rounded-xl border border-primary/15 bg-white px-6 py-5 shadow-md shadow-primary/10">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-base font-bold">

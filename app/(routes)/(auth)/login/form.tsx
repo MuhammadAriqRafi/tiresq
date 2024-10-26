@@ -3,7 +3,7 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { useServerAction } from 'zsa-react'
 import { anonymousLogin } from '@/routes/(auth)/_actions/anonymous-login'
 import { login } from '@/routes/(auth)/_actions/login'
@@ -17,12 +17,17 @@ import { formatInputParseErrorOutput } from '@/lib/utils'
 
 export default function LoginForm() {
   const { toast } = useToast()
+  const captchaRef = useRef<HCaptcha | null>(null)
   const [captchaToken, setCaptchaToken] = useState('')
   const { isPending: isLoginPending, execute: executeLogin } = useServerAction(
     login,
     {
-      bind: { captchaToken },
       onError({ err }) {
+        if (err.code !== 'INPUT_PARSE_ERROR') {
+          captchaRef.current?.resetCaptcha()
+          setCaptchaToken('')
+        }
+
         toast({
           title: 'Gagal',
           variant: 'destructive',
@@ -65,6 +70,7 @@ export default function LoginForm() {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
+    formData.append('captchaToken', captchaToken)
     await executeLogin(formData)
   }
 
@@ -97,8 +103,11 @@ export default function LoginForm() {
 
       <div className="mt-auto flex flex-col items-center gap-4">
         <HCaptcha
+          ref={captchaRef}
           sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY}
           onVerify={setCaptchaToken}
+          onExpire={() => setCaptchaToken('')}
+          onError={() => setCaptchaToken('')}
         />
 
         <Button className="w-full">

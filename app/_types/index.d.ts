@@ -17,3 +17,16 @@ type Histories = Readonly<
     expired: boolean
   }[]
 >
+
+type OnProgressTrip = {
+  tripId: string
+  status: 'COMPLETED' | 'CANCELLED' | 'ONPROGRESS'
+  createdAt: string
+  expiredAt: number
+  isExpired: boolean
+  destination: {
+    name: string
+    rating: number
+    coordinate: { lat: number; lng: number }
+  }
+}

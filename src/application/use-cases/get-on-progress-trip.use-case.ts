@@ -1,15 +1,41 @@
-import { OnProgressTrip } from '@/routes/_actions/get-on-progress-trip.action'
+import 'server-only'
+import { getInjection } from '@/src/di/container'
 
-export default function getOnProgressTripUseCase() {
+export default async function getOnProgressTripUseCase({
+  userId,
+}: {
+  userId: string
+}) {
+  const tripsRepository = getInjection('ITripsRepository')
+  const onProgressTrip = await tripsRepository.getTrips({
+    where: { userId, status: 'ONPROGRESS' },
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
+      expiredAt: true,
+      destination: {
+        select: { name: true, rating: true, lat: true, lng: true },
+      },
+    },
+  })
+
+  if (onProgressTrip.length < 1) return null
+
+  // TODO: Format createdAt date to human readable
   return {
-    tripId: 1,
-    status: 'ONPROGRESS',
-    createdAt: '22 Okt. 20:10',
-    expiredAt: new Date(),
+    tripId: onProgressTrip[0].id,
+    status: onProgressTrip[0].status,
+    expiredAt: Number(onProgressTrip[0].expiredAt),
+    isExpired: Date.now() > onProgressTrip[0].expiredAt,
+    createdAt: new Date(Number(onProgressTrip[0].createdAt)).toLocaleString(),
     destination: {
-      name: 'Tambal Ban Ujang',
-      rating: 5,
-      coordinate: { lat: -5.36122722040926, lng: 105.31364286741777 },
+      coordinate: {
+        lat: onProgressTrip[0].destination.lat,
+        lng: onProgressTrip[0].destination.lng,
+      },
+      name: onProgressTrip[0].destination.name,
+      rating: onProgressTrip[0].destination.rating,
     },
   } satisfies OnProgressTrip
 }

@@ -14,7 +14,7 @@ export class AuthenticationService implements IAuthenticationService {
       error,
       data: { user },
     } = await supabase.auth.getUser()
-    if (error !== null) console.log({ getUserError: error })
+    if (error !== null) console.error({ getUserError: error })
     return user
   }
 

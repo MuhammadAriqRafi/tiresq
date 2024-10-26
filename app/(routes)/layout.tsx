@@ -15,8 +15,6 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: LayoutProps) {
-  // TODO: Add hCaptcha for anonymous user to prevent abuse
-
   return (
     <html lang="en">
       <body

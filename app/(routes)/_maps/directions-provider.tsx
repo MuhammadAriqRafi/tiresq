@@ -39,11 +39,13 @@ export default function DirectionsProvider({
   }, [routesLibrary, map])
 
   useEffect(() => {
+    // TODO: If start implementing live user location, make sure adding buffer for these functionality
     if (
       !directionsService ||
       !directionsRenderer ||
       userLocation === null ||
-      onProgressTrip === null
+      onProgressTrip === null ||
+      onProgressTrip.isExpired
     )
       return
 

@@ -7,7 +7,6 @@ import {
   createContext,
   useState,
 } from 'react'
-import { OnProgressTrip } from '@/routes/_actions/get-on-progress-trip.action'
 
 export const UserOnProgressTripContext = createContext<{
   onProgressTrip: OnProgressTrip | null
@@ -21,10 +20,14 @@ export default function UserOnProgressTripProvider({
   trip: OnProgressTrip | null
   children: ReactNode
 }) {
-  const [onProgressTrip, setOnProgressTrip] = useState<OnProgressTrip | null>(trip)
+  const [onProgressTrip, setOnProgressTrip] = useState<OnProgressTrip | null>(
+    trip
+  )
 
   return (
-    <UserOnProgressTripContext.Provider value={{ onProgressTrip, setOnProgressTrip }}>
+    <UserOnProgressTripContext.Provider
+      value={{ onProgressTrip, setOnProgressTrip }}
+    >
       {children}
     </UserOnProgressTripContext.Provider>
   )
