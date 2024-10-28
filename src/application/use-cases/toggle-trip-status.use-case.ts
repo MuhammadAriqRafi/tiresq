@@ -1,4 +1,5 @@
 import { type TripStatus } from '@prisma/client'
+import 'server-only'
 import { PrismaTransactionalClient } from '@/lib/types'
 import { getInjection } from '@/src/di/container'
 

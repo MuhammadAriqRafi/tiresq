@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import 'server-only'
 import { PrismaTransactionalClient } from '@/lib/types'
 import { getInjection } from '@/src/di/container'
 

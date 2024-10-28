@@ -1,7 +1,7 @@
 import { Loader2 } from 'lucide-react'
 import { FormEvent, useContext, useState } from 'react'
 import { useServerAction } from 'zsa-react'
-import { cancelTripConfirmation } from '@/routes/_actions/cancel-trip-confirmation'
+import { cancelTripConfirmation } from '@/routes/_actions/cancel-trip-confirmation.action'
 import { UserOnProgressTripContext } from '@/routes/user-on-progress-trip-provider'
 import { Button } from '@/components/ui/button'
 import {

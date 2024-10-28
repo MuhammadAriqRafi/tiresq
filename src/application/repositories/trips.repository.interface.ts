@@ -9,6 +9,13 @@ export interface ITripsRepository {
     where: T
     select: K
   }): Promise<Prisma.TripGetPayload<{ select: K }>[]>
+  getTripExperiences<
+    T extends Prisma.TripExperienceWhereInput,
+    K extends Prisma.TripExperienceSelect,
+  >(filters?: {
+    where: T
+    select: K
+  }): Promise<Prisma.TripExperienceGetPayload<{ select: K }>[]>
   createTrip(data: Prisma.TripCreateInput): Promise<void>
   createTripExperience(
     data: Prisma.TripExperienceCreateInput,
@@ -18,5 +25,9 @@ export interface ITripsRepository {
     tripId: string,
     data: Prisma.TripUpdateInput,
     trx?: PrismaTransactionalClient
+  ): Promise<void>
+  updateTripExperience(
+    tripId: string,
+    data: Prisma.TripExperienceUpdateInput
   ): Promise<void>
 }

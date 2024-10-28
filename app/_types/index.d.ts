@@ -30,3 +30,12 @@ type OnProgressTrip = {
     coordinate: { lat: number; lng: number }
   }
 }
+
+type TripExperience = {
+  id: string
+  isAnonymous: boolean
+  tripDestinationName: string
+  tripCreatedAt: string
+  rating: number | null
+  review: string | null
+}
