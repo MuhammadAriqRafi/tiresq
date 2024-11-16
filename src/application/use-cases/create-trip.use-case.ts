@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import 'server-only'
 import env from '@/env'
 import { getInjection } from '@/src/di/container'
+import { RestrictedActionError } from '@/src/entities/errors/common'
 
 export default async function createTripUseCase(
   {
@@ -11,21 +12,20 @@ export default async function createTripUseCase(
     userId: string
     destinationId: number
   },
-  options: { checkOnProgressTripBeforeCreating: boolean } = {
-    checkOnProgressTripBeforeCreating: true,
+  options: { checkHasOnProgressTripBeforeCreating: boolean } = {
+    checkHasOnProgressTripBeforeCreating: true,
   }
 ) {
   const tripsRepository = getInjection('ITripsRepository')
 
-  if (options.checkOnProgressTripBeforeCreating) {
+  if (options.checkHasOnProgressTripBeforeCreating) {
     const onProgressTrip = await tripsRepository.getTrips({
       where: { userId, status: 'ONPROGRESS' },
       select: { id: true },
     })
 
-    // TODO: Create custom error class
     if (onProgressTrip.length > 0)
-      throw new Error('Anda sedang dalam perjalanan')
+      throw new RestrictedActionError('Anda sedang dalam perjalanan')
   }
 
   await tripsRepository.createTrip({

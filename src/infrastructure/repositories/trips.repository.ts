@@ -12,15 +12,17 @@ export class TripsRepository implements ITripsRepository {
   async getTrips<
     T extends Prisma.TripWhereInput,
     K extends Prisma.TripSelect,
+    I extends Prisma.TripOrderByWithRelationInput,
   >(filters?: {
-    where: T,
+    where?: T,
     select: K
+    orderBy?: I
   }): Promise<Prisma.TripGetPayload<{ select: K }>[]> {
     try {
       return await this.db.trip.findMany(filters)
     } catch (error) {
       console.error({ getTripsError: error })
-      throw new DatabaseError('Terjadi kesalahan saat mengambil data trip')
+      throw new DatabaseError('Terjadi kesalahan saat mengambil data perjalanan')
     }
   }
 
@@ -35,7 +37,7 @@ export class TripsRepository implements ITripsRepository {
       return await this.db.tripExperience.findMany(filters)
     } catch (error) {
       console.error({ getTripExperiencesError: error })
-      throw new DatabaseError('Terjadi kesalahan saat mengambil data trip experience')
+      throw new DatabaseError('Terjadi kesalahan saat mengambil data pengalaman')
     }
   }
 
@@ -44,7 +46,7 @@ export class TripsRepository implements ITripsRepository {
       await this.db.trip.create({ data })
     } catch (error) {
       console.error({ createTripError: error })
-      throw new DatabaseError('Terjadi kesalahan saat membuat data trip')
+      throw new DatabaseError('Terjadi kesalahan saat membuat data perjalanan')
     }
   }
 
@@ -59,7 +61,7 @@ export class TripsRepository implements ITripsRepository {
     } catch (error) {
       console.error({ createTripExperienceError: error })
       throw new DatabaseError(
-        'Terjadi kesalahan saat membuat data trip experience'
+        'Terjadi kesalahan saat membuat data pengalaman'
       )
     }
   }

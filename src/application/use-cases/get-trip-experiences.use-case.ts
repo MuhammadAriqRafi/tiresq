@@ -1,4 +1,5 @@
 import 'server-only'
+import { parseDateToHumanreadableFormat } from '@/lib/utils'
 import { getInjection } from '@/src/di/container'
 
 export default async function getTripExperiencesUseCase({
@@ -21,12 +22,11 @@ export default async function getTripExperiencesUseCase({
   if (trip.length < 1) return null
   if (trip[0].experience === null) return null
 
-  // TODO: Format createdAt date to human readable
   return {
     id: trip[0].experience.id,
     isAnonymous: trip[0].experience.isAnonymous,
     tripDestinationName: trip[0].destination.name,
-    tripCreatedAt: new Date(Number(trip[0].createdAt)).toLocaleString(),
+    tripCreatedAt: parseDateToHumanreadableFormat(trip[0].createdAt),
     rating: trip[0].experience.rating,
     review: trip[0].experience.review,
   } satisfies TripExperience

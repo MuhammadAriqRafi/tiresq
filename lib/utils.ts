@@ -40,3 +40,14 @@ export function tryCatchWrapper<T>(
       return [undefined, error]
     })
 }
+
+export function parseDateToHumanreadableFormat(milliseconds: bigint): string {
+  return new Intl.DateTimeFormat('id-ID', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  }).format(new Date(Number(milliseconds)))
+}

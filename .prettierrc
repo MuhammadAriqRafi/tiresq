@@ -10,8 +10,11 @@
   ],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
-    "^@/routes/(.*)$",
-    "^@/app/_components/ui/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/app/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/providers/(.*)$",
+    "^@/components/ui/(.*)$",
     "^./(.*)$"
   ],
   "importOrderSortSpecifiers": true

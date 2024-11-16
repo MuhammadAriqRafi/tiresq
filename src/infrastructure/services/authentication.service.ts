@@ -29,7 +29,11 @@ export class AuthenticationService implements IAuthenticationService {
       password: input.password,
       options: { captchaToken: input.captchaToken },
     })
-    if (error !== null) throw new AuthenticationError(error.message)
+
+    if (error !== null) {
+      console.error({ loginWithPasswordError: error })
+      throw new AuthenticationError(error.message)
+    }
   }
 
   async loginAnonymously(input: { captchaToken: string }): Promise<void> {
@@ -37,7 +41,11 @@ export class AuthenticationService implements IAuthenticationService {
     const { error } = await supabase.auth.signInAnonymously({
       options: { captchaToken: input.captchaToken },
     })
-    if (error !== null) throw new AuthenticationError(error.message)
+
+    if (error !== null) {
+      console.error({ loginAnonymouslyError: error })
+      throw new AuthenticationError(error.message)
+    }
   }
 
   async register(input: {
@@ -51,12 +59,20 @@ export class AuthenticationService implements IAuthenticationService {
       password: input.password,
       options: { captchaToken: input.captchaToken },
     })
-    if (error !== null) throw new AuthenticationError(error.message)
+
+    if (error !== null) {
+      console.error({ registerError: error })
+      throw new AuthenticationError(error.message)
+    }
   }
 
   async logout() {
     const supabase = createClient()
     const { error } = await supabase.auth.signOut()
-    if (error !== null) throw new AuthenticationError(error.message)
+
+    if (error !== null) {
+      console.error({ logoutError: error })
+      throw new AuthenticationError(error.message)
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'server-only'
+import { parseDateToHumanreadableFormat } from '@/lib/utils'
 import { getInjection } from '@/src/di/container'
 
 export default async function getOnProgressTripUseCase({
@@ -22,13 +23,11 @@ export default async function getOnProgressTripUseCase({
 
   if (onProgressTrip.length < 1) return null
 
-  // TODO: Format createdAt date to human readable
   return {
     tripId: onProgressTrip[0].id,
     status: onProgressTrip[0].status,
-    expiredAt: Number(onProgressTrip[0].expiredAt),
+    createdAt: parseDateToHumanreadableFormat(onProgressTrip[0].createdAt),
     isExpired: Date.now() > onProgressTrip[0].expiredAt,
-    createdAt: new Date(Number(onProgressTrip[0].createdAt)).toLocaleString(),
     destination: {
       coordinate: {
         lat: onProgressTrip[0].destination.lat,
