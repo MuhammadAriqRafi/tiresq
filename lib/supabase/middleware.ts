@@ -66,6 +66,18 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  if (
+    user &&
+    user.is_anonymous &&
+    (request.nextUrl.pathname.startsWith('/histories') ||
+      request.nextUrl.pathname.startsWith('/account') ||
+      request.nextUrl.pathname.startsWith('/experiences'))
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/register'
+    return NextResponse.redirect(url)
+  }
+
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
   // creating a new response object with NextResponse.next() make sure to:
   // 1. Pass the request in it, like so:

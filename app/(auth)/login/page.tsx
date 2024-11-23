@@ -1,4 +1,5 @@
 import LoginForm from '@/app/(auth)/login/form'
+import LoginFormDev from '@/app/(auth)/login/form.dev'
 
 export default function LoginPage() {
   return (
@@ -12,7 +13,8 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <LoginForm />
+      {process.env.NODE_ENV === 'development' && <LoginFormDev />}
+      {process.env.NODE_ENV === 'production' && <LoginForm />}
     </main>
   )
 }

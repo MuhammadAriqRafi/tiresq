@@ -1,9 +1,8 @@
 'use client'
 
-import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent } from 'react'
 import { useServerAction } from 'zsa-react'
 import { formatInputParseErrorOutput } from '@/lib/utils'
 import anonymousLogin from '@/app/(auth)/_actions/anonymous-login.action'
@@ -15,19 +14,12 @@ import InputParseError from '@/components/ui/input-parse-error'
 import InputPassword from '@/components/ui/input-password'
 import { Label } from '@/components/ui/label'
 
-export default function LoginForm() {
+export default function LoginFormDev() {
   const { toast } = useToast()
-  const captchaRef = useRef<HCaptcha | null>(null)
-  const [captchaToken, setCaptchaToken] = useState('')
   const { isPending: isLoginPending, execute: executeLogin } = useServerAction(
     login,
     {
       onError({ err }) {
-        if (err.code !== 'INPUT_PARSE_ERROR') {
-          captchaRef.current?.resetCaptcha()
-          setCaptchaToken('')
-        }
-
         toast({
           title: 'Gagal',
           variant: 'destructive',
@@ -74,18 +66,12 @@ export default function LoginForm() {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
-    formData.append('captchaToken', captchaToken)
+    formData.append('captchaToken', 'dummyCaptchaToken')
     await executeLogin(formData)
   }
 
   async function handleAnonymousLogin() {
-    if (!captchaToken)
-      return toast({
-        title: 'Warning',
-        variant: 'destructive',
-        description: 'Captcha harus diisi',
-      })
-    await executeAnonymousLogin({ captchaToken })
+    await executeAnonymousLogin({ captchaToken: 'dummyCaptchaToken' })
   }
 
   return (
@@ -105,14 +91,6 @@ export default function LoginForm() {
       </div>
 
       <div className="mt-auto flex flex-col items-center gap-4">
-        <HCaptcha
-          ref={captchaRef}
-          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY}
-          onVerify={setCaptchaToken}
-          onExpire={() => setCaptchaToken('')}
-          onError={() => setCaptchaToken('')}
-        />
-
         <Button className="w-full">
           {!isLoginPending && !isAnonymousLoginPending && 'Masuk'}
           {(isLoginPending || isAnonymousLoginPending) && (

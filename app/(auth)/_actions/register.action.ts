@@ -30,10 +30,14 @@ const register = createServerAction()
     const authenticationsService = getInjection('IAuthenticationService')
     const user = await authenticationsService.getUser()
 
-    console.log({ user })
+    if (user && user.is_anonymous) {
+      await authenticationsService.updateUser({
+        email: input.email,
+        password: input.password,
+      })
+    } else await authenticationsService.register(input)
 
-    await authenticationsService.register(input)
-    redirect('/login')
+    return redirect('/')
   })
 
 export default register

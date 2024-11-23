@@ -1,9 +1,13 @@
 import { History, Pencil } from 'lucide-react'
+import Image from 'next/image'
+import getUser from '@/app/(authenticated)/account/_actions/get-user.action'
 import MenuItem from '@/app/(authenticated)/account/menu-item'
 import MenuItemLogout from '@/app/(authenticated)/account/menu-item-logout'
 import NavigationButton from '@/components/ui/navigation-button'
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const [user] = await getUser()
+
   return (
     <main className="p-6">
       <section className="flex items-center gap-4">
@@ -12,11 +16,18 @@ export default function AccountPage() {
       </section>
 
       <section className="mb-8 mt-6 flex items-center gap-4">
-        <div className="size-16 rounded-full bg-muted-foreground"></div>
+        <Image
+          src="https://picsum.photos/id/58/64"
+          alt="Profile Picture"
+          width={64}
+          height={64}
+          className="size-16 rounded-full bg-muted-foreground"
+        />
         <div className="flex flex-col gap-0.5">
-          <h2 className="text-base font-bold">Muhammad Ariq Rafi</h2>
-          <p className="text-xs font-light">mariqrafi57@gmail.com</p>
+          <h2 className="text-base font-bold">{user?.email?.split('@')[0]}</h2>
+          <p className="text-xs font-light">{user?.email}</p>
         </div>
+        {/* TODO: Add update account feature */}
         <Pencil className="ml-auto size-5 stroke-muted-foreground" />
       </section>
 

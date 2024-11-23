@@ -3,8 +3,9 @@
 import { Loader2, LogOut } from 'lucide-react'
 import { FormEvent } from 'react'
 import { useServerAction } from 'zsa-react'
-import logout from '@/app/(auth)/_actions/logout'
+import logout from '@/app/(auth)/_actions/logout.action'
 import MenuItem from '@/app/(authenticated)/account/menu-item'
+import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -15,7 +16,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useToast } from '@/hooks/use-toast'
 
 export default function MenuItemLogout() {
   const { toast } = useToast()

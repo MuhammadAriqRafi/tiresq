@@ -1,20 +1,15 @@
 import { SearchX } from 'lucide-react'
-import { redirect } from 'next/navigation'
 import getTrips from '@/app/(authenticated)/histories/_actions/get-trips.action'
-import getUser from '@/app/(authenticated)/histories/_actions/get-user.action'
 import FilterByStatusSelect from '@/app/(authenticated)/histories/filter-by-status-select'
 import HistoryItem from '@/app/(authenticated)/histories/history-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
+// TODO: Infinite scrolling
 export default async function HistoriesPage({
   searchParams,
 }: {
   searchParams: { status: string }
 }) {
-  const [user] = await getUser()
-  if (user === null) return redirect('/login')
-  if (user.is_anonymous) return redirect('/register')
-
   const [trips] = await getTrips({ status: searchParams.status })
 
   return (

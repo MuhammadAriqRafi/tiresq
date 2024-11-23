@@ -1,4 +1,5 @@
 import RegisterForm from '@/app/(auth)/register/form'
+import RegisterFormDev from '@/app/(auth)/register/form.dev'
 import NavigationButton from '@/components/ui/navigation-button'
 
 export default function RegisterPage() {
@@ -16,7 +17,8 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <RegisterForm />
+      {process.env.NODE_ENV === 'development' && <RegisterFormDev />}
+      {process.env.NODE_ENV === 'production' && <RegisterForm />}
     </main>
   )
 }

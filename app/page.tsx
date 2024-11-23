@@ -12,7 +12,6 @@ export default async function Home() {
     <main className="h-dvh">
       <UserOnProgressTripProvider trip={onProgressTrip}>
         <OnProgressTripConfirmationBanner />
-
         <UserLocationProvider>
           <Maps />
           <FindNearestTireRepairShopButton />

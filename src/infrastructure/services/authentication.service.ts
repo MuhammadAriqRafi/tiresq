@@ -18,6 +18,19 @@ export class AuthenticationService implements IAuthenticationService {
     return user
   }
 
+  async updateUser(input: { email: string; password: string }): Promise<void> {
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({
+      email: input.email,
+      password: input.password,
+    })
+
+    if (error !== null) {
+      console.error({ updateUserError: error })
+      throw new AuthenticationError(error.message)
+    }
+  }
+
   async loginWithPassword(input: {
     email: string
     password: string
@@ -27,7 +40,10 @@ export class AuthenticationService implements IAuthenticationService {
     const { error } = await supabase.auth.signInWithPassword({
       email: input.email,
       password: input.password,
-      options: { captchaToken: input.captchaToken },
+      options:
+        process.env.NODE_ENV === 'production'
+          ? { captchaToken: input.captchaToken }
+          : undefined,
     })
 
     if (error !== null) {
@@ -39,7 +55,10 @@ export class AuthenticationService implements IAuthenticationService {
   async loginAnonymously(input: { captchaToken: string }): Promise<void> {
     const supabase = createClient()
     const { error } = await supabase.auth.signInAnonymously({
-      options: { captchaToken: input.captchaToken },
+      options:
+        process.env.NODE_ENV === 'production'
+          ? { captchaToken: input.captchaToken }
+          : undefined,
     })
 
     if (error !== null) {
@@ -57,7 +76,10 @@ export class AuthenticationService implements IAuthenticationService {
     const { error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
-      options: { captchaToken: input.captchaToken },
+      options:
+        process.env.NODE_ENV === 'production'
+          ? { captchaToken: input.captchaToken }
+          : undefined,
     })
 
     if (error !== null) {

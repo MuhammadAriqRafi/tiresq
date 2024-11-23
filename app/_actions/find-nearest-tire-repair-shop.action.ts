@@ -5,7 +5,7 @@ import { authenticatedProcedure } from '@/lib/zsa/procedures'
 import createTripUseCase from '@/src/application/use-cases/create-trip.use-case'
 import getNearestTireRepairShopUseCase from '@/src/application/use-cases/get-nearest-tire-repair-shop.use-case'
 import getOnProgressTripUseCase from '@/src/application/use-cases/get-on-progress-trip.use-case'
-import { NotFoundError } from '@/src/entities/errors/common'
+import { RestrictedActionError } from '@/src/entities/errors/common'
 
 const FindNearestTireRepairShopSchema = z.object({
   origin: z.object({
@@ -23,7 +23,7 @@ const findNearestTireRepairShop = authenticatedProcedure
     })
 
     if (onProgressTrip !== null)
-      throw new NotFoundError('Anda sedang dalam perjalanan')
+      throw new RestrictedActionError('Anda sedang dalam perjalanan')
 
     const destination = await getNearestTireRepairShopUseCase({
       origin: input.origin,

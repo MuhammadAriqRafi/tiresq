@@ -28,6 +28,19 @@ async function main() {
       createdAt: Date.now(),
     },
   })
+
+  await prisma.tireRepairShop.upsert({
+    where: { userId: '345345' },
+    update: {},
+    create: {
+      name: 'Tambal Ban Antasari',
+      userId: '345345',
+      lat: -5.402903760242195,
+      lng: 105.2813415642729,
+      rating: 0,
+      createdAt: Date.now(),
+    },
+  })
 }
 
 main()
