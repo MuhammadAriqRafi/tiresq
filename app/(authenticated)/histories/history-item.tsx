@@ -1,5 +1,6 @@
 import { ChevronRight, Star } from 'lucide-react'
 import Link from 'next/link'
+import { cn, mapHistoryStatusLabel } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +15,6 @@ import {
 } from '@/components/ui/drawer'
 import RatingBadge from '@/components/ui/rating-badge'
 import { Separator } from '@/components/ui/separator'
-import { cn, mapHistoryStatusLabel } from '@/lib/utils'
 
 export default function HistoryItem({
   history,
@@ -55,7 +55,7 @@ function HistoryItemInfo({
 
       <div className="flex flex-col gap-1">
         <p className="line-clamp-1 text-base font-bold">{name}</p>
-        <span className="text-xs">{createdAt}</span>
+        <span className="text-xs font-light">{createdAt}</span>
       </div>
 
       <Badge

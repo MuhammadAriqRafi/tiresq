@@ -3,7 +3,10 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { authenticatedProcedure } from '@/lib/zsa/procedures'
+import getDestinationIdFromTripUseCase from '@/src/application/use-cases/get-destination-id-from-trip.use-case'
 import rateOrReviewTripExperienceUseCase from '@/src/application/use-cases/rate-or-review-trip-experience.use-case'
+import recalculateTireRepairShopRatingUseCase from '@/src/application/use-cases/recalculate-tire-repair-shop-rating.use-case'
+import updateTireRepairShopRatingUseCase from '@/src/application/use-cases/update-tire-repair-shop-rating.use-case'
 
 const RateOrReviewTripExperienceInputSchema = z
   .object({
@@ -37,6 +40,17 @@ const rateOrReviewTripExperience = authenticatedProcedure
     })
 
     revalidatePath('/histories')
+
+    const tripDestinationId = getDestinationIdFromTripUseCase({
+      tripId: input.tripId,
+    })
+    const tireRepairShopNewRating = recalculateTireRepairShopRatingUseCase({
+      tireRepairShopId: tripDestinationId,
+    })
+    updateTireRepairShopRatingUseCase({
+      tireRepairShopId: tripDestinationId,
+      rating: tireRepairShopNewRating,
+    })
   })
 
 export default rateOrReviewTripExperience

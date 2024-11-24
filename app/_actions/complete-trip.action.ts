@@ -27,7 +27,7 @@ const completeTrip = authenticatedProcedure
       )
     })
 
-    return redirect(`/experiences/${input.tripId}`)
+    redirect(`/experiences/${input.tripId}`)
   })
 
 export default completeTrip
