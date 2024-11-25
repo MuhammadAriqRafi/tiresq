@@ -7,10 +7,20 @@ import { authenticatedProcedure } from '@/lib/zsa/procedures'
 import getTripsUseCase from '@/src/application/use-cases/get-trips.use-case'
 
 const GetTripsInputSchema = z
-  .object({ status: z.string().optional() })
+  .object({
+    status: z.string().optional(),
+    createdAt: z.string().or(z.number()).optional(),
+  })
   .transform((field) => {
+    if (field.createdAt) {
+      const coercedCreatedAt = Number(field.createdAt)
+      if (!isNaN(coercedCreatedAt))
+        field = { ...field, createdAt: coercedCreatedAt }
+      else field = { ...field, createdAt: undefined }
+    }
+
     if (field.status && !TRIP_STATUS.includes(field.status))
-      return { ...field, status: undefined }
+      field = { ...field, status: undefined }
 
     return field
   })
@@ -20,8 +30,9 @@ const getTrips = authenticatedProcedure
   .input(GetTripsInputSchema)
   .handler(async ({ input, ctx }) => {
     return await getTripsUseCase({
-      status: input.status as TripStatus,
       userId: ctx.user.id,
+      status: input.status as TripStatus,
+      createdAt: input.createdAt as number | undefined,
     })
   })
 

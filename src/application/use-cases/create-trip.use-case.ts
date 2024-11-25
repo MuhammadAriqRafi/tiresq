@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid'
+import { customAlphabet } from 'nanoid'
 import 'server-only'
 import env from '@/env'
 import { getInjection } from '@/src/di/container'
@@ -29,7 +29,10 @@ export default async function createTripUseCase(
   }
 
   await tripsRepository.createTrip({
-    id: nanoid(8),
+    id: customAlphabet(
+      '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      8
+    )(),
     userId,
     destination: { connect: { id: destinationId } },
     createdAt: Date.now(),

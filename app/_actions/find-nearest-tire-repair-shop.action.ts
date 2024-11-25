@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { authenticatedProcedure } from '@/lib/zsa/procedures'
 import createTripUseCase from '@/src/application/use-cases/create-trip.use-case'
@@ -34,6 +35,7 @@ const findNearestTireRepairShop = authenticatedProcedure
       { checkHasOnProgressTripBeforeCreating: false }
     )
 
+    revalidatePath('/histories')
     return getOnProgressTripUseCase({ userId: ctx.user.id })
   })
 

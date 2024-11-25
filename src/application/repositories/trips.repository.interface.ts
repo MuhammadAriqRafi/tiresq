@@ -7,6 +7,8 @@ export interface ITripsRepository {
     K extends Prisma.TripSelect,
     I extends Prisma.TripOrderByWithRelationInput,
   >(filters?: {
+    skip?: number
+    take?: number
     where?: T
     select: K
     orderBy?: I

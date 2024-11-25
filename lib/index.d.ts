@@ -10,6 +10,7 @@ type Histories = {
   id: string
   name: string
   createdAt: string
+  createdAtRaw: number
   status: HistoryStatus
   rating: number | null
   review: string | null

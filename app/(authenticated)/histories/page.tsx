@@ -1,10 +1,9 @@
 import { SearchX } from 'lucide-react'
 import getTrips from '@/app/(authenticated)/histories/_actions/get-trips.action'
 import FilterByStatusSelect from '@/app/(authenticated)/histories/filter-by-status-select'
-import HistoryItem from '@/app/(authenticated)/histories/history-item'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import HistoryList from './history-list'
 
-// TODO: Infinite scrolling
 export default async function HistoriesPage({
   searchParams,
 }: {
@@ -20,6 +19,13 @@ export default async function HistoriesPage({
       </div>
 
       <ScrollArea className="h-[calc(100%-160px)] w-full">
+        {trips !== null && (
+          <HistoryList
+            initialHistories={trips}
+            filterByStatus={searchParams.status}
+          />
+        )}
+
         {trips === null && (
           <div className="flex h-full flex-col items-center justify-center gap-6 px-8">
             <SearchX
@@ -29,14 +35,6 @@ export default async function HistoriesPage({
             <h2 className="text-center text-sm font-normal text-muted-foreground">
               Kamu belum punya riwayat cari tambal ban
             </h2>
-          </div>
-        )}
-
-        {trips !== null && (
-          <div className="space-y-3">
-            {trips.map((history) => (
-              <HistoryItem key={history.id} history={history} />
-            ))}
           </div>
         )}
       </ScrollArea>

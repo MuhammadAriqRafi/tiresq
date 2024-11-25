@@ -14,7 +14,9 @@ export class TripsRepository implements ITripsRepository {
     K extends Prisma.TripSelect,
     I extends Prisma.TripOrderByWithRelationInput,
   >(filters?: {
-    where?: T,
+    skip?: number
+    take?: number
+    where?: T
     select: K
     orderBy?: I
   }): Promise<Prisma.TripGetPayload<{ select: K }>[]> {
@@ -22,7 +24,9 @@ export class TripsRepository implements ITripsRepository {
       return await this.db.trip.findMany(filters)
     } catch (error) {
       console.error({ getTripsError: error })
-      throw new DatabaseError('Terjadi kesalahan saat mengambil data perjalanan')
+      throw new DatabaseError(
+        'Terjadi kesalahan saat mengambil data perjalanan'
+      )
     }
   }
 
@@ -30,14 +34,16 @@ export class TripsRepository implements ITripsRepository {
     T extends Prisma.TripExperienceWhereInput,
     K extends Prisma.TripExperienceSelect,
   >(filters?: {
-    where: T,
+    where: T
     select: K
   }): Promise<Prisma.TripExperienceGetPayload<{ select: K }>[]> {
     try {
       return await this.db.tripExperience.findMany(filters)
     } catch (error) {
       console.error({ getTripExperiencesError: error })
-      throw new DatabaseError('Terjadi kesalahan saat mengambil data pengalaman')
+      throw new DatabaseError(
+        'Terjadi kesalahan saat mengambil data pengalaman'
+      )
     }
   }
 
@@ -60,9 +66,7 @@ export class TripsRepository implements ITripsRepository {
       await invoker.tripExperience.create({ data })
     } catch (error) {
       console.error({ createTripExperienceError: error })
-      throw new DatabaseError(
-        'Terjadi kesalahan saat membuat data pengalaman'
-      )
+      throw new DatabaseError('Terjadi kesalahan saat membuat data pengalaman')
     }
   }
 
@@ -81,12 +85,17 @@ export class TripsRepository implements ITripsRepository {
     }
   }
 
-  async updateTripExperience(tripId: string, data: Prisma.TripExperienceUpdateInput): Promise<void> {
+  async updateTripExperience(
+    tripId: string,
+    data: Prisma.TripExperienceUpdateInput
+  ): Promise<void> {
     try {
       await this.db.tripExperience.update({ where: { tripId }, data })
     } catch (error) {
       console.error({ updateTripExperienceError: error })
-      throw new DatabaseError('Terjadi kesalahan saat mengubah data trip experience')
+      throw new DatabaseError(
+        'Terjadi kesalahan saat mengubah data trip experience'
+      )
     }
   }
 }
