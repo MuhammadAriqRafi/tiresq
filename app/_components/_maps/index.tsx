@@ -2,8 +2,8 @@
 
 import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps'
 import { useContext } from 'react'
-import GeolocateButton from '@/app/_maps/geolocate-button'
-import OnProgressTripBanner from '@/app/on-progress-trip-banner'
+import GeolocateButton from '@/app/_components/_maps/geolocate-button'
+import OnProgressTripBanner from '@/app/_components/on-progress-trip-banner'
 import DirectionsProvider from '@/utils/providers/directions-provider'
 import { UserLocationContext } from '@/utils/providers/user-location-provider'
 

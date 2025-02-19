@@ -1,5 +1,5 @@
-import LoginForm from '@/app/(auth)/login/form'
-import LoginFormDev from '@/app/(auth)/login/form.dev'
+import LoginForm from '@/app/(auth)/login/_components/login-form'
+import LoginFormDev from '@/app/(auth)/login/_components/login-form.dev'
 
 export default function LoginPage() {
   return (

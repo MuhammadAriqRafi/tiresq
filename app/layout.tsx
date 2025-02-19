@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
-import Navigation from '@/app/navigation'
+import Navigation from '@/app/_components/navigation'
 import { Toaster } from '@/components/ui/toaster'
 import '@/styles/globals.css'
 

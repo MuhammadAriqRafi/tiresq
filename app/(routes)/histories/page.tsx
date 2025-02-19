@@ -1,7 +1,7 @@
 import { SearchX } from 'lucide-react'
-import getTrips from '@/app/(authenticated)/histories/_actions/get-trips.action'
-import FilterByStatusSelect from '@/app/(authenticated)/histories/filter-by-status-select'
-import HistoryList from '@/app/(authenticated)/histories/history-list'
+import getTrips from '@/app/(routes)/histories/_actions/get-trips.action'
+import FilterByStatusSelect from '@/app/(routes)/histories/_components/filter-by-status-select'
+import HistoryList from '@/app/(routes)/histories/_components/history-list'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default async function HistoriesPage({

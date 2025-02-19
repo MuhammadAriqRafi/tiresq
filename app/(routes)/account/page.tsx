@@ -1,9 +1,9 @@
 import { History, Pencil } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import getUser from '@/app/(authenticated)/account/_actions/get-user.action'
-import MenuItem from '@/app/(authenticated)/account/menu-item'
-import MenuItemLogout from '@/app/(authenticated)/account/menu-item-logout'
+import getUser from '@/app/(routes)/account/_actions/get-user.action'
+import MenuItem from '@/app/(routes)/account/_components/menu-item'
+import MenuItemLogout from '@/app/(routes)/account/_components/menu-item-logout'
 import NavigationButton from '@/components/ui/navigation-button'
 
 export default async function AccountPage() {

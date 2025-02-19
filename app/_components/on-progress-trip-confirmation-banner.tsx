@@ -2,8 +2,8 @@
 
 import { Footprints, MoveRight } from 'lucide-react'
 import { useContext } from 'react'
-import CancelTripConfirmationButton from '@/app/cancel-trip-confirmation-button'
-import ContinueTripConfirmationButton from '@/app/continue-trip-confirmation-button'
+import CancelTripConfirmationButton from '@/app/_components/cancel-trip-confirmation-button'
+import ContinueTripConfirmationButton from '@/app/_components/continue-trip-confirmation-button'
 import {
   Drawer,
   DrawerContent,

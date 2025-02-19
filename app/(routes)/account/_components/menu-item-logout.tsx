@@ -4,7 +4,7 @@ import { Loader2, LogOut } from 'lucide-react'
 import { FormEvent } from 'react'
 import { useServerAction } from 'zsa-react'
 import logout from '@/app/(auth)/_actions/logout.action'
-import MenuItem from '@/app/(authenticated)/account/menu-item'
+import MenuItem from '@/app/(routes)/account/_components/menu-item'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,

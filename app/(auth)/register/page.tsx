@@ -1,5 +1,5 @@
-import RegisterForm from '@/app/(auth)/register/form'
-import RegisterFormDev from '@/app/(auth)/register/form.dev'
+import RegisterForm from '@/app/(auth)/register/_components/login-form'
+import RegisterFormDev from '@/app/(auth)/register/_components/login-form.dev'
 import NavigationButton from '@/components/ui/navigation-button'
 
 export default function RegisterPage() {

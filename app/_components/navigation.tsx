@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { blacklistedRoutes, routes } from '@/app/routes'
 import { cn } from '@/lib/utils'
+import { blacklistedRoutes, routes } from '@/app/routes'
 
 export default function Navigation() {
   const currentPath = usePathname()

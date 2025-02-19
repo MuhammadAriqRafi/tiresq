@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import getTripExperiences from '@/app/(authenticated)/experiences/[tripId]/_actions/get-trip-experiences.action'
-import ExperienceForm from '@/app/(authenticated)/experiences/[tripId]/form'
+import getTripExperiences from '@/app/(routes)/experiences/[tripId]/_actions/get-trip-experiences.action'
+import ExperienceForm from '@/app/(routes)/experiences/[tripId]/_components/experience-form'
 import NavigationButton from '@/components/ui/navigation-button'
 
 export default async function ExperiencesPage({
