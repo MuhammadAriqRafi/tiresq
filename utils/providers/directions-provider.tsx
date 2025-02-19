@@ -6,8 +6,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { UserLocationContext } from '@/providers/user-location-provider'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { UserLocationContext } from '@/utils/providers/user-location-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export const DirectionsContext = createContext<{
   duration?: string

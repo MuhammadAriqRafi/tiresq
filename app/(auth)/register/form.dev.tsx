@@ -6,12 +6,12 @@ import { FormEvent } from 'react'
 import { useServerAction } from 'zsa-react'
 import { formatInputParseErrorOutput } from '@/lib/utils'
 import register from '@/app/(auth)/_actions/register.action'
-import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import InputParseError from '@/components/ui/input-parse-error'
 import InputPassword from '@/components/ui/input-password'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/utils/hooks/use-toast'
 
 export default function RegisterFormDev() {
   const { toast } = useToast()

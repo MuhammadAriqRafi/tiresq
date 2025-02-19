@@ -8,12 +8,12 @@ import { useServerAction } from 'zsa-react'
 import { formatInputParseErrorOutput } from '@/lib/utils'
 import anonymousLogin from '@/app/(auth)/_actions/anonymous-login.action'
 import login from '@/app/(auth)/_actions/login.action'
-import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import InputParseError from '@/components/ui/input-parse-error'
 import InputPassword from '@/components/ui/input-password'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/utils/hooks/use-toast'
 
 export default function LoginForm() {
   const { toast } = useToast()

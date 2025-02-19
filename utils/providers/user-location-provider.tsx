@@ -2,7 +2,7 @@
 
 import { Loader2, LocateOff } from 'lucide-react'
 import { ReactNode, createContext, useEffect, useState } from 'react'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/utils/hooks/use-toast'
 
 type Coordinate = google.maps.LatLngLiteral
 

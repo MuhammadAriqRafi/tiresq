@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import useUpdateSearchParams from '@/hooks/use-update-search-params'
+import useUpdateSearchParams from '@/utils/hooks/use-update-search-params'
 
 export default function FilterByStatusSelect() {
   const { update } = useUpdateSearchParams()

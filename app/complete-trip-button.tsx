@@ -13,9 +13,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { DirectionsContext } from '@/providers/directions-provider'
-import { UserLocationContext } from '@/providers/user-location-provider'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { DirectionsContext } from '@/utils/providers/directions-provider'
+import { UserLocationContext } from '@/utils/providers/user-location-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function CompleteTripButton() {
   const map = useMap()

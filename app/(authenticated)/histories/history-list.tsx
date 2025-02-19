@@ -3,8 +3,8 @@
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import getTrips from './_actions/get-trips.action'
-import HistoryItem from './history-item'
+import getTrips from '@/app/(authenticated)/histories/_actions/get-trips.action'
+import HistoryItem from '@/app/(authenticated)/histories/history-item'
 
 export default function HistoryList({
   initialHistories,

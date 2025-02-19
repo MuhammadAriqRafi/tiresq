@@ -1,9 +1,9 @@
 import { useMap } from '@vis.gl/react-google-maps'
 import { LocateFixed } from 'lucide-react'
 import { useContext } from 'react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { Button } from '@/components/ui/button'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function GeolocateButton({
   position,

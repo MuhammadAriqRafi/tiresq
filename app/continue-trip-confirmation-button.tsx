@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { useServerAction } from 'zsa-react'
 import continueTrip from '@/app/_actions/continue-trip.action'
 import { Button } from '@/components/ui/button'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function ContinueTripConfirmationButton() {
   const { onProgressTrip, setOnProgressTrip } = useContext(

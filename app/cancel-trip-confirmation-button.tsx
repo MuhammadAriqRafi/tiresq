@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react'
 import { FormEvent, useContext, useState } from 'react'
 import { useServerAction } from 'zsa-react'
+import { formatInputParseErrorOutput } from '@/lib/utils'
 import cancelTripConfirmation from '@/app/_actions/cancel-trip-confirmation.action'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,9 +17,8 @@ import {
 import InputParseError from '@/components/ui/input-parse-error'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useToast } from '@/hooks/use-toast'
-import { formatInputParseErrorOutput } from '@/lib/utils'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { useToast } from '@/utils/hooks/use-toast'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function CancelTripConfirmationButton() {
   const { toast } = useToast()

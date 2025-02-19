@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 // TODO: Check if the user current location and the on progress trip destination distance is beyond 5 km, if so, consider the trip as cancelled, otherwise continue
 

@@ -5,9 +5,9 @@ import { useContext } from 'react'
 import { useServerAction } from 'zsa-react'
 import findNearestTireRepairShop from '@/app/_actions/find-nearest-tire-repair-shop.action'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/use-toast'
-import { UserLocationContext } from '@/providers/user-location-provider'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { useToast } from '@/utils/hooks/use-toast'
+import { UserLocationContext } from '@/utils/providers/user-location-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function FindNearestTireRepairShopButton() {
   const { toast } = useToast()

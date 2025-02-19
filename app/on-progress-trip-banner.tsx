@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import CancelTripButton from '@/app/cancel-trip-button'
 import CompleteTripButton from '@/app/complete-trip-button'
 import RatingBadge from '@/components/ui/rating-badge'
-import { DirectionsContext } from '@/providers/directions-provider'
-import { UserOnProgressTripContext } from '@/providers/user-on-progress-trip-provider'
+import { DirectionsContext } from '@/utils/providers/directions-provider'
+import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
 export default function OnProgressTripBanner() {
   const { onProgressTrip } = useContext(UserOnProgressTripContext)

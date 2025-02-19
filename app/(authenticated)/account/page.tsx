@@ -1,5 +1,6 @@
 import { History, Pencil } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import getUser from '@/app/(authenticated)/account/_actions/get-user.action'
 import MenuItem from '@/app/(authenticated)/account/menu-item'
 import MenuItemLogout from '@/app/(authenticated)/account/menu-item-logout'
@@ -28,7 +29,9 @@ export default async function AccountPage() {
           <p className="text-xs font-light">{user?.email}</p>
         </div>
         {/* TODO: Add update account feature */}
-        <Pencil className="ml-auto size-5 stroke-muted-foreground" />
+        <Link href="/account/edit" className="ml-auto">
+          <Pencil className="size-5 stroke-muted-foreground" />
+        </Link>
       </section>
 
       <section className="flex flex-col gap-6">
