@@ -6,13 +6,13 @@ import Link from 'next/link'
 import { FormEvent, useRef, useState } from 'react'
 import { useServerAction } from 'zsa-react'
 import { formatInputParseErrorOutput } from '@/lib/utils'
-import anonymousLogin from '@/app/(auth)/_actions/anonymous-login.action'
-import login from '@/app/(auth)/_actions/login.action'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import InputParseError from '@/components/ui/input-parse-error'
 import InputPassword from '@/components/ui/input-password'
 import { Label } from '@/components/ui/label'
+import anonymousLoginAction from '@/utils/actions/auth/login-anonymous.action'
+import loginAction from '@/utils/actions/auth/login.action'
 import { useToast } from '@/utils/hooks/use-toast'
 
 export default function LoginForm() {
@@ -20,7 +20,7 @@ export default function LoginForm() {
   const captchaRef = useRef<HCaptcha | null>(null)
   const [captchaToken, setCaptchaToken] = useState('')
   const { isPending: isLoginPending, execute: executeLogin } = useServerAction(
-    login,
+    loginAction,
     {
       onError({ err }) {
         if (err.code !== 'INPUT_PARSE_ERROR') {
@@ -49,7 +49,7 @@ export default function LoginForm() {
   )
 
   const { isPending: isAnonymousLoginPending, execute: executeAnonymousLogin } =
-    useServerAction(anonymousLogin, {
+    useServerAction(anonymousLoginAction, {
       onError({ err }) {
         toast({
           title: 'Gagal',

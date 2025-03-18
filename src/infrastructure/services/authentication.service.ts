@@ -9,7 +9,7 @@ export class AuthenticationService implements IAuthenticationService {
   constructor() {}
 
   async getUser(): Promise<User | null> {
-    const supabase = createClient()
+    const supabase = await createClient()
     const {
       error,
       data: { user },
@@ -19,7 +19,7 @@ export class AuthenticationService implements IAuthenticationService {
   }
 
   async updateUser(input: { email: string; password: string }): Promise<void> {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.updateUser({
       email: input.email,
       password: input.password,
@@ -36,7 +36,7 @@ export class AuthenticationService implements IAuthenticationService {
     password: string
     captchaToken: string
   }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.signInWithPassword({
       email: input.email,
       password: input.password,
@@ -53,7 +53,7 @@ export class AuthenticationService implements IAuthenticationService {
   }
 
   async loginAnonymously(input: { captchaToken: string }): Promise<void> {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.signInAnonymously({
       options:
         process.env.NODE_ENV === 'production'
@@ -72,7 +72,7 @@ export class AuthenticationService implements IAuthenticationService {
     password: string
     captchaToken: string
   }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
@@ -89,7 +89,7 @@ export class AuthenticationService implements IAuthenticationService {
   }
 
   async logout() {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.signOut()
 
     if (error !== null) {

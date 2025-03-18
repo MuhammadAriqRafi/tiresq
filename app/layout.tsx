@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import Navigation from '@/app/_components/navigation'
-import { Toaster } from '@/components/ui/toaster'
-import '@/styles/globals.css'
+import { Toaster } from '@/components/ui/sonner'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,7 +23,11 @@ export default function RootLayout({ children }: LayoutProps) {
         <NextTopLoader showSpinner={false} />
         {children}
         <Navigation />
-        <Toaster />
+        <Toaster
+          richColors
+          closeButton
+          toastOptions={{ className: inter.className }}
+        />
       </body>
     </html>
   )

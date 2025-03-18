@@ -77,9 +77,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-@layer components {
-  .input-wrapper {
-    @apply space-y-2
-  }
-}
