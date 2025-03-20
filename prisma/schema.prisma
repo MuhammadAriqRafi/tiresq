@@ -7,52 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO: (Further dev) Add trip feedback feature
-model Trip {
-  id            String     @id @unique
-  userId        String
-  destinationId Int
-  status        TripStatus @default(ONPROGRESS)
-  expiredAt     BigInt
-  createdAt     BigInt
-  completedAt   BigInt?
-  cancelledAt   BigInt?
+model Escort {
+  id             String       @id @unique @db.Char(12) // ESC-XXXXXXXX
+  user_id        String
+  destination_id String       @db.Char(12)
+  status         EscortStatus @default(ONPROGRESS)
+  expired_at     BigInt
+  created_at     BigInt
+  completed_at   BigInt?
+  cancelled_at   BigInt?
 
-  experience  TripExperience?
-  destination TireRepairShop  @relation(fields: [destinationId], references: [id], onDelete: Restrict)
+  service_experience ServiceExperience?
 
-  @@map("trips")
+  destination TireRepairShop @relation(fields: [destination_id], references: [id], onDelete: Restrict)
+
+  @@map("escorts")
 }
 
-model TripExperience {
-  id          String  @id @unique
-  tripId      String  @unique
-  rating      Int?
-  review      String?
-  isAnonymous Boolean @default(false)
-  reviewedAt  BigInt?
-  ratedAt     BigInt?
+model ServiceExperience {
+  id           String  @id @db.Char(8)
+  escort_id    String  @unique @db.Char(12)
+  is_anonymous Boolean @default(false)
+  rating       Int?    @db.SmallInt
+  review       String? @db.VarChar(1000)
+  rated_at     BigInt?
+  reviewed_at  BigInt?
 
-  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  escort Escort @relation(fields: [escort_id], references: [id], onDelete: Restrict)
 
-  @@map("trip_experiences")
+  @@map("service_experiences")
 }
 
-// TODO: (Further dev) Add open/close feature
 model TireRepairShop {
-  id        Int    @id @default(autoincrement())
-  userId    String @unique
-  name      String
-  rating    Float  @default(0)
-  lat       Float
-  lng       Float
-  createdAt BigInt
-  trips     Trip[]
+  id         String  @id @db.Char(12) // TRS-XXXXXXXX
+  owner_id   String  @unique
+  name       String  @db.VarChar(50)
+  rating     Decimal @db.Decimal(2, 1)
+  latitude   Float
+  longitude  Float
+  created_at BigInt
+
+  visits Escort[]
 
   @@map("tire_repair_shops")
 }
 
-enum TripStatus {
+enum EscortStatus {
   COMPLETED
   ONPROGRESS
   CANCELLED
