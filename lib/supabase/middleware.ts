@@ -40,45 +40,33 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const isLoggedIn = user !== null
+
   if (
-    !user &&
-    (request.nextUrl.pathname === '/' ||
-      request.nextUrl.pathname.startsWith('/histories') ||
+    !isLoggedIn &&
+    (request.nextUrl.pathname.startsWith('/histories') ||
       request.nextUrl.pathname.startsWith('/account') ||
       request.nextUrl.pathname.startsWith('/experiences'))
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url)
-  }
+  )
+    return NextResponse.redirect(new URL('/login', request.url))
 
   if (
-    user &&
-    !user.is_anonymous &&
-    request.nextUrl.pathname.startsWith('/register')
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url)
-  }
-
-  if (
-    user &&
+    isLoggedIn &&
     user.is_anonymous &&
     (request.nextUrl.pathname.startsWith('/histories') ||
       request.nextUrl.pathname.startsWith('/account') ||
       request.nextUrl.pathname.startsWith('/experiences'))
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/register'
-    return NextResponse.redirect(url)
-  }
+  )
+    return NextResponse.redirect(new URL('/register', request.url))
+
+  if (
+    isLoggedIn &&
+    (request.nextUrl.pathname.startsWith('/login') ||
+      request.nextUrl.pathname.startsWith('/register'))
+  )
+    return user.is_anonymous
+      ? supabaseResponse
+      : NextResponse.redirect(new URL('/', request.url))
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:

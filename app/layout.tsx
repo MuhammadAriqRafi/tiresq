@@ -24,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps) {
         {children}
         <Navigation />
         <Toaster
+          position="top-center"
           richColors
           closeButton
           toastOptions={{ className: inter.className }}

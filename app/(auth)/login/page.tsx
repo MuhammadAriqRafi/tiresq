@@ -12,9 +12,9 @@ export default function LoginPage() {
           Masukkan email dan kata sandi kamu untuk dapatkan akses ke akunmu
         </p>
       </div>
-      <LoginFormDev />
-      {/* {process.env.NODE_ENV === 'development' && <LoginFormDev />}
-      {process.env.NODE_ENV === 'production' && <LoginForm />} */}
+
+      {process.env.NODE_ENV === 'development' && <LoginFormDev />}
+      {process.env.NODE_ENV === 'production' && <LoginForm />}
     </main>
   )
 }

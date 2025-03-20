@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
+import { useRouter } from 'nextjs-toploader/app'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import LoginAnonymousButton from '@/app/(auth)/login/_components/login-anonymous-button'
@@ -24,6 +25,7 @@ import {
 } from '@/utils/dtos/auth/login-request.dto'
 
 export default function LoginFormDev() {
+  const router = useRouter()
   const form = useForm<LoginRequestDto>({
     resolver: zodResolver(LoginRequestSchema),
     defaultValues: loginRequestDefaultValue,
@@ -32,7 +34,12 @@ export default function LoginFormDev() {
   async function onSubmit(input: LoginRequestDto) {
     const [data, error] = await loginAction(input)
 
-    if (data) toast.success('Berhasil')
+    if (data) {
+      toast.success('Berhasil', { description: data.message })
+      form.reset()
+      setTimeout(() => router.replace('/'), 250)
+    }
+
     if (error) toast.error('Gagal', { description: error.message })
   }
 
@@ -78,16 +85,17 @@ export default function LoginFormDev() {
             Masuk
           </SubmitButton>
 
-          <p className="text-xs font-medium text-muted-foreground">
-            Belum punya akun?{' '}
+          <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            <span>Belum punya akun?</span>
             <Link
               href="/register"
               className="text-primary underline underline-offset-2"
             >
               Daftar
-            </Link>{' '}
-            atau <LoginAnonymousButton />
-          </p>
+            </Link>
+            <span>atau</span>
+            <LoginAnonymousButton />
+          </div>
         </div>
       </form>
     </Form>
