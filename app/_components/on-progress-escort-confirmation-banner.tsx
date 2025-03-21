@@ -1,9 +1,8 @@
 'use client'
 
 import { Footprints, MoveRight } from 'lucide-react'
-import { useContext } from 'react'
-import CancelTripConfirmationButton from '@/app/_components/cancel-trip-confirmation-button'
-import ContinueTripConfirmationButton from '@/app/_components/continue-trip-confirmation-button'
+import CancelEscortConfirmationDrawer from '@/app/_components/cancel-escort-confirmation-drawer'
+import ContinueEscortConfirmationButton from '@/app/_components/continue-escort-confirmation-button'
 import {
   Drawer,
   DrawerContent,
@@ -12,18 +11,16 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
+import { useOnProgressEscort } from '@/utils/providers/on-progress-escort-provider'
 
 // TODO: Check if the user current location and the on progress trip destination distance is beyond 5 km, if so, consider the trip as cancelled, otherwise continue
 
-export default function OnProgressTripConfirmationBanner() {
-  const { onProgressTrip } = useContext(UserOnProgressTripContext)
+export default function OnProgressEscortConfirmationBanner() {
+  const { onProgressEscort } = useOnProgressEscort()
 
+  if (onProgressEscort === null) return null
   return (
-    <Drawer
-      dismissible={false}
-      open={onProgressTrip !== null && onProgressTrip.isExpired}
-    >
+    <Drawer open={onProgressEscort.isExpired} dismissible={false}>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Mau lanjutin perjalan?</DrawerTitle>
@@ -41,15 +38,15 @@ export default function OnProgressTripConfirmationBanner() {
 
           <div className="flex flex-col gap-1">
             <p className="text-sm font-bold text-black">
-              {onProgressTrip?.destination.name}
+              {onProgressEscort.destination.name}
             </p>
-            <span className="text-xs">{onProgressTrip?.createdAt}</span>
+            <span className="text-xs">{onProgressEscort.createdAt}</span>
           </div>
         </div>
 
         <DrawerFooter className="flex w-full flex-row gap-2 [&>button]:w-1/2">
-          <CancelTripConfirmationButton />
-          <ContinueTripConfirmationButton />
+          <CancelEscortConfirmationDrawer />
+          <ContinueEscortConfirmationButton />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

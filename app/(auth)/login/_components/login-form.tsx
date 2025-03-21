@@ -39,7 +39,7 @@ export default function LoginForm() {
     const [data, error] = await loginAction({ ...input, captchaToken })
 
     if (data) {
-      toast.success('Berhasil', { description: data.message })
+      toast.success('Login Berhasil', { description: data.message })
       form.reset()
       setTimeout(() => router.replace('/'), 250)
     }

@@ -1,11 +1,18 @@
 'use client'
 
 import { Loader2, LocateOff } from 'lucide-react'
-import { ReactNode, createContext, useEffect, useState } from 'react'
-import { useToast } from '@/utils/hooks/use-toast'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { toast } from 'sonner'
 
 type Coordinate = google.maps.LatLngLiteral
 
+export const useUserLocation = () => useContext(UserLocationContext)
 export const UserLocationContext = createContext<{
   coordinate: Coordinate
 } | null>(null)
@@ -15,7 +22,6 @@ export default function UserLocationProvider({
 }: {
   children: ReactNode
 }) {
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(true)
   const [coordinate, setCoordinate] = useState<Coordinate | null>(null)
 
@@ -31,20 +37,18 @@ export default function UserLocationProvider({
         setIsLoading(false)
 
         if (error.code === error.PERMISSION_DENIED)
-          toast({
-            title: 'Yah, kami ga dapet izin lokasi kamu :(',
-            variant: 'destructive',
+          toast.error('Yah, kami ga dapet izin lokasi kamu :(', {
             description: 'Coba izinin akses lokasi kamu di pengaturan',
           })
 
         if (error.code === error.TIMEOUT)
-          toast({
-            title:
-              'Maaf, sepertinya terjadi kesalahan ketika mengakses lokasi kamu',
-            variant: 'destructive',
-            description:
-              'Kami menunggu terlalu lama untuk mendapatkan lokasi kamu, coba lagi nanti',
-          })
+          toast.error(
+            'Maaf, sepertinya terjadi kesalahan ketika mengakses lokasi kamu',
+            {
+              description:
+                'Kami menunggu terlalu lama untuk mendapatkan lokasi kamu, coba lagi nanti',
+            }
+          )
 
         console.error('Error getting user location: ', error)
       }
@@ -52,16 +56,14 @@ export default function UserLocationProvider({
       if ('geolocation' in navigator)
         navigator.geolocation.getCurrentPosition(handleOnSuccess, handleOnError)
       else {
-        toast({
-          title: 'Warning',
-          variant: 'destructive',
+        toast.error('Warning', {
           description: 'Yah, geolokasi tidak disupport oleh browser ini',
         })
       }
     }
 
     getUserCurrentLocation()
-  }, [toast])
+  }, [])
 
   if (coordinate === null)
     return (

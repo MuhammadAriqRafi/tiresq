@@ -6,9 +6,10 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { useOnProgressEscort } from '@/utils/providers/on-progress-escort-provider'
 import { UserLocationContext } from '@/utils/providers/user-location-provider'
-import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
 
+export const useDirections = () => useContext(DirectionsContext)
 export const DirectionsContext = createContext<{
   duration?: string
   distance?: string
@@ -23,7 +24,7 @@ export default function DirectionsProvider({
   const map = useMap()
   const routesLibrary = useMapsLibrary('routes')
   const userLocation = useContext(UserLocationContext)
-  const { onProgressTrip } = useContext(UserOnProgressTripContext)
+  const { onProgressEscort } = useOnProgressEscort()
 
   const [directionsService, setDirectionsService] =
     useState<google.maps.DirectionsService>()
@@ -44,17 +45,20 @@ export default function DirectionsProvider({
       !directionsService ||
       !directionsRenderer ||
       userLocation === null ||
-      onProgressTrip === null ||
-      onProgressTrip.isExpired
+      onProgressEscort === null ||
+      onProgressEscort.isExpired
     )
       return
 
     directionsService
       .route({
         origin: userLocation.coordinate,
-        destination: onProgressTrip.destination.coordinate,
         travelMode: google.maps.TravelMode.WALKING,
         provideRouteAlternatives: true,
+        destination: {
+          lat: onProgressEscort.destination.coordinate.latitude,
+          lng: onProgressEscort.destination.coordinate.longitude,
+        },
       })
       .then((response) => {
         directionsRenderer.setDirections(response)
@@ -63,7 +67,7 @@ export default function DirectionsProvider({
         setDistance(distance)
         setDuration(duration)
       })
-  }, [directionsService, directionsRenderer, onProgressTrip, userLocation])
+  }, [directionsService, directionsRenderer, onProgressEscort, userLocation])
 
   return (
     <DirectionsContext.Provider

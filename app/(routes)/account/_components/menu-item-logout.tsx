@@ -2,8 +2,8 @@
 
 import { Loader2, LogOut } from 'lucide-react'
 import { FormEvent } from 'react'
+import { toast } from 'sonner'
 import { useServerAction } from 'zsa-react'
-import logout from '@/app/(auth)/_actions/logout.action'
 import MenuItem from '@/app/(routes)/account/_components/menu-item'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,17 +15,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useToast } from '@/utils/hooks/use-toast'
+import logout from '@/utils/actions/auth/logout.action'
 
 export default function MenuItemLogout() {
-  const { toast } = useToast()
   const { isPending, execute } = useServerAction(logout, {
     onError({ err }) {
-      toast({
-        title: 'Gagal',
-        variant: 'destructive',
-        description: err.message,
-      })
+      toast.error('Gagal', { description: err.message })
     },
   })
 

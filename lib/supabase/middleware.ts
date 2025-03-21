@@ -44,7 +44,8 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !isLoggedIn &&
-    (request.nextUrl.pathname.startsWith('/histories') ||
+    (request.nextUrl.pathname === '/' ||
+      request.nextUrl.pathname.startsWith('/histories') ||
       request.nextUrl.pathname.startsWith('/account') ||
       request.nextUrl.pathname.startsWith('/experiences'))
   )

@@ -8,7 +8,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_MAP_ID: z.string().min(1),
   NEXT_PUBLIC_HCAPTCHA_SITEKEY: z.string().min(1),
   MAXIMUM_DISTANCE_IN_METER: z.coerce.number(),
-  TRIP_EXPIRY_PERIOD_IN_MILLISECONDS: z.coerce.number(),
+  ESCORT_EXPIRY_PERIOD_IN_MILLISECONDS: z.coerce.number(),
 })
 
 const env = envSchema.parse(process.env)

@@ -1,5 +1,6 @@
+import { IEscortsRepository } from '@/src/application/repositories/escorts.repository.interface'
+import { IServiceExperiencesRepository } from '@/src/application/repositories/service-experiences.repository.interface'
 import { ITireRepairShopsRepository } from '@/src/application/repositories/tire-repair-shop.repository.interface'
-import { ITripsRepository } from '@/src/application/repositories/trips.repository.interface'
 import { IAuthenticationService } from '@/src/application/services/authentication.service.interface'
 import { IMapsService } from '@/src/application/services/maps.service.interface'
 import { ITransactionManagerService } from '@/src/application/services/transaction-manager.service.interface'
@@ -11,8 +12,9 @@ export const DI_SYMBOLS = {
   IMapsService: Symbol.for('IMapsService'),
 
   // Repositories
+  IEscortsRepository: Symbol.for('IEscortsRepository'),
   ITireRepairShopsRepository: Symbol.for('ITireRepairShopsRepository'),
-  ITripsRepository: Symbol.for('ITripsRepository'),
+  IServiceExperiencesRepository: Symbol.for('IServiceExperiencesRepository'),
 }
 
 export interface DI_RETURN_TYPES {
@@ -22,6 +24,7 @@ export interface DI_RETURN_TYPES {
   IMapsService: IMapsService
 
   // Repositories
-  ITripsRepository: ITripsRepository
+  IEscortsRepository: IEscortsRepository
   ITireRepairShopsRepository: ITireRepairShopsRepository
+  IServiceExperiencesRepository: IServiceExperiencesRepository
 }

@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from 'clsx'
+import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -50,4 +51,19 @@ export function parseDateToHumanreadableFormat(milliseconds: bigint): string {
     minute: 'numeric',
     hour12: false,
   }).format(new Date(Number(milliseconds)))
+}
+
+export function customAlphabetNanoid(maxLength: number = 8) {
+  return customAlphabet(
+    '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    maxLength
+  )()
+}
+
+export function generateId(
+  prefix: string,
+  maxLength: number = 8,
+  delimiter: string = '-'
+) {
+  return `${prefix}${delimiter}${customAlphabetNanoid(maxLength)}`
 }

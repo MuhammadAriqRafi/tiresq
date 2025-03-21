@@ -17,15 +17,15 @@ type Histories = {
   isExpired: boolean
 }[]
 
-type OnProgressTrip = {
-  tripId: string
+type OnProgressEscort = {
+  escortId: string
   status: 'COMPLETED' | 'CANCELLED' | 'ONPROGRESS'
   createdAt: string
   isExpired: boolean
   destination: {
     name: string
     rating: number
-    coordinate: { lat: number; lng: number }
+    coordinate: { latitude: number; longitude: number }
   }
 }
 

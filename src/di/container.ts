@@ -2,15 +2,17 @@ import { Container } from 'inversify'
 import 'reflect-metadata'
 import { AuthenticationModule } from '@/src/di/modules/authentication.module'
 import { DatabaseModule } from '@/src/di/modules/database.module'
+import { EscortsModule } from '@/src/di/modules/escorts.module'
 import { MapsModule } from '@/src/di/modules/maps.module'
+import { ServiceExperiencesModule } from '@/src/di/modules/service-experiences.module copy'
 import { TireRepairShopsModule } from '@/src/di/modules/tire-repair-shops.module'
-import { TripsModule } from '@/src/di/modules/trips.module'
 import { DI_RETURN_TYPES, DI_SYMBOLS } from '@/src/di/types'
 
 const ApplicationContainer = new Container({ defaultScope: 'Singleton' })
 
 const initializeContainer = () => {
-  ApplicationContainer.load(TripsModule)
+  ApplicationContainer.load(EscortsModule)
+  ApplicationContainer.load(ServiceExperiencesModule)
   ApplicationContainer.load(TireRepairShopsModule)
   ApplicationContainer.load(MapsModule)
   ApplicationContainer.load(AuthenticationModule)

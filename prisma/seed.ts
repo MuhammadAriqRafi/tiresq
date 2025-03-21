@@ -4,41 +4,44 @@ const prisma = new PrismaClient()
 
 async function main() {
   await prisma.tireRepairShop.upsert({
-    where: { userId: '123123' },
+    where: { id: 'TRS-LSJQNFP1' },
     update: {},
     create: {
+      id: 'TRS-LSJQNFP1',
       name: 'Tambal Ban Asep',
-      userId: '123123',
-      lat: -5.36122722040926,
-      lng: 105.31364286741777,
       rating: 0,
-      createdAt: Date.now(),
+      owner_id: 'empty1',
+      latitude: -5.36122722040926,
+      longitude: 105.31364286741777,
+      created_at: Date.now(),
     },
   })
 
   await prisma.tireRepairShop.upsert({
-    where: { userId: '234234' },
+    where: { id: 'TRS-MCLASQ4E' },
     update: {},
     create: {
+      id: 'TRS-MCLASQ4E',
       name: 'Tambal Ban Ujang',
-      userId: '234234',
-      lat: -5.363315021056011,
-      lng: 105.30829943120371,
       rating: 0,
-      createdAt: Date.now(),
+      owner_id: 'empty2',
+      latitude: -5.363315021056011,
+      longitude: 105.30829943120371,
+      created_at: Date.now(),
     },
   })
 
   await prisma.tireRepairShop.upsert({
-    where: { userId: '345345' },
+    where: { id: 'TRS-PWLSMAK5' },
     update: {},
     create: {
+      id: 'TRS-PWLSMAK5',
       name: 'Tambal Ban Antasari',
-      userId: '345345',
-      lat: -5.402903760242195,
-      lng: 105.2813415642729,
       rating: 0,
-      createdAt: Date.now(),
+      owner_id: 'empty3',
+      latitude: -5.402903760242195,
+      longitude: 105.2813415642729,
+      created_at: Date.now(),
     },
   })
 }

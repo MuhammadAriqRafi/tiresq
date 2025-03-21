@@ -1,18 +1,29 @@
 import { type LatLngLiteral } from '@googlemaps/google-maps-services-js'
 import 'server-only'
+import { PrismaTransactionalClient } from '@/lib/types'
 import env from '@/env'
 import { getInjection } from '@/src/di/container'
 import { NotFoundError } from '@/src/entities/errors/common'
 
-export default async function getNearestTireRepairShopUseCase({
-  origin,
-}: {
-  origin: LatLngLiteral
-}) {
+export default async function getNearestTireRepairShopUseCase(
+  {
+    origin,
+  }: {
+    origin: LatLngLiteral
+  },
+  trx?: PrismaTransactionalClient
+) {
   const tireRepairShopsRepository = getInjection('ITireRepairShopsRepository')
-  const tireRepairShops = await tireRepairShopsRepository.getTireRepairShops({
-    select: { id: true, lat: true, lng: true },
-  })
+  const tireRepairShops = (
+    await tireRepairShopsRepository.getTireRepairShops(
+      { select: { id: true, latitude: true, longitude: true } },
+      trx
+    )
+  ).map((tireRepairShop) => ({
+    id: tireRepairShop.id,
+    lat: tireRepairShop.latitude,
+    lng: tireRepairShop.longitude,
+  }))
 
   if (tireRepairShops.length < 1)
     throw new NotFoundError('Tambal ban masih kosong')

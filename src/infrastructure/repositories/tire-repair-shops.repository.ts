@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { injectable } from 'inversify'
 import prisma from '@/lib/prisma'
+import { PrismaTransactionalClient } from '@/lib/types'
 import { ITireRepairShopsRepository } from '@/src/application/repositories/tire-repair-shop.repository.interface'
 import { DatabaseError } from '@/src/entities/errors/common'
 
@@ -12,13 +13,18 @@ export class TireRepairShopRepository implements ITireRepairShopsRepository {
     T extends Prisma.TireRepairShopWhereInput,
     K extends Prisma.TireRepairShopSelect,
     I extends Prisma.TireRepairShopOrderByWithAggregationInput,
-  >(filters?: {
-    where?: T
-    select: K
-    orderBy?: I
-  }): Promise<Prisma.TireRepairShopGetPayload<{ select: K }>[]> {
+  >(
+    filters?: {
+      where?: T
+      select: K
+      orderBy?: I
+    },
+    trx?: PrismaTransactionalClient
+  ): Promise<Prisma.TireRepairShopGetPayload<{ select: K }>[]> {
+    const invoker = trx ?? this.db
+
     try {
-      return await this.db.tireRepairShop.findMany(filters)
+      return await invoker.tireRepairShop.findMany(filters)
     } catch (error) {
       console.error({ getTireRepairShopsError: error })
       throw new DatabaseError(
@@ -28,7 +34,7 @@ export class TireRepairShopRepository implements ITireRepairShopsRepository {
   }
 
   async updateTireRepairShop(
-    tireRepairShopId: number,
+    tireRepairShopId: string,
     data: Prisma.TireRepairShopUpdateInput
   ): Promise<void> {
     try {

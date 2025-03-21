@@ -1,14 +1,13 @@
 'use client'
 
 import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps'
-import { useContext } from 'react'
 import GeolocateButton from '@/app/_components/_maps/geolocate-button'
-import OnProgressTripBanner from '@/app/_components/on-progress-trip-banner'
+import OnProgressEscortBanner from '@/app/_components/on-progress-escort-banner'
 import DirectionsProvider from '@/utils/providers/directions-provider'
-import { UserLocationContext } from '@/utils/providers/user-location-provider'
+import { useUserLocation } from '@/utils/providers/user-location-provider'
 
 export default function Maps() {
-  const userLocation = useContext(UserLocationContext)
+  const userLocation = useUserLocation()
   if (userLocation === null) return null
 
   return (
@@ -23,7 +22,7 @@ export default function Maps() {
           disableDefaultUI={true}
         >
           <DirectionsProvider>
-            <OnProgressTripBanner />
+            <OnProgressEscortBanner />
           </DirectionsProvider>
 
           <AdvancedMarker position={userLocation.coordinate} />

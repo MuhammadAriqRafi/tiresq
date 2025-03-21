@@ -1,22 +1,21 @@
 import { Footprints, Hourglass } from 'lucide-react'
-import { useContext } from 'react'
-import CancelTripButton from '@/app/_components/cancel-trip-button'
-import CompleteTripButton from '@/app/_components/complete-trip-button'
+import CancelEscortDrawer from '@/app/_components/cancel-escort-drawer'
+import CompleteEscortDrawer from '@/app/_components/complete-escort-drawer'
 import RatingBadge from '@/components/ui/rating-badge'
-import { DirectionsContext } from '@/utils/providers/directions-provider'
-import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
+import { useDirections } from '@/utils/providers/directions-provider'
+import { useOnProgressEscort } from '@/utils/providers/on-progress-escort-provider'
 
-export default function OnProgressTripBanner() {
-  const { onProgressTrip } = useContext(UserOnProgressTripContext)
-  const { distance, duration } = useContext(DirectionsContext)
-  if (onProgressTrip === null || onProgressTrip.isExpired) return null
+export default function OnProgressEscortBanner() {
+  const { onProgressEscort } = useOnProgressEscort()
+  const { distance, duration } = useDirections()
 
+  if (onProgressEscort === null || onProgressEscort.isExpired) return null
   return (
     <section className="fixed left-1/2 top-0 mt-4 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 space-y-4 rounded-xl border border-primary/15 bg-white px-6 py-5 shadow-md shadow-primary/10">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-base font-bold">
-            {onProgressTrip.destination.name}
+            {onProgressEscort.destination.name}
           </p>
 
           <div className="flex gap-4">
@@ -32,12 +31,12 @@ export default function OnProgressTripBanner() {
           </div>
         </div>
 
-        <RatingBadge rating={onProgressTrip.destination.rating} />
+        <RatingBadge rating={onProgressEscort.destination.rating} />
       </div>
 
       <div className="flex w-full gap-2 [&>button]:w-1/2">
-        <CancelTripButton />
-        <CompleteTripButton />
+        <CancelEscortDrawer />
+        <CompleteEscortDrawer />
       </div>
     </section>
   )

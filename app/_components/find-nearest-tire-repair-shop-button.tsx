@@ -1,35 +1,32 @@
 'use client'
 
 import { Loader2 } from 'lucide-react'
-import { useContext } from 'react'
+import { toast } from 'sonner'
 import { useServerAction } from 'zsa-react'
-import findNearestTireRepairShop from '@/app/_actions/find-nearest-tire-repair-shop.action'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/utils/hooks/use-toast'
-import { UserLocationContext } from '@/utils/providers/user-location-provider'
-import { UserOnProgressTripContext } from '@/utils/providers/user-on-progress-trip-provider'
+import findNearestTireRepairShopAction from '@/utils/actions/core/find-nearest-tire-repair-shop.action'
+import { useOnProgressEscort } from '@/utils/providers/on-progress-escort-provider'
+import { useUserLocation } from '@/utils/providers/user-location-provider'
 
 export default function FindNearestTireRepairShopButton() {
-  const { toast } = useToast()
-  const userLocation = useContext(UserLocationContext)
-  const { onProgressTrip, setOnProgressTrip } = useContext(
-    UserOnProgressTripContext
+  const userLocation = useUserLocation()
+  const { onProgressEscort, refreshOnProgressEscort } = useOnProgressEscort()
+  const { isPending, execute } = useServerAction(
+    findNearestTireRepairShopAction,
+    {
+      onSuccess() {
+        refreshOnProgressEscort()
+      },
+      onError({ err }) {
+        toast.error('Oops...', {
+          description: err.message,
+        })
+      },
+    }
   )
-  const { isPending, execute } = useServerAction(findNearestTireRepairShop, {
-    onSuccess({ data }) {
-      setOnProgressTrip(data)
-    },
-    onError({ err }) {
-      toast({
-        title: 'Oops...',
-        variant: 'destructive',
-        description: err.message,
-      })
-    },
-  })
 
   if (userLocation === null) return null
-  if (onProgressTrip !== null) return null
+  if (onProgressEscort !== null) return null
 
   return (
     <Button
