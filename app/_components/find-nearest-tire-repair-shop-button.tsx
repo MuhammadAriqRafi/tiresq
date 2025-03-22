@@ -1,6 +1,6 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { useServerAction } from 'zsa-react'
 import { Button } from '@/components/ui/button'
@@ -33,8 +33,13 @@ export default function FindNearestTireRepairShopButton() {
       onClick={async () => await execute({ origin: userLocation.coordinate })}
       className="fixed bottom-24 left-1/2 w-[calc(100%-48px)] max-w-md -translate-x-1/2"
     >
-      {!isPending && 'Cari Tambal Ban'}
       {isPending && <Loader2 className="animate-spin" />}
+      {!isPending && (
+        <>
+          <Search strokeWidth={3} className="me-2" />
+          Cari Tambal Ban
+        </>
+      )}
     </Button>
   )
 }

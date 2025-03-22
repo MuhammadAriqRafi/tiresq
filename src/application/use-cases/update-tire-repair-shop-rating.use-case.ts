@@ -4,13 +4,13 @@ export default async function updateTireRepairShopRatingUseCase({
   tireRepairShopId,
   rating,
 }: {
-  tireRepairShopId: Promise<number>
-  rating: Promise<number>
+  tireRepairShopId: string
+  rating: number
 }) {
-  if ((await rating) === -1) return null
+  if (rating === -1) return null
 
   const tireRepairShopsRepository = getInjection('ITireRepairShopsRepository')
-  await tireRepairShopsRepository.updateTireRepairShop(await tireRepairShopId, {
-    rating: await rating,
+  await tireRepairShopsRepository.updateTireRepairShop(tireRepairShopId, {
+    rating,
   })
 }

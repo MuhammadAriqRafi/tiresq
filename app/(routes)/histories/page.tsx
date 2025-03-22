@@ -16,7 +16,7 @@ export default async function EscortHistoriesPage({
 
   return (
     <main className="h-dvh py-6">
-      <div className="mb-6 space-y-4 px-6">
+      <div className="space-y-3 px-6 pb-6 shadow-sm">
         <h1 className="text-2xl font-bold">Riwayat</h1>
         <FilterByStatusSelect />
       </div>

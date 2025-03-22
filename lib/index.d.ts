@@ -29,11 +29,16 @@ type OnProgressEscort = {
   }
 }
 
-type TripExperience = {
+type ServiceExperience = {
   id: string
-  isAnonymous: boolean
-  tripDestinationName: string
-  tripCreatedAt: string
   rating: number | null
   review: string | null
+  isAnonymous: boolean
+  escort: {
+    destination: string
+    createdAt: string
+  }
 }
+
+type StarIndexInString = '1' | '2' | '3' | '4' | '5'
+type StarIndexInNumber = 1 | 2 | 3 | 4 | 5

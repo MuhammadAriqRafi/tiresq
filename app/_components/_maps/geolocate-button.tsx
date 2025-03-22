@@ -18,7 +18,7 @@ export default function GeolocateButton({
       variant="outline"
       onClick={() => (map ? map.panTo(position) : null)}
       className={cn(
-        'fixed right-6 border-primary bg-transparent backdrop-blur-sm',
+        'fixed right-6 border-primary bg-transparent backdrop-blur-sm hover:border-2 hover:bg-transparent',
         {
           'bottom-24': onProgressEscort !== null,
           'top-6': onProgressEscort === null,

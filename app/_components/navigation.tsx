@@ -3,35 +3,35 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { blacklistedRoutes, routes } from '@/app/routes'
+import { routePathsWithHiddenNav, routes } from '@/app/routes'
 
 export default function Navigation() {
   const currentPath = usePathname()
 
-  for (const blacklistedRoute of blacklistedRoutes) {
-    if (currentPath.startsWith(blacklistedRoute)) return null
+  for (const routePathWithHiddenNav of routePathsWithHiddenNav) {
+    if (currentPath.startsWith(routePathWithHiddenNav)) return null
   }
 
   return (
     <nav className="fixed bottom-0 w-full max-w-md bg-white shadow-[0_-5px_30px_-20px_rgba(0,0,0,0.3)]">
       <ul className="flex">
-        {routes.map(({ url, text, icon }) => {
-          const isActive = currentPath === url
+        {routes.map(({ href, label, icon: Icon }) => {
+          const isActive = currentPath === href
 
           return (
             <Link
-              key={text}
-              href={url}
+              key={label}
+              href={href}
               className={cn(
-                'flex grow flex-col items-center justify-center gap-1 py-3 text-center text-xs text-muted-foreground',
+                'flex grow flex-col items-center justify-center gap-1 bg-gray-50 py-3 text-center text-xs text-muted-foreground',
                 {
-                  'rounded-t-sm border-t-2 border-t-primary font-semibold text-primary':
+                  'border-t-2 border-t-primary bg-background font-semibold text-primary':
                     isActive,
                 }
               )}
             >
-              {icon}
-              <li>{text}</li>
+              <Icon />
+              <li>{label}</li>
             </Link>
           )
         })}

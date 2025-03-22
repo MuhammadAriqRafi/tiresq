@@ -2,23 +2,23 @@ import { History, Home, UserRound } from 'lucide-react'
 
 export const routes = [
   {
-    url: '/histories',
-    text: 'Riwayat',
-    icon: <History />,
+    href: '/histories',
+    label: 'Riwayat',
+    icon: History,
   },
   {
-    url: '/',
-    text: 'Beranda',
-    icon: <Home />,
+    href: '/',
+    label: 'Beranda',
+    icon: Home,
   },
   {
-    url: '/account',
-    text: 'Akun',
-    icon: <UserRound />,
+    href: '/account',
+    label: 'Akun',
+    icon: UserRound,
   },
 ]
 
-export const blacklistedRoutes = [
+export const routePathsWithHiddenNav = [
   '/login',
   '/register',
   '/experience',
