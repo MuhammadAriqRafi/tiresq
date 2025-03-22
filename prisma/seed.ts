@@ -14,6 +14,7 @@ async function main() {
       latitude: -5.36122722040926,
       longitude: 105.31364286741777,
       created_at: Date.now(),
+      service_cost_in_rupiah: 10000,
     },
   })
 
@@ -28,6 +29,7 @@ async function main() {
       latitude: -5.363315021056011,
       longitude: 105.30829943120371,
       created_at: Date.now(),
+      service_cost_in_rupiah: 15000,
     },
   })
 
@@ -42,6 +44,7 @@ async function main() {
       latitude: -5.402903760242195,
       longitude: 105.2813415642729,
       created_at: Date.now(),
+      service_cost_in_rupiah: 10000,
     },
   })
 }

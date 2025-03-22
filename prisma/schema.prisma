@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Escort {
-  id             String       @id @unique @db.Char(12) // ESC-XXXXXXXX
-  user_id        String
-  destination_id String       @db.Char(12)
-  status         EscortStatus @default(ONPROGRESS)
-  expired_at     BigInt
-  created_at     BigInt
-  completed_at   BigInt?
-  cancelled_at   BigInt?
+  id               String       @id @unique @db.Char(12) // ESC-XXXXXXXX
+  user_id          String
+  destination_id   String       @db.Char(12)
+  destination_name String       @db.VarChar(50)
+  status           EscortStatus @default(ONPROGRESS)
+  expired_at       BigInt
+  created_at       BigInt
+  completed_at     BigInt?
+  cancelled_at     BigInt?
 
   service_experience ServiceExperience?
 
@@ -39,21 +40,46 @@ model ServiceExperience {
 }
 
 model TireRepairShop {
-  id         String  @id @db.Char(12) // TRS-XXXXXXXX
-  owner_id   String  @unique
-  name       String  @db.VarChar(50)
-  rating     Decimal @db.Decimal(2, 1)
-  latitude   Float
-  longitude  Float
-  created_at BigInt
+  id                     String  @id @db.Char(12) // TRS-XXXXXXXX
+  owner_id               String  @unique
+  name                   String  @db.VarChar(50)
+  rating                 Decimal @db.Decimal(2, 1)
+  latitude               Float
+  longitude              Float
+  is_open                Boolean @default(true)
+  service_cost_in_rupiah Int
+  created_at             BigInt
 
-  visits Escort[]
+  visits          Escort[]
+  operating_hours OperatingHour[]
 
   @@map("tire_repair_shops")
+}
+
+model OperatingHour {
+  tire_repair_shop_id String   @db.Char(12)
+  days_of_week        Days
+  open_time           DateTime @db.Time()
+  close_time          DateTime @db.Time()
+
+  tire_repair_shop TireRepairShop @relation(fields: [tire_repair_shop_id], references: [id])
+
+  @@id([tire_repair_shop_id, days_of_week])
+  @@map("operating_hours")
 }
 
 enum EscortStatus {
   COMPLETED
   ONPROGRESS
   CANCELLED
+}
+
+enum Days {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
