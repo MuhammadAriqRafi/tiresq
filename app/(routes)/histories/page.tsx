@@ -1,15 +1,18 @@
-import { SearchX } from 'lucide-react'
-import getTrips from '@/app/(routes)/histories/_actions/get-trips.action'
+import { Search, SearchX } from 'lucide-react'
+import Link from 'next/link'
+import EscortHistories from '@/app/(routes)/histories/_components/escort-histories'
 import FilterByStatusSelect from '@/app/(routes)/histories/_components/filter-by-status-select'
-import HistoryList from '@/app/(routes)/histories/_components/history-list'
+import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import getEscorts from '@/utils/actions/histories/get-escorts.action'
+import { GetEscortHistoriesSearchParamsDto } from '@/utils/dtos/histories/get-escort-histories-search-params.dto'
 
-export default async function HistoriesPage({
+export default async function EscortHistoriesPage({
   searchParams,
 }: {
-  searchParams: { status: string }
+  searchParams: GetEscortHistoriesSearchParamsDto
 }) {
-  const [trips] = await getTrips({ status: searchParams.status })
+  const [escorts] = await getEscorts(searchParams)
 
   return (
     <main className="h-dvh py-6">
@@ -19,25 +22,36 @@ export default async function HistoriesPage({
       </div>
 
       <ScrollArea className="h-[calc(100%-160px)] w-full">
-        {trips !== null && (
-          <HistoryList
-            initialHistories={trips}
+        {escorts !== null && (
+          <EscortHistories
+            initialEscortHistories={escorts}
             filterByStatus={searchParams.status}
           />
         )}
 
-        {trips === null && (
-          <div className="flex h-full flex-col items-center justify-center gap-6 px-8">
-            <SearchX
-              strokeWidth={1}
-              className="size-16 stroke-muted-foreground"
-            />
-            <h2 className="text-center text-sm font-normal text-muted-foreground">
-              Kamu belum punya riwayat cari tambal ban
-            </h2>
-          </div>
-        )}
+        {escorts === null && <EmptyEscortHistories />}
       </ScrollArea>
     </main>
+  )
+}
+
+function EmptyEscortHistories() {
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-5 px-8">
+      <SearchX strokeWidth={1} className="size-16 stroke-muted-foreground" />
+      <h2 className="text-center text-sm font-normal text-muted-foreground">
+        Kamu belum punya riwayat cari tambal ban
+      </h2>
+      <Button
+        size="sm"
+        variant="outline"
+        className="border-primary text-primary"
+        asChild
+      >
+        <Link href="/">
+          <Search /> Cari Tambal Ban
+        </Link>
+      </Button>
+    </div>
   )
 }

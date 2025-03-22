@@ -5,8 +5,8 @@ type LayoutProps = Readonly<{
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never
 
-type HistoryStatus = 'COMPLETED' | 'CANCELLED' | 'ONPROGRESS'
-type Histories = {
+type EscortHistoryStatus = 'COMPLETED' | 'CANCELLED' | 'ONPROGRESS'
+type EscortHistories = {
   id: string
   name: string
   createdAt: string
