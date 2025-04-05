@@ -16,13 +16,21 @@ export default async function getNearestTireRepairShopUseCase(
   const tireRepairShopsRepository = getInjection('ITireRepairShopsRepository')
   const tireRepairShops = (
     await tireRepairShopsRepository.getTireRepairShops(
-      { select: { id: true, latitude: true, longitude: true } },
+      {
+        select: {
+          id: true,
+          latitude: true,
+          longitude: true,
+          name: true,
+        },
+      },
       trx
     )
   ).map((tireRepairShop) => ({
     id: tireRepairShop.id,
     lat: tireRepairShop.latitude,
     lng: tireRepairShop.longitude,
+    name: tireRepairShop.name,
   }))
 
   if (tireRepairShops.length < 1)

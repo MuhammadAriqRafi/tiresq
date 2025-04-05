@@ -1,6 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createClientAdmin } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import env from '@/env'
+
+const supabase = createClientAdmin(
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_SECRET_KEY,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
+)
+
+// Access auth admin api
+export const adminAuthClient = supabase.auth.admin
 
 export async function createClient() {
   const cookieStore = await cookies()

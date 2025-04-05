@@ -29,7 +29,11 @@ const findNearestTireRepairShop = authenticatedProcedure
       )
 
       await createEscortUseCase(
-        { userId: ctx.user.id, destinationId: destination.id },
+        {
+          userId: ctx.user.id,
+          destinationId: destination.id,
+          destinationName: destination.name,
+        },
         { checkHasOnProgressTripBeforeCreating: false, trx }
       )
     })

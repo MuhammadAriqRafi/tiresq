@@ -9,9 +9,11 @@ export default async function createEscortUseCase(
   {
     userId,
     destinationId,
+    destinationName,
   }: {
     userId: string
     destinationId: string
+    destinationName: string
   },
   options: {
     checkHasOnProgressTripBeforeCreating: boolean
@@ -40,6 +42,7 @@ export default async function createEscortUseCase(
       id: generateId('ESC'),
       user_id: userId,
       destination: { connect: { id: destinationId } },
+      destination_name: destinationName,
       created_at: Date.now(),
       expired_at: Date.now() + env.ESCORT_EXPIRY_PERIOD_IN_MILLISECONDS,
     },
