@@ -4,8 +4,8 @@ import { createServerAction } from 'zsa'
 import { getInjection } from '@/src/di/container'
 
 const getUser = createServerAction().handler(async () => {
-  const authenticationsService = getInjection('IAuthenticationService')
-  return await authenticationsService.getUser()
+  const userRepository = getInjection('IUserRepository')
+  return await userRepository.getUser()
 })
 
 export default getUser

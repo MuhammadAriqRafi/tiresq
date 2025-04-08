@@ -8,10 +8,11 @@ const registerAction = createServerAction()
   .input(RegisterRequestSchema)
   .handler(async ({ input }) => {
     const authenticationsService = getInjection('IAuthenticationService')
-    const user = await authenticationsService.getUser()
+    const userRepository = getInjection('IUserRepository')
+    const user = await userRepository.getUser()
 
     if (user && user.is_anonymous) {
-      await authenticationsService.updateUser({
+      await userRepository.updateUser({
         email: input.email,
         password: input.password,
       })

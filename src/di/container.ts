@@ -6,11 +6,13 @@ import { EscortsModule } from '@/src/di/modules/escorts.module'
 import { MapsModule } from '@/src/di/modules/maps.module'
 import { ServiceExperiencesModule } from '@/src/di/modules/service-experiences.module copy'
 import { TireRepairShopsModule } from '@/src/di/modules/tire-repair-shops.module'
+import { UsersModule } from '@/src/di/modules/users.module'
 import { DI_RETURN_TYPES, DI_SYMBOLS } from '@/src/di/types'
 
 const ApplicationContainer = new Container({ defaultScope: 'Singleton' })
 
 const initializeContainer = () => {
+  ApplicationContainer.load(UsersModule)
   ApplicationContainer.load(EscortsModule)
   ApplicationContainer.load(ServiceExperiencesModule)
   ApplicationContainer.load(TireRepairShopsModule)

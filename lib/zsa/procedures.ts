@@ -4,8 +4,8 @@ import { AuthenticationError } from '@/src/entities/errors/authentication'
 
 export const authenticatedProcedure = createServerActionProcedure().handler(
   async () => {
-    const authenticationService = getInjection('IAuthenticationService')
-    const user = await authenticationService.getUser()
+    const userRepository = getInjection('IUserRepository')
+    const user = await userRepository.getUser()
 
     if (user === null)
       throw new AuthenticationError('Anda harus login terlebih dahulu')

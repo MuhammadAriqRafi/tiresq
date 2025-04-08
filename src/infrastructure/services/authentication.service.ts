@@ -1,4 +1,3 @@
-import { User } from '@supabase/supabase-js'
 import { injectable } from 'inversify'
 import { createClient } from '@/lib/supabase/server'
 import { IAuthenticationService } from '@/src/application/services/authentication.service.interface'
@@ -7,29 +6,6 @@ import { AuthenticationError } from '@/src/entities/errors/authentication'
 @injectable()
 export class AuthenticationService implements IAuthenticationService {
   constructor() {}
-
-  async getUser(): Promise<User | null> {
-    const supabase = await createClient()
-    const {
-      error,
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (error !== null) console.error({ getUserError: error })
-    return user
-  }
-
-  async updateUser(input: { email: string; password: string }): Promise<void> {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.updateUser({
-      email: input.email,
-      password: input.password,
-    })
-
-    if (error !== null) {
-      console.error({ updateUserError: error })
-      throw new AuthenticationError(error.message)
-    }
-  }
 
   async loginWithPassword(input: {
     email: string
@@ -70,16 +46,16 @@ export class AuthenticationService implements IAuthenticationService {
   async register(input: {
     email: string
     password: string
-    captchaToken: string
+    captchaToken?: string
   }) {
     const supabase = await createClient()
     const { error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
-      options:
-        process.env.NODE_ENV === 'production'
-          ? { captchaToken: input.captchaToken }
-          : undefined,
+      options: {
+        captchaToken: input.captchaToken,
+        data: { role: 'user' },
+      },
     })
 
     if (error !== null) {
