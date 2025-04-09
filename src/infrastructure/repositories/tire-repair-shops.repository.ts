@@ -22,7 +22,6 @@ export class TireRepairShopRepository implements ITireRepairShopsRepository {
     trx?: PrismaTransactionalClient
   ): Promise<Prisma.TireRepairShopGetPayload<{ select: K }>[]> {
     const invoker = trx ?? this.db
-
     try {
       return await invoker.tireRepairShop.findMany(filters)
     } catch (error) {
@@ -35,10 +34,12 @@ export class TireRepairShopRepository implements ITireRepairShopsRepository {
 
   async updateTireRepairShop(
     tireRepairShopId: string,
-    data: Prisma.TireRepairShopUpdateInput
+    data: Prisma.TireRepairShopUpdateInput,
+    trx?: PrismaTransactionalClient
   ): Promise<void> {
+    const invoker = trx ?? this.db
     try {
-      await this.db.tireRepairShop.update({
+      await invoker.tireRepairShop.update({
         where: { id: tireRepairShopId },
         data,
       })

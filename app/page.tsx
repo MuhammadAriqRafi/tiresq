@@ -1,22 +1,15 @@
-import Maps from '@/app/_components/_maps'
-import FindNearestTireRepairShopButton from '@/app/_components/find-nearest-tire-repair-shop-button'
-import OnProgressEscortConfirmationBanner from '@/app/_components/on-progress-escort-confirmation-banner'
-import getOnProgressEscort from '@/utils/actions/escorts/get-on-progress-escort.action'
-import OnProgressEscortProvider from '@/utils/providers/on-progress-escort-provider'
-import UserLocationProvider from '@/utils/providers/user-location-provider'
+import getUserAction from '@/app/(routes)/account/_actions/get-user.action'
+import OwnerHomePage from '@/app/_components/owner-home-page'
+import UserHomePage from '@/app/_components/user-home-page'
+import { isOwner, isUser } from '@/utils/utils/auth.util'
 
 export default async function Home() {
-  const [onProgressEscort] = await getOnProgressEscort()
+  const [user] = await getUserAction()
 
   return (
     <main className="h-dvh">
-      <OnProgressEscortProvider escort={onProgressEscort}>
-        <OnProgressEscortConfirmationBanner />
-        <UserLocationProvider>
-          <Maps />
-          <FindNearestTireRepairShopButton />
-        </UserLocationProvider>
-      </OnProgressEscortProvider>
+      {isUser(user) && <UserHomePage />}
+      {isOwner(user) && <OwnerHomePage />}
     </main>
   )
 }

@@ -17,11 +17,12 @@ export default async function getNearestTireRepairShopUseCase(
   const tireRepairShops = (
     await tireRepairShopsRepository.getTireRepairShops(
       {
+        where: { is_open: true },
         select: {
           id: true,
+          name: true,
           latitude: true,
           longitude: true,
-          name: true,
         },
       },
       trx
@@ -34,7 +35,7 @@ export default async function getNearestTireRepairShopUseCase(
   }))
 
   if (tireRepairShops.length < 1)
-    throw new NotFoundError('Tambal ban masih kosong')
+    throw new NotFoundError('Tambal ban tidak tersedia')
 
   const mapsService = getInjection('IMapsService')
   const distanceMatrix = await mapsService.distanceMatrix(

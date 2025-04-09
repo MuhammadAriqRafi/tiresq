@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { authenticatedProcedure } from '@/lib/zsa/procedures'
 import createServiceExperienceUseCase from '@/src/application/use-cases/create-service-experiece.use-case'
 import toggleEscortStatusUseCase from '@/src/application/use-cases/toggle-escort-status.use-case'
@@ -22,6 +23,7 @@ const completeEscortAction = authenticatedProcedure
       )
     })
 
+    revalidatePath('/histories')
     return {
       message:
         'Yay!, kamu sudah sampai tujuan, kami tunggu review pengalaman tambal bannya yaa :)',
