@@ -16,10 +16,10 @@ export default function CompleteEscortButton() {
 
   const { isPending, execute } = useServerAction(completeEscortAction, {
     onSuccess({ data }) {
-      resetOnProgressEscort()
+      toast.success('Berhasil', { description: data.message })
       if (directionsRenderer) directionsRenderer.set('directions', null)
       if (map && userLocation) map.panTo(userLocation.coordinate)
-      toast.success('Berhasil', { description: data.message })
+      resetOnProgressEscort()
     },
   })
 
@@ -29,8 +29,7 @@ export default function CompleteEscortButton() {
       variant="success"
       onClick={() => execute({ escortId: onProgressEscort.escortId })}
     >
-      {!isPending && 'Sampai'}
-      {isPending && <Loader2 className="animate-spin" />}
+      {isPending && <Loader2 className="animate-spin" />} Sampai
     </Button>
   )
 }

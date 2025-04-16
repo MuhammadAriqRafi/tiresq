@@ -27,14 +27,14 @@ export default function OnProgressEscortProvider({
 
   async function refreshOnProgressEscort() {
     const [refreshedOnProgressEscort, error] = await getOnProgressEscort()
-    if (refreshedOnProgressEscort !== null)
-      setOnProgressEscort(refreshedOnProgressEscort)
 
     if (error)
       toast.error('Oops...', {
         description:
           'Gagal memperbarui data perjalanan, silahkan coba refresh halaman',
       })
+
+    setOnProgressEscort(refreshedOnProgressEscort)
   }
 
   async function resetOnProgressEscort() {
@@ -45,8 +45,8 @@ export default function OnProgressEscortProvider({
     <OnProgressEscortContext.Provider
       value={{
         onProgressEscort,
-        refreshOnProgressEscort,
         resetOnProgressEscort,
+        refreshOnProgressEscort,
       }}
     >
       {children}

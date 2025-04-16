@@ -4,9 +4,9 @@ export default function useUpdateSearchParams() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams)
 
   function update({ key, value }: { key: string; value: string }) {
+    const params = new URLSearchParams(searchParams)
     if (value) params.set(key, value)
     else params.delete(key)
 

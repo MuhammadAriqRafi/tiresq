@@ -6,7 +6,7 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const InputPassword = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, ...props }, ref) => {
     const [isVisible, setIsVisible] = React.useState<boolean>(false)
     const toggleVisibility = () => setIsVisible((prevState) => !prevState)
 

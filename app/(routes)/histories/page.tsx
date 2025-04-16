@@ -1,5 +1,6 @@
 import { Search, SearchX } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import EscortHistories from '@/app/(routes)/histories/_components/escort-histories'
 import FilterByStatusSelect from '@/app/(routes)/histories/_components/filter-by-status-select'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,9 @@ export default async function EscortHistoriesPage({
     <main className="h-dvh py-6">
       <div className="space-y-3 px-6 pb-6 shadow-sm">
         <h1 className="text-2xl font-bold">Riwayat</h1>
-        <FilterByStatusSelect />
+        <Suspense>
+          <FilterByStatusSelect />
+        </Suspense>
       </div>
 
       <ScrollArea className="h-[calc(100%-160px)] w-full">

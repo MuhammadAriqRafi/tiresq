@@ -16,10 +16,10 @@ export default function CancelEscortButton() {
 
   const { isPending, execute } = useServerAction(cancelEscortAction, {
     onSuccess({ data }) {
-      resetOnProgressEscort()
+      toast.success('Berhasil', { description: data.message })
       if (directionsRenderer) directionsRenderer.set('directions', null)
       if (map && userLocation) map.panTo(userLocation.coordinate)
-      toast.success('Berhasil', { description: data.message })
+      resetOnProgressEscort()
     },
   })
 
@@ -28,10 +28,9 @@ export default function CancelEscortButton() {
     <Button
       onClick={() => execute({ escortId: onProgressEscort.escortId })}
       variant="outline"
-      className="border-destructive text-destructive"
+      className="border-destructive text-destructive hover:bg-background hover:text-destructive"
     >
-      {!isPending && 'Batalin'}
-      {isPending && <Loader2 className="animate-spin" />}
+      {isPending && <Loader2 className="animate-spin" />} Batalin
     </Button>
   )
 }
