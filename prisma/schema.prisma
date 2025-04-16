@@ -61,6 +61,7 @@ model OperatingHour {
   days_of_week        Days
   open_time           DateTime @db.Time()
   close_time          DateTime @db.Time()
+  is_holiday          Boolean  @default(false)
 
   tire_repair_shop TireRepairShop @relation(fields: [tire_repair_shop_id], references: [id])
 
