@@ -1,6 +1,7 @@
 import { Footprints, Hourglass } from 'lucide-react'
 import CancelEscortDrawer from '@/app/_components/cancel-escort-drawer'
 import CompleteEscortDrawer from '@/app/_components/complete-escort-drawer'
+import AlternativeTireRepairShops from '@/app/_components/user/alternative-tire-repair-shops'
 import RatingBadge from '@/components/ui/rating-badge'
 import { useDirections } from '@/utils/providers/directions-provider'
 import { useOnProgressEscort } from '@/utils/providers/on-progress-escort-provider'
@@ -38,6 +39,8 @@ export default function OnProgressEscortBanner() {
         <CancelEscortDrawer />
         <CompleteEscortDrawer />
       </div>
+
+      <AlternativeTireRepairShops />
     </section>
   )
 }

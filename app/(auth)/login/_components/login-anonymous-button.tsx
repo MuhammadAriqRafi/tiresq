@@ -13,6 +13,7 @@ export default function LoginAnonymousButton({
 
   return (
     <Button
+      disabled={isPending}
       type="button"
       variant="link"
       onClick={() => {

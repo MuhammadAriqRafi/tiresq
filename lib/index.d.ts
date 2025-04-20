@@ -29,6 +29,24 @@ type OnProgressEscort = {
   }
 }
 
+type TireRepairShop = {
+  id: string
+  name: string
+  rating: string
+  distance: string
+  duration: string
+}
+
+type NearestTireRepairShop = {
+  id: string
+  lat: number
+  lng: number
+  name: string
+  rating: number
+  distance: string
+  duration: string
+}
+
 type ServiceExperience = {
   id: string
   rating: number | null

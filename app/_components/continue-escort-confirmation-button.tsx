@@ -15,12 +15,12 @@ export default function ContinueEscortConfirmationButton() {
 
   return (
     <Button
+      disabled={isPending}
       onClick={async () =>
         await execute({ escortId: onProgressEscort!.escortId })
       }
     >
-      {!isPending && 'Lanjutin'}
-      {isPending && <Loader2 className="animate-spin" />}
+      {isPending && <Loader2 className="animate-spin" />} Lanjutin
     </Button>
   )
 }

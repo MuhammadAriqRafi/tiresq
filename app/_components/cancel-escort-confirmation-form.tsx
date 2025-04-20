@@ -82,7 +82,8 @@ export default function CancelEscortConfirmationForm() {
         <DrawerFooter className="flex w-full flex-row gap-2 [&>button]:w-1/2">
           <SubmitButton
             variant="outline"
-            className="border-destructive text-destructive"
+            disabled={form.formState.isSubmitting}
+            className="border-destructive text-destructive hover:bg-background hover:text-destructive"
           >
             Batalin
           </SubmitButton>

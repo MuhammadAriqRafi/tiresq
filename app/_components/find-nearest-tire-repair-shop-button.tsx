@@ -18,9 +18,7 @@ export default function FindNearestTireRepairShopButton() {
         refreshOnProgressEscort()
       },
       onError({ err }) {
-        toast.error('Oops...', {
-          description: err.message,
-        })
+        toast.error('Oops...', { description: err.message })
       },
     }
   )
@@ -31,15 +29,12 @@ export default function FindNearestTireRepairShopButton() {
   return (
     <Button
       onClick={async () => await execute({ origin: userLocation.coordinate })}
+      disabled={isPending}
       className="fixed bottom-24 left-1/2 w-[calc(100%-48px)] max-w-md -translate-x-1/2"
     >
-      {isPending && <Loader2 className="animate-spin" />}
-      {!isPending && (
-        <>
-          <Search strokeWidth={3} className="me-2" />
-          Cari Tambal Ban
-        </>
-      )}
+      {isPending && <Loader2 strokeWidth={3} className="me-2 animate-spin" />}
+      {!isPending && <Search strokeWidth={3} className="me-2" />}
+      Cari Tambal Ban
     </Button>
   )
 }

@@ -23,7 +23,7 @@ const findNearestTireRepairShop = authenticatedProcedure
       if (onProgressTrip !== null)
         throw new RestrictedActionError('Anda sedang dalam perjalanan')
 
-      const destination = await getNearestTireRepairShopUseCase(
+      const [destination] = await getNearestTireRepairShopUseCase(
         { origin: input.origin },
         trx
       )

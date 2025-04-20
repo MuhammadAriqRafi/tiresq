@@ -21,6 +21,7 @@ export default async function getNearestTireRepairShopUseCase(
         select: {
           id: true,
           name: true,
+          rating: true,
           latitude: true,
           longitude: true,
         },
@@ -32,6 +33,7 @@ export default async function getNearestTireRepairShopUseCase(
     lat: tireRepairShop.latitude,
     lng: tireRepairShop.longitude,
     name: tireRepairShop.name,
+    rating: tireRepairShop.rating.toNumber(),
   }))
 
   if (tireRepairShops.length < 1)
@@ -49,34 +51,32 @@ export default async function getNearestTireRepairShopUseCase(
       'Maaf, kami belum dapat menemukan tambal ban dalam radius 5 Km dari lokasi kamu'
     )
 
-  const { choosenDestinationIndex, shortestDistance } =
-    distanceMatrixRows.reduce(
-      (shortest, current, index) => {
-        const { shortestDistance } = shortest
-        const currentRowDistance = current.distance.value
+  const nearestTireRepairShop: (NearestTireRepairShop & {
+    distanceInMeter: number
+  })[] = []
 
-        if (isDistanceOutOfBoundary(currentRowDistance)) return shortest
-        if (currentRowDistance < shortestDistance) {
-          return {
-            choosenDestinationIndex: index,
-            shortestDistance: currentRowDistance,
-          }
-        }
+  distanceMatrixRows.forEach((destination, index) => {
+    const destinationDistance = destination.distance.value
 
-        return shortest
-      },
-      {
-        choosenDestinationIndex: 0,
-        shortestDistance: distanceMatrixRows[0].distance.value,
-      }
-    )
+    if (!isDistanceOutOfBoundary(destinationDistance))
+      return nearestTireRepairShop.push({
+        ...tireRepairShops[index],
+        duration: destination.duration.text,
+        distance: destination.distance.text,
+        distanceInMeter: destinationDistance,
+      })
+  })
 
-  if (isDistanceOutOfBoundary(shortestDistance))
+  if (nearestTireRepairShop.length < 1)
     throw new NotFoundError(
       'Maaf, kami belum dapat menemukan tambal ban dalam radius 5 Km dari lokasi kamu'
     )
 
-  return tireRepairShops[choosenDestinationIndex]
+  const sortedNearestTireRepairShop = nearestTireRepairShop
+    .toSorted((current, next) => current.distanceInMeter - next.distanceInMeter)
+    .toSpliced(5)
+
+  return sortedNearestTireRepairShop.toSpliced(5)
 }
 
 function isDistanceOutOfBoundary(distance: number) {

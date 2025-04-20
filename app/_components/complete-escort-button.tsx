@@ -26,6 +26,7 @@ export default function CompleteEscortButton() {
   if (onProgressEscort === null) return null
   return (
     <Button
+      disabled={isPending}
       variant="success"
       onClick={() => execute({ escortId: onProgressEscort.escortId })}
     >

@@ -39,7 +39,11 @@ export default function OwnerLogoutButton() {
         </DrawerHeader>
         <DrawerFooter className="flex w-full flex-row gap-2 [&>button]:w-1/2 [&>form]:w-1/2">
           <form onSubmit={handleOnSubmit}>
-            <Button variant="destructive" className="w-full">
+            <Button
+              variant="destructive"
+              disabled={isPending}
+              className="w-full"
+            >
               {isPending ? <Loader2 className="animate-spin" /> : 'Keluar'}
             </Button>
           </form>

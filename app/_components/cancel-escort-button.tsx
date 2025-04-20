@@ -26,6 +26,7 @@ export default function CancelEscortButton() {
   if (onProgressEscort === null) return null
   return (
     <Button
+      disabled={isPending}
       onClick={() => execute({ escortId: onProgressEscort.escortId })}
       variant="outline"
       className="border-destructive text-destructive hover:bg-background hover:text-destructive"
