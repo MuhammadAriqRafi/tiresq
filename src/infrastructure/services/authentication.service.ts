@@ -1,5 +1,5 @@
 import { injectable } from 'inversify'
-import { createClient } from '@/lib/supabase/server'
+import { adminAuthClient, createClient } from '@/lib/supabase/server'
 import { IAuthenticationService } from '@/src/application/services/authentication.service.interface'
 import { AuthenticationError } from '@/src/entities/errors/authentication'
 
@@ -62,6 +62,22 @@ export class AuthenticationService implements IAuthenticationService {
       console.error({ registerError: error })
       throw new AuthenticationError(error.message)
     }
+  }
+
+  async registerOwner(input: { email: string; password: string }) {
+    const { data, error } = await adminAuthClient.createUser({
+      email: input.email,
+      password: input.password,
+      email_confirm: true,
+      user_metadata: { role: 'owner' },
+    })
+
+    if (error !== null) {
+      console.error({ registerOwnerError: error })
+      throw new AuthenticationError(error.message)
+    }
+
+    return data.user
   }
 
   async logout() {

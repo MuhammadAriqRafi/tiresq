@@ -10,6 +10,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_HCAPTCHA_SITEKEY: z.string().min(1),
   MAXIMUM_DISTANCE_IN_METER: z.coerce.number(),
   ESCORT_EXPIRY_PERIOD_IN_MILLISECONDS: z.coerce.number(),
+  NEW_OWNER_DEFAULT_PASSWORD: z.string(),
 })
 
 const env = envSchema.parse(process.env)

@@ -32,9 +32,8 @@ type OnProgressEscort = {
 type TireRepairShop = {
   id: string
   name: string
-  rating: string
-  distance: string
-  duration: string
+  rating: number
+  isOpen: boolean
 }
 
 type NearestTireRepairShop = {

@@ -48,4 +48,15 @@ export class TireRepairShopRepository implements ITireRepairShopsRepository {
       throw new DatabaseError('Terjadi kesalahan saat mengubah data tambal ban')
     }
   }
+
+  async createTireRepairShop(
+    data: Prisma.TireRepairShopCreateInput
+  ): Promise<void> {
+    try {
+      await this.db.tireRepairShop.create({ data })
+    } catch (error) {
+      console.error({ createTireRepairShopError: error })
+      throw new DatabaseError('Terjadi kesalahan saat membuat data tambal ban')
+    }
+  }
 }

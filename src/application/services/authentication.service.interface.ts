@@ -1,3 +1,5 @@
+import { User } from '@supabase/supabase-js'
+
 export interface IAuthenticationService {
   loginAnonymously(input: { captchaToken: string }): Promise<void>
 
@@ -12,6 +14,8 @@ export interface IAuthenticationService {
     password: string
     captchaToken: string
   }): Promise<void>
+
+  registerOwner(input: { email: string; password: string }): Promise<User>
 
   logout(): Promise<void>
 }

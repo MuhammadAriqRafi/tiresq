@@ -20,4 +20,6 @@ export interface ITireRepairShopsRepository {
     data: Prisma.TireRepairShopUpdateInput,
     trx?: PrismaTransactionalClient
   ): Promise<void>
+
+  createTireRepairShop(data: Prisma.TireRepairShopCreateInput): Promise<void>
 }
