@@ -40,6 +40,10 @@ export default function AlternativeTireRepairShops() {
 
   if (userLocation === null) return null
 
+  function handleFindNearestTireRepairShopAlternatives() {
+    if (userLocation !== null) execute({ origin: userLocation.coordinate })
+  }
+
   return (
     <Accordion
       type="single"
@@ -55,7 +59,7 @@ export default function AlternativeTireRepairShops() {
           className="justify-center gap-3 py-0 text-xs font-medium text-muted-foreground hover:text-primary hover:no-underline"
           onClick={() => {
             if (isOpen === '' && alternativeTireRepairShops.length < 1)
-              execute({ origin: userLocation.coordinate })
+              handleFindNearestTireRepairShopAlternatives()
           }}
         >
           Pindah Ke Tambal Ban Lain?
@@ -71,11 +75,10 @@ export default function AlternativeTireRepairShops() {
               alternativeTireRepairShops.map((alternativeTireRepairShop) => (
                 <AlternativeTireRepairShopItem
                   key={alternativeTireRepairShop.id}
-                  id={alternativeTireRepairShop.id}
-                  name={alternativeTireRepairShop.name}
-                  rating={alternativeTireRepairShop.rating}
-                  distance={alternativeTireRepairShop.distance}
-                  duration={alternativeTireRepairShop.duration}
+                  refreshAlternativeTireRepairShops={
+                    handleFindNearestTireRepairShopAlternatives
+                  }
+                  {...alternativeTireRepairShop}
                 />
               ))}
 
@@ -99,30 +102,37 @@ function AlternativeTireRepairShopItem({
   rating,
   distance,
   duration,
+  refreshAlternativeTireRepairShops,
 }: {
   id: string
   name: string
   rating: number
   distance: string
   duration: string
+  refreshAlternativeTireRepairShops: () => void
 }) {
   const { onProgressEscort, refreshOnProgressEscort } = useOnProgressEscort()
-
-  async function handleOnClick() {
-    if (onProgressEscort === null) return null
-
-    const [data, error] = await changeEscortDestination({
-      escortId: onProgressEscort.escortId,
-      destinationId: id,
-    })
-
-    // if (data) toast.success('Berhasil', { description: data.message })
-  }
+  const { isPending, execute } = useServerAction(changeEscortDestination, {
+    onSuccess({ data }) {
+      toast.success('Berhasil', { description: data.message })
+      refreshOnProgressEscort()
+      refreshAlternativeTireRepairShops()
+    },
+    onError({ err }) {
+      toast.error('Gagal', { description: err.message })
+    },
+  })
 
   return (
     <Card
-      onClick={handleOnClick}
       className="flex w-max flex-row gap-4 px-3 py-4"
+      onClick={() => {
+        if (!isPending && onProgressEscort !== null)
+          execute({
+            destinationId: id,
+            escortId: onProgressEscort.escortId,
+          })
+      }}
     >
       <CardHeader className="p-0">
         <CardTitle className="text-sm font-semibold">{name}</CardTitle>

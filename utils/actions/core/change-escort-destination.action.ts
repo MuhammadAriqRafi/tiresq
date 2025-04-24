@@ -8,11 +8,11 @@ const changeEscortDestination = authenticatedProcedure
   .createServerAction()
   .input(ChangeEscortDestinationRequestSchema)
   .handler(async ({ input }) => {
-    // await changeEscortDestinationUseCase({
-    //   destinationId: input.destinationId,
-    //   escortId: input.escortId,
-    // })
-    console.log({ input })
+    await changeEscortDestinationUseCase({
+      destinationId: input.destinationId,
+      escortId: input.escortId,
+    })
+    return { message: 'Berhasil merubah tujuan' }
   })
 
 export default changeEscortDestination

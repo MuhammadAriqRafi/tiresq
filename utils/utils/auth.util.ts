@@ -12,7 +12,7 @@ export function isOwner(user: User | null) {
 
 export function isUser(user: User | null) {
   if (user === null) return false
-  return user.user_metadata.role === 'user' && !user.is_anonymous
+  return user.user_metadata.role === 'user' || user.is_anonymous
 }
 
 export function isAnonymousUser(user: User | null) {

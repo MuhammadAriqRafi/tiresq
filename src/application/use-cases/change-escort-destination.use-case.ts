@@ -24,7 +24,7 @@ export default async function changeEscortDestinationUseCase(
   )
 
   if (tireRepairShop.length < 1)
-    throw new NotFoundError('Tambal ban tidak tersedia')
+    throw new NotFoundError('Tambal ban belum tersedia')
 
   const escortsRepository = getInjection('IEscortsRepository')
   await escortsRepository.updateEscort(

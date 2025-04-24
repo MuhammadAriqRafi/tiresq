@@ -31,6 +31,7 @@ export class UserRepository implements IUserRepository {
     const { error } = await supabase.auth.updateUser({
       email: input.email,
       password: input.password,
+      data: { role: 'user' },
     })
 
     if (error !== null) {

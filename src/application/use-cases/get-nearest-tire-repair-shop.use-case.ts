@@ -37,7 +37,7 @@ export default async function getNearestTireRepairShopUseCase(
   }))
 
   if (tireRepairShops.length < 1)
-    throw new NotFoundError('Tambal ban tidak tersedia')
+    throw new NotFoundError('Tambal ban belum tersedia')
 
   const mapsService = getInjection('IMapsService')
   const distanceMatrix = await mapsService.distanceMatrix(
