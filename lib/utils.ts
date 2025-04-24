@@ -67,3 +67,8 @@ export function generateId(
 ) {
   return `${prefix}${delimiter}${customAlphabetNanoid(maxLength)}`
 }
+
+export function capitalize(str: string) {
+  const lowerCasedString = str.toLocaleLowerCase()
+  return lowerCasedString.charAt(0).toUpperCase() + lowerCasedString.slice(1)
+}

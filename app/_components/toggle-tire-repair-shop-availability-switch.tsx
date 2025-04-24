@@ -8,8 +8,10 @@ import toggleTireRepairShopAvailabilityAction from '@/utils/actions/tire-repair-
 
 export default function ToggleTireRepairShopAvailabilitySwitch({
   isOpen,
+  tireRepairShopId,
 }: {
   isOpen: boolean
+  tireRepairShopId: string
 }) {
   const id = useId()
   const { isPending, execute } = useServerAction(
@@ -30,9 +32,7 @@ export default function ToggleTireRepairShopAvailabilitySwitch({
         id={`${id}-off`}
         className="flex-1 cursor-pointer text-right text-xs font-medium group-data-[state=checked]:text-muted-foreground/70"
         aria-controls={id}
-        onClick={() =>
-          execute({ isOpen: false, tireRepairShopId: 'TRS-PSLFM021' })
-        }
+        onClick={() => execute({ isOpen: false, tireRepairShopId })}
       >
         Tutup
       </span>
@@ -46,9 +46,7 @@ export default function ToggleTireRepairShopAvailabilitySwitch({
         id={`${id}-on`}
         className="flex-1 cursor-pointer text-left text-xs font-medium group-data-[state=checked]:text-primary group-data-[state=unchecked]:text-muted-foreground/70"
         aria-controls={id}
-        onClick={() =>
-          execute({ isOpen: true, tireRepairShopId: 'TRS-PSLFM021' })
-        }
+        onClick={() => execute({ isOpen: true, tireRepairShopId })}
       >
         Buka
       </span>

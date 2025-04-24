@@ -31,6 +31,7 @@ export default async function OwnerHomePage() {
           <div className="flex flex-col gap-3">
             <h2 className="text-base font-bold">{tireRepairShop.name}</h2>
             <ToggleTireRepairShopAvailabilitySwitch
+              tireRepairShopId={tireRepairShop.id}
               isOpen={tireRepairShop.isOpen}
             />
           </div>
@@ -58,7 +59,9 @@ export default async function OwnerHomePage() {
           />
 
           <div className="flex w-1/2 flex-col items-center gap-1">
-            <h2 className="text-2xl font-semibold">10</h2>
+            <h2 className="text-2xl font-semibold">
+              {tireRepairShop.visits.length}
+            </h2>
             <span className="text-xs text-muted-foreground">Kunjungan</span>
           </div>
         </section>
@@ -86,6 +89,7 @@ export default async function OwnerHomePage() {
             <TabsContent value="tire-repair-shop-detail">
               <TireRepairShopDetail
                 serviceCostInRupiah={tireRepairShop.serviceCostInRupiah}
+                operatingHours={tireRepairShop.operatingHours}
               />
             </TabsContent>
           </Tabs>

@@ -44,7 +44,7 @@ export default function OwnerLogoutButton() {
               disabled={isPending}
               className="w-full"
             >
-              {isPending ? <Loader2 className="animate-spin" /> : 'Keluar'}
+              {isPending && <Loader2 className="animate-spin" />} Keluar
             </Button>
           </form>
           <DrawerClose asChild>

@@ -36,6 +36,13 @@ type TireRepairShop = {
   isOpen: boolean
 }
 
+type OperatingHour = {
+  daysOfWeek: string
+  closeTime: string
+  openTime: string
+  isHoliday: boolean
+}
+
 type NearestTireRepairShop = {
   id: string
   lat: number
