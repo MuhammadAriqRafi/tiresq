@@ -1,9 +1,11 @@
-import { Star } from 'lucide-react'
+import { Pencil, Star } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import OwnerLogoutButton from '@/app/_components/owner-logout-button'
 import TireRepairShopDetail from '@/app/_components/owner/tire-repair-shop-detail'
+import TireRepairShopReviewStatistics from '@/app/_components/owner/tire-repair-shop-review-statistics'
 import TireRepairShopReviews from '@/app/_components/owner/tire-repair-shop-reviews'
 import ToggleTireRepairShopAvailabilitySwitch from '@/app/_components/toggle-tire-repair-shop-availability-switch'
 import { Separator } from '@/components/ui/separator'
@@ -14,9 +16,17 @@ export default async function OwnerHomePage() {
   const [tireRepairShop] = await getTireRepairShopByOwnerIdAction()
   if (tireRepairShop === null) return notFound()
 
+  const numberOfEachStar = [0, 0, 0, 0, 0]
+  tireRepairShop.visits.forEach(({ rating }) => {
+    if (rating) numberOfEachStar[rating - 1] += 1
+  })
+
   return (
     <div className="relative">
       <OwnerLogoutButton />
+      <Link href="/tire-repair-shops/edit">
+        <Pencil className="absolute right-8 top-8 size-4 stroke-muted-foreground transition-colors hover:stroke-primary" />
+      </Link>
 
       <div className="space-y-6 p-8">
         <section className="flex flex-col items-center gap-4">
@@ -29,7 +39,9 @@ export default async function OwnerHomePage() {
             />
           </div>
           <div className="flex flex-col gap-3">
-            <h2 className="text-base font-bold">{tireRepairShop.name}</h2>
+            <h2 className="text-center text-base font-bold">
+              {tireRepairShop.name}
+            </h2>
             <ToggleTireRepairShopAvailabilitySwitch
               tireRepairShopId={tireRepairShop.id}
               isOpen={tireRepairShop.isOpen}
@@ -67,7 +79,7 @@ export default async function OwnerHomePage() {
         </section>
 
         <section>
-          <Tabs defaultValue="tire-repair-shop-detail" className="items-center">
+          <Tabs defaultValue="reviews" className="items-center">
             <TabsList className="h-auto w-full rounded-none border-b bg-transparent p-0">
               <TabsTrigger
                 value="reviews"
@@ -83,8 +95,13 @@ export default async function OwnerHomePage() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="reviews">
-              <TireRepairShopReviews />
+            <TabsContent value="reviews" className="space-y-6">
+              <TireRepairShopReviewStatistics
+                rating={tireRepairShop.rating}
+                numberOfVisits={tireRepairShop.visits.length}
+                numberOfEachStar={numberOfEachStar}
+              />
+              <TireRepairShopReviews reviews={tireRepairShop.visits} />
             </TabsContent>
             <TabsContent value="tire-repair-shop-detail">
               <TireRepairShopDetail

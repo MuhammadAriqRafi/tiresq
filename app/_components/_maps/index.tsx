@@ -1,7 +1,8 @@
 'use client'
 
-import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps'
+import { APIProvider, Map } from '@vis.gl/react-google-maps'
 import GeolocateButton from '@/app/_components/_maps/geolocate-button'
+import RealTimeAdvanceMarker from '@/app/_components/_maps/realtime-advance-marker'
 import OnProgressEscortBanner from '@/app/_components/on-progress-escort-banner'
 import DirectionsProvider from '@/utils/providers/directions-provider'
 import { useUserLocation } from '@/utils/providers/user-location-provider'
@@ -25,7 +26,7 @@ export default function Maps() {
             <OnProgressEscortBanner />
           </DirectionsProvider>
 
-          <AdvancedMarker position={userLocation.coordinate} />
+          <RealTimeAdvanceMarker />
           <GeolocateButton position={userLocation.coordinate} />
         </Map>
       </div>

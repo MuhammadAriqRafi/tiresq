@@ -5,6 +5,7 @@ export default async function getTireRepairShopsUseCase() {
   const tireRepairShopRepository = getInjection('ITireRepairShopsRepository')
   const tireRepairShops = (
     await tireRepairShopRepository.getTireRepairShops({
+      orderBy: { name: 'asc' },
       select: {
         id: true,
         name: true,

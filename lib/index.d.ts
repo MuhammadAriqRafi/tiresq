@@ -26,6 +26,13 @@ type OnProgressEscort = {
     name: string
     rating: number
     coordinate: { latitude: number; longitude: number }
+    serviceCostInRupiah: number
+    operatingHours: {
+      daysOfWeek: string
+      closeTime: string
+      openTime: string
+      isHoliday: boolean
+    }[]
   }
 }
 
@@ -62,6 +69,13 @@ type ServiceExperience = {
     destination: string
     createdAt: string
   }
+}
+
+type Visit = {
+  rating: number | null | undefined
+  review: string | null | undefined
+  userName: string
+  visitAt: string | null
 }
 
 type StarIndexInString = '1' | '2' | '3' | '4' | '5'

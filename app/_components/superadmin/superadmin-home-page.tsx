@@ -3,6 +3,7 @@ import Link from 'next/link'
 import SuperadminLogoutButton from '@/app/_components/superadmin/superadmin-logout-button'
 import { tireRepairShopColumns } from '@/app/_components/superadmin/tire-repair-shop-columns'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataTable } from '@/components/data-table'
 import getTireRepairShopsAction from '@/utils/actions/tire-repair-shops/get-tire-repair-shops.action'
 
@@ -30,7 +31,9 @@ export default async function SuperadminHomePage() {
       </section>
 
       {tireRepairShops !== null && (
-        <DataTable columns={tireRepairShopColumns} data={tireRepairShops} />
+        <ScrollArea className="h-[calc(100dvh-150px)]">
+          <DataTable columns={tireRepairShopColumns} data={tireRepairShops} />
+        </ScrollArea>
       )}
     </div>
   )

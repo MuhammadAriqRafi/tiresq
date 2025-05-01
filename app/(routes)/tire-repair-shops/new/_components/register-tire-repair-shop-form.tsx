@@ -91,11 +91,11 @@ export default function RegisterTireRepairShopForm() {
           />
 
           <FormField
-            name="tireRepairShopLongitude"
+            name="tireRepairShopLatitude"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Longitude Bengkel Tambal Ban</FormLabel>
+                <FormLabel>Latitude Bengkel Tambal Ban</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -105,11 +105,11 @@ export default function RegisterTireRepairShopForm() {
           />
 
           <FormField
-            name="tireRepairShopLatitude"
+            name="tireRepairShopLongitude"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Latitude Bengkel Tambal Ban</FormLabel>
+                <FormLabel>Longitude Bengkel Tambal Ban</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

@@ -74,9 +74,9 @@ export default async function getNearestTireRepairShopUseCase(
 
   const sortedNearestTireRepairShop = nearestTireRepairShop
     .toSorted((current, next) => current.distanceInMeter - next.distanceInMeter)
-    .toSpliced(5)
+    .toSpliced(6)
 
-  return sortedNearestTireRepairShop.toSpliced(5)
+  return sortedNearestTireRepairShop.toSpliced(6)
 }
 
 function isDistanceOutOfBoundary(distance: number) {

@@ -1,6 +1,5 @@
-import { History, Pencil } from 'lucide-react'
+import { History } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 import getUserAction from '@/app/(routes)/account/_actions/get-user.action'
 import MenuItem from '@/app/(routes)/account/_components/menu-item'
 import MenuItemLogout from '@/app/(routes)/account/_components/menu-item-logout'
@@ -28,10 +27,6 @@ export default async function AccountPage() {
           <h2 className="text-base font-bold">{user?.email?.split('@')[0]}</h2>
           <p className="text-xs font-light">{user?.email}</p>
         </div>
-        {/* TODO: Add update account feature */}
-        <Link href="/account/edit" className="ml-auto">
-          <Pencil className="size-5 stroke-muted-foreground" />
-        </Link>
       </section>
 
       <section className="flex flex-col gap-6">

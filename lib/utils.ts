@@ -72,3 +72,8 @@ export function capitalize(str: string) {
   const lowerCasedString = str.toLocaleLowerCase()
   return lowerCasedString.charAt(0).toUpperCase() + lowerCasedString.slice(1)
 }
+
+export function formatDateTimeToTime(datetime: Date) {
+  const date = new Date(datetime)
+  return `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')}`
+}

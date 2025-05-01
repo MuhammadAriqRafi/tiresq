@@ -125,7 +125,7 @@ function AlternativeTireRepairShopItem({
 
   return (
     <Card
-      className="flex w-max flex-row gap-4 px-3 py-4"
+      className="flex w-max flex-row gap-4 px-3 py-4 transition-all duration-200 hover:border-2 hover:border-primary"
       onClick={() => {
         if (!isPending && onProgressEscort !== null)
           execute({

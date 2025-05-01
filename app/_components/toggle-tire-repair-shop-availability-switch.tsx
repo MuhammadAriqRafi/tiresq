@@ -30,7 +30,7 @@ export default function ToggleTireRepairShopAvailabilitySwitch({
     >
       <span
         id={`${id}-off`}
-        className="flex-1 cursor-pointer text-right text-xs font-medium group-data-[state=checked]:text-muted-foreground/70"
+        className="flex-1 cursor-pointer text-right text-xs font-medium group-data-[state=checked]:text-muted-foreground/70 group-data-[state=unchecked]:text-destructive"
         aria-controls={id}
         onClick={() => execute({ isOpen: false, tireRepairShopId })}
       >
@@ -40,6 +40,8 @@ export default function ToggleTireRepairShopAvailabilitySwitch({
         id={id}
         checked={isOpen}
         disabled={isPending}
+        className="data-[state=unchecked]:bg-destructive"
+        onCheckedChange={() => execute({ isOpen: !isOpen, tireRepairShopId })}
         aria-labelledby={`${id}-off ${id}-on`}
       />
       <span

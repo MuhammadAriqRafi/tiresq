@@ -37,7 +37,7 @@ export default function TireRepairShopDetail({
         />
       </div>
 
-      <div className="mb-8 mt-3 w-full rounded-md border border-primary p-3">
+      <div className="mb-8 mt-3 w-full rounded-md border-2 border-primary/15 p-3">
         <p className="mb-2 text-xs font-semibold">Jam Operasional</p>
         <div className="space-y-1">
           {operatingHours.map((operatingHour) => (
@@ -45,9 +45,11 @@ export default function TireRepairShopDetail({
               key={operatingHour.daysOfWeek}
               className="flex items-center justify-between text-sm"
             >
-              <p>{capitalize(operatingHour.daysOfWeek)}</p>
+              <p className="text-xs">{capitalize(operatingHour.daysOfWeek)}</p>
               <span>
-                {operatingHour.openTime} — {operatingHour.closeTime}
+                {operatingHour.isHoliday && 'Libur'}
+                {!operatingHour.isHoliday &&
+                  `${operatingHour.openTime} — ${operatingHour.closeTime}`}
               </span>
             </div>
           ))}
@@ -73,7 +75,7 @@ function DetailCard({
       </CardHeader>
       <CardContent className="p-3">
         <CardDescription className="text-xs">{label}</CardDescription>
-        <p className="flex items-center justify-between font-semibold">
+        <p className="flex items-center justify-between text-sm font-semibold">
           {value}
         </p>
       </CardContent>
