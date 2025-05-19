@@ -63,19 +63,27 @@ export default function LoginFormDev() {
           )}
         />
 
-        <FormField
-          name="password"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <InputPassword {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-col gap-4">
+          <FormField
+            name="password"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <InputPassword {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Link
+            href="/password/new"
+            className="w-fit text-xs font-semibold text-muted-foreground transition-all hover:text-foreground hover:underline hover:underline-offset-4"
+          >
+            Lupa password?
+          </Link>
+        </div>
 
         <div className="mt-auto flex flex-col items-center gap-4">
           <SubmitButton

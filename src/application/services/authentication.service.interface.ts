@@ -15,6 +15,8 @@ export interface IAuthenticationService {
     captchaToken: string
   }): Promise<void>
 
+  resetPasswordForEmail(email: string): Promise<void>
+
   registerOwner(input: { email: string; password: string }): Promise<User>
 
   logout(): Promise<void>
